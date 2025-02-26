@@ -2,7 +2,8 @@ import React, { useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
-import { SpeedDial } from "primereact/speeddial";
+// El import de SpeedDial no se usa, lo mantengo por si acaso.
+// import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
 import { ConfirmDialog } from "primereact/confirmdialog";
@@ -10,8 +11,7 @@ import "primeicons/primeicons.css";
 import { Tooltip } from "primereact/tooltip";
 
 import SplitButtonComp from "../Ui/SplitButton";
-import FormInstructor from "../Form/FormInstructor";
-import FormFicha from "../Form/FormFicha"; // ✅ nuevo import
+import FormFicha from "../Form/FormFicha";
 import "../../styles/Table.css";
 import FormAprendiz from "../Form/FormAprendiz";
 
@@ -19,9 +19,9 @@ export default function TableAprendizs({
   tableTitle,
   nameValue = [],
   dataTable = [],
-  functionModal,
+  functionModal, // Usado para abrir el modal de creación de Aprendiz
   openCreatePerfil,
-  reloadTable,
+  reloadTable, // Función pasada desde el componente padre para recargar los datos
 }) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
@@ -34,10 +34,13 @@ export default function TableAprendizs({
   const handleEditUser = (rowData) => {
     setSelectedUser(rowData);
     setOpenUpdateModal(true);
-  };
+  }; // MODIFICACIÓN CLAVE: Esta función ahora acepta un argumento y llama a reloadTable
 
-  const handleCloseUpdateModal = () => {
+  const handleCloseUpdateModal = (shouldReload = false) => {
     setOpenUpdateModal(false);
+    if (shouldReload && reloadTable) {
+      reloadTable(); // Recarga la tabla si el formulario indica que fue exitoso
+    }
     setSelectedUser(null);
   };
 
@@ -46,7 +49,6 @@ export default function TableAprendizs({
       <div className="mb-1">
         <h2 className="fw-bold d-flex gap-2">{tableTitle}</h2>
       </div>
-
       <div className="d-flex justify-content-between headerContainer align-items-center">
         <div
           style={{
@@ -67,6 +69,7 @@ export default function TableAprendizs({
               pointerEvents: "none",
             }}
           />
+
           <InputText
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
@@ -78,7 +81,7 @@ export default function TableAprendizs({
           />
         </div>
 
-        <div className="d-flex  containerButtonActions shadow-sm">
+        <div className="d-flex containerButtonActions shadow-sm">
           <button
             className="btnActions d-flex align-items-center gap-2 btn-crear-aprendiz"
             onClick={functionModal}
@@ -108,23 +111,26 @@ export default function TableAprendizs({
               style={{ color: "#ffc107", fontSize: "1.4rem" }}
             />
           </button>
+
           <Tooltip
             target=".btn-crear-aprendiz"
             content="Crear aprendices"
             position="top"
           />
+
           <Tooltip
             target=".btn-crear-perfil"
             content="Crear perfil"
             position="top"
           />
+
           <Tooltip
             target=".btn-crear-formacion"
             content="Crear Formacion"
             position="top"
           />
         </div>
-      </div>
+      </div>{" "}
     </div>
   );
   const actionBodyTemplate = (rowData) => (
@@ -134,7 +140,7 @@ export default function TableAprendizs({
   );
 
   return (
-    <div className="mx-auto mt-2 shadow  tableAprendices">
+    <div className="mx-auto mt-2 shadow tableAprendices">
       <Toast ref={toast} />
       <DataTable
         value={dataTable}
@@ -205,15 +211,16 @@ export default function TableAprendizs({
         header="Actualizar Aprendiz"
         visible={openUpdateModal}
         style={{ width: "750px" }}
-        onHide={handleCloseUpdateModal}
+        onHide={() => handleCloseUpdateModal(false)} // No recargar si se cierra manualmente
         modal
       >
+        {" "}
         <FormAprendiz
           usuarioSeleccionado={selectedUser}
-          closeModal={handleCloseUpdateModal}
-        />
+          closeModal={() => handleCloseUpdateModal(true)} // Recargar si el formulario fue exitoso
+        />{" "}
       </Dialog>
-
+      {/* Diálogo de Creación de Ficha */}
       <Dialog
         header="Crear Ficha"
         visible={openFichaModal}
@@ -221,14 +228,14 @@ export default function TableAprendizs({
         onHide={() => setOpenFichaModal(false)}
         modal
       >
+        {" "}
         <FormFicha
           closeModal={() => {
             setOpenFichaModal(false);
-            if (reloadTable) reloadTable();
+            if (reloadTable) reloadTable(); // Recargar después de crear una Ficha
           }}
         />
       </Dialog>
-
       <ConfirmDialog />
     </div>
   );

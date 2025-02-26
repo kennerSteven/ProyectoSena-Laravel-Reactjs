@@ -1,6 +1,6 @@
 import TablaHistorial from "../../TableHistorial";
 
-export default function Historial(params) {
+export default function Historial() {
     return(
         <TablaHistorial/>
     )

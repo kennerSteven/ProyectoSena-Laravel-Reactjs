@@ -24,13 +24,15 @@ export default function Table({
   tableTitle,
   nameValue = [],
   dataTable = [],
-  functionModal,
+  functionModal, // Esta función debe abrir el modal de CREACIÓN
   openCreatePerfil,
-  reloadTable,
+  reloadTable, // Esta función debe recargar los datos de la tabla
   fetchUsuariosDesactivados,
   labelUserDisabled,
   activarUsuariosPorLote,
   activarUsuarioPorId,
+  // Asumimos un prop isLoading del componente padre para mejor UX
+  isLoading = false,
 }) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [perfilSeleccionado, setPerfilSeleccionado] = useState(null);
@@ -170,8 +172,14 @@ export default function Table({
   const handleCloseUpdateModal = () => {
     setOpenUpdateModal(false);
     setSelectedUser(null);
+    // Recarga la tabla después de actualizar
     if (reloadTable) reloadTable();
   };
+
+  // Función auxiliar para forzar la recarga al cerrar el modal de creación
+  // Asumimos que functionModal abre un modal y este modal necesita una función de cierre.
+  // Aquí no abrimos el modal de creación, solo el de actualización/edición.
+  // El padre debe usar `reloadTable` al cerrar el modal de creación.
 
   const actionBodyTemplate = (rowData) => (
     <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -182,6 +190,28 @@ export default function Table({
       />
     </div>
   );
+
+  const filteredData = dataTable.filter((item) => {
+    const texto = globalFilter.trim().toLowerCase();
+
+    const coincideGlobal = globalFilterFields.some((field) => {
+      const valor = item[field];
+      return typeof valor === "string"
+        ? valor.toLowerCase().includes(texto)
+        : valor?.toString().toLowerCase().includes(texto);
+    });
+
+    const coincidePerfil = perfilSeleccionado
+      ? item.perfil?.id === perfilSeleccionado ||
+        item.idperfil === perfilSeleccionado
+      : true;
+
+    return coincideGlobal && coincidePerfil;
+  });
+
+  const emptyMessage = isLoading
+    ? "Cargando usuarios..." // Mensaje de carga si isLoading es true
+    : "No se encontraron resultados"; // Mensaje de no resultados si ya terminó de cargar
 
   const header = (
     <div>
@@ -281,32 +311,19 @@ export default function Table({
       </div>
     </div>
   );
+
   return (
     <div className="mx-auto mt-4 shadow tableContainer">
       <Toast ref={toast} />
       <DataTable
-        value={dataTable.filter((item) => {
-          const texto = globalFilter.trim().toLowerCase();
-
-          const coincideGlobal = globalFilterFields.some((field) => {
-            const valor = item[field];
-            return typeof valor === "string"
-              ? valor.toLowerCase().includes(texto)
-              : valor?.toString().toLowerCase().includes(texto);
-          });
-
-          const coincidePerfil = perfilSeleccionado
-            ? item.perfil?.id === perfilSeleccionado ||
-              item.idperfil === perfilSeleccionado
-            : true;
-
-          return coincideGlobal && coincidePerfil;
-        })}
+        value={filteredData}
         paginator
         rows={10}
         header={header}
         globalFilterFields={globalFilterFields}
-        emptyMessage="No se encontraron resultados"
+        emptyMessage={emptyMessage} // Mensaje dinámico de carga/vacío
+        loading={isLoading} // Propiedad para mostrar el spinner de carga
+        loadingIcon="pi pi-spin pi-spinner"
         scrollable
         scrollHeight="280px"
         rowClassName={() => "my-custom-row"}
@@ -373,6 +390,7 @@ export default function Table({
         />
       </DataTable>
 
+      {/* Modal de Actualización/Edición */}
       <Dialog
         header={
           selectedUser ? `Actualizar ${tipoEntidad}` : `Nuevo ${tipoEntidad}`
@@ -385,16 +403,17 @@ export default function Table({
         {tipoEntidad === "Instructor" ? (
           <FormInstructor
             usuarioSeleccionado={selectedUser}
-            closeModal={handleCloseUpdateModal}
+            closeModal={handleCloseUpdateModal} // Al cerrar, recarga la tabla
           />
         ) : tipoEntidad === "Administrativo" ? (
           <FormAdministrativo
             usuarioSeleccionado={selectedUser}
-            closeModal={handleCloseUpdateModal}
+            closeModal={handleCloseUpdateModal} // Al cerrar, recarga la tabla
           />
         ) : null}
       </Dialog>
 
+      {/* Modal de Activación de Usuarios */}
       <Dialog
         header={labelUserDisabled}
         visible={showEnabledInstructors}

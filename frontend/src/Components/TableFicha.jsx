@@ -156,7 +156,7 @@ export default function TablaFicha() {
   const accionesBodyTemplate = (rowData) => (
     <div className="d-flex gap-2">
       <button
-        className="btnDesactivar"
+        className="btnDesactivar desactivar"
         onClick={(e) => {
           e.stopPropagation();
           abrirModalAccion(rowData);
@@ -165,7 +165,7 @@ export default function TablaFicha() {
         <i className="bi bi-exclamation-triangle-fill p-2"></i>
       </button>
       <button
-        className="btnActualizars"
+        className="btnActualizars actualizar"
         onClick={(e) => {
           e.stopPropagation();
           abrirModalEditar(rowData);
@@ -173,6 +173,9 @@ export default function TablaFicha() {
       >
         <i className="bi bi-pencil-square p-2"></i>
       </button>
+
+      <Tooltip target=".desactivar" content="Desactivar ficha" position="top" />
+      <Tooltip target=".actualizar" content="Actualizar ficha" position="top" />
     </div>
   );
   return (

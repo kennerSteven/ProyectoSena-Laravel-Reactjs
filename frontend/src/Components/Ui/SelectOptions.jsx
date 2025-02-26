@@ -7,7 +7,7 @@ export default function SelectOptions({
   defaultValue = "",
   showEntrada = true,
 }) {
-  if (!showEntrada) return null; // ✅ oculta el campo si no se debe mostrar
+  if (!showEntrada) return null;
 
   return (
     <div style={{ width: "100%" }}>

@@ -21,6 +21,7 @@ import {
   nameValueAdministrativo,
 } from "../../Layout/Data";
 
+// --- COMPONENTE: TableInstructor ---
 export function TableInstructor() {
   const [openModal, setModalOpen] = useState(false);
   const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
@@ -28,24 +29,40 @@ export function TableInstructor() {
   const [selectedInstructor, setSelectedInstructor] = useState(null);
 
   async function LoadInstructor() {
-    const data = await GetDataInstructor();
-    const instructoresFiltrados = data.filter((item) =>
-      item.perfile?.nombre?.toLowerCase().includes("instructor")
-    );
-    const flattened = instructoresFiltrados.map((item) => ({
-      ...item,
-      tipoPerfil: item.perfile?.nombre || "Sin perfil",
-    }));
-    setInstructor(flattened);
+    try {
+      const data = await GetDataInstructor();
+      const instructoresFiltrados = data.filter((item) =>
+        item.perfile?.nombre?.toLowerCase().includes("instructor")
+      );
+      const flattened = instructoresFiltrados.map((item) => ({
+        ...item,
+        tipoPerfil: item.perfile?.nombre || "Sin perfil",
+      }));
+      setInstructor(flattened);
+    } catch (error) {
+      console.error("Error al cargar instructores:", error);
+    }
   }
 
   useEffect(() => {
     LoadInstructor();
   }, []);
 
-  const handleEditInstructor = (item) => {
-    setSelectedInstructor(item);
+  const handleOpenCreateModal = () => {
+    setSelectedInstructor(null);
     setModalOpen(true);
+  };
+
+  // 🔑 Función de cierre que RECÁRGA la tabla
+  const handleCloseAndReload = () => {
+    setModalOpen(false);
+    setSelectedInstructor(null);
+    LoadInstructor();
+  };
+
+  const handleClosePerfilModal = () => {
+    setModalCreatePerfil(false);
+    LoadInstructor(); // Recargar si un nuevo perfil afecta el filtrado
   };
 
   return (
@@ -56,31 +73,29 @@ export function TableInstructor() {
         labelUserDisabled="Instructores desactivados"
         fetchUsuariosDesactivados={getInstructoresContratoDesactivados}
         dataTable={instructor}
-        functionModal={() => {
-          setSelectedInstructor(null);
-          setModalOpen(true);
-        }}
+        functionModal={handleOpenCreateModal} // Abre el modal para crear
         openCreatePerfil={() => setModalCreatePerfil(true)}
-        reloadTable={LoadInstructor}
-        onEdit={handleEditInstructor}
+        reloadTable={LoadInstructor} // Para eliminaciones/activaciones
         activarUsuariosPorLote={(ids) =>
           activarInstructoresPorLote("Instructor contrato", ids)
         }
       />
 
+      {/* Modal de CREACIÓN / EDICIÓN de Instructor */}
       <Dialog
         header={selectedInstructor ? "Editar Instructor" : "Nuevo Instructor"}
         visible={openModal}
         style={{ width: "750px" }}
-        onHide={() => setModalOpen(false)}
+        onHide={() => setModalOpen(false)} // No recarga si solo se cierra con ESC o clic fuera
         modal
       >
         <FormInstructor
-          closeModal={() => setModalOpen(false)}
+          closeModal={handleCloseAndReload} // 🟢 CORRECCIÓN: Al cerrar el formulario por éxito, se llama a LoadInstructor
           initialData={selectedInstructor}
         />
       </Dialog>
 
+      {/* Modal de Creación de Perfil */}
       <Dialog
         header="Nuevo Perfil"
         visible={openModalCreatePerfil}
@@ -88,20 +103,24 @@ export function TableInstructor() {
         onHide={() => setModalCreatePerfil(false)}
         modal
       >
-        <FormPerfil closeModal={() => setModalCreatePerfil(false)} />
+        <FormPerfil closeModal={handleClosePerfilModal} />{" "}
+        {/* Cierra y recarga */}
       </Dialog>
     </div>
   );
 }
 
+// --------------------------------------------------------------------------------
+
+// --- COMPONENTE: TableAdministrativo ---
 export function TableAdministrativo() {
   const [openModal, setModalOpen] = useState(false);
   const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
   const [administrativos, setAdministrativos] = useState([]);
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
 
-  useEffect(() => {
-    async function LoadAdministrativos() {
+  async function LoadAdministrativos() {
+    try {
       const data = await GetDataAdministrativo();
       const administrativosFiltrados = data.filter((item) =>
         item.perfile?.nombre?.toLowerCase().includes("administrativo")
@@ -111,10 +130,31 @@ export function TableAdministrativo() {
         tipoPerfil: item.perfile?.nombre || "Sin perfil",
       }));
       setAdministrativos(flattened);
+    } catch (error) {
+      console.error("Error al cargar administrativos:", error);
     }
+  }
 
+  useEffect(() => {
     LoadAdministrativos();
   }, []);
+
+  const handleOpenCreateModal = () => {
+    setUsuarioSeleccionado(null);
+    setModalOpen(true);
+  };
+
+  // 🔑 Función de cierre que RECÁRGA la tabla (usada por FormAdministrativo)
+  const handleCloseAndReload = () => {
+    setModalOpen(false);
+    setUsuarioSeleccionado(null);
+    LoadAdministrativos();
+  };
+
+  const handleClosePerfilModal = () => {
+    setModalCreatePerfil(false);
+    LoadAdministrativos(); // Recargar si un nuevo perfil afecta el filtrado
+  };
 
   return (
     <div>
@@ -127,14 +167,9 @@ export function TableAdministrativo() {
         labelUserDisabled="Administrativos desactivados"
         nameValue={nameValueAdministrativo}
         dataTable={administrativos}
-        functionModal={() => {
-          setUsuarioSeleccionado(null);
-          setModalOpen(true);
-        }}
+        functionModal={handleOpenCreateModal} // Abre modal para crear
         openCreatePerfil={() => setModalCreatePerfil(true)}
-        reloadTable={() => {
-          // Puedes pasar LoadAdministrativos si deseas recargar
-        }}
+        reloadTable={LoadAdministrativos} // Para recargas externas, eliminaciones, etc.
         fetchUsuariosDesactivados={getAdministrativosContratoDesactivados}
         onEditUser={(usuario) => {
           setUsuarioSeleccionado(usuario);
@@ -142,6 +177,7 @@ export function TableAdministrativo() {
         }}
       />
 
+      {/* Modal de CREACIÓN / EDICIÓN de Administrativo */}
       <Dialog
         header={
           usuarioSeleccionado
@@ -153,18 +189,16 @@ export function TableAdministrativo() {
         onHide={() => {
           setModalOpen(false);
           setUsuarioSeleccionado(null);
-        }}
+        }} // No recarga si solo se cierra con ESC o clic fuera
         modal
       >
         <FormAdministrativo
-          closeModal={() => {
-            setModalOpen(false);
-            setUsuarioSeleccionado(null);
-          }}
+          closeModal={handleCloseAndReload} // 🟢 CORRECCIÓN: Al cerrar el formulario por éxito, se llama a LoadAdministrativos
           usuarioSeleccionado={usuarioSeleccionado}
         />
       </Dialog>
 
+      {/* Modal de Creación de Perfil */}
       <Dialog
         header="Nuevo Perfil"
         visible={openModalCreatePerfil}
@@ -172,81 +206,74 @@ export function TableAdministrativo() {
         onHide={() => setModalCreatePerfil(false)}
         modal
       >
-        <FormPerfil closeModal={() => setModalCreatePerfil(false)} />
+        <FormPerfil closeModal={handleClosePerfilModal} />{" "}
+        {/* Cierra y recarga */}
       </Dialog>
     </div>
   );
 }
 
+// --------------------------------------------------------------------------------
+
+// --- COMPONENTE: TableAprendizs ---
 export function TableAprendizs() {
   const [openModal, setModalOpen] = useState(false);
   const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
   const [aprendices, setAprendices] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // Añadido para mejor UX
+
+  async function LoadAprendices() {
+    setIsLoading(true);
+    try {
+      const data = await GetDataAprendiz();
+      const aprendicesFiltrados = data.filter((item) =>
+        item.perfile?.nombre?.toLowerCase().includes("aprendiz")
+      );
+      const flattened = aprendicesFiltrados.map((item) => {
+        const ficha = item.fichas || {};
+        return {
+          ...item,
+          nombrePrograma: ficha.nombrePrograma || "Sin programa",
+          jornada: ficha.jornada || "Sin jornada",
+          numeroFicha: ficha.numeroFicha || "Sin ficha",
+          icon:
+            ficha.jornada === "Mañana"
+              ? "pi pi-sun"
+              : ficha.jornada === "Tarde"
+              ? "pi pi-cloud"
+              : ficha.jornada === "Noche"
+              ? "pi pi-moon"
+              : "pi pi-question",
+        };
+      });
+      setAprendices(flattened);
+    } catch (error) {
+      console.error("Error al cargar aprendices:", error);
+      setAprendices([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function LoadAprendices() {
-      try {
-        const data = await GetDataAprendiz();
-        const aprendicesFiltrados = data.filter((item) =>
-          item.perfile?.nombre?.toLowerCase().includes("aprendiz")
-        );
-        const flattened = aprendicesFiltrados.map((item) => {
-          const ficha = item.fichas || {};
-          return {
-            ...item,
-
-            nombrePrograma: ficha.nombrePrograma || "Sin programa",
-            jornada: ficha.jornada || "Sin jornada",
-            numeroFicha: ficha.numeroFicha || "Sin ficha",
-            icon:
-              ficha.jornada === "Mañana"
-                ? "pi pi-sun"
-                : ficha.jornada === "Tarde"
-                ? "pi pi-cloud"
-                : ficha.jornada === "Noche"
-                ? "pi pi-moon"
-                : "pi pi-question",
-          };
-        });
-        setAprendices(flattened);
-        setAprendices(flattened);
-      } catch (error) {
-        console.error("Error al cargar aprendices:", error);
-        setAprendices([]);
-      }
-    }
-
     LoadAprendices();
   }, []);
 
-  const reloadAprendices = async () => {
+  // 🔑 Función de cierre que RECÁRGA la tabla (usada por FormAprendiz)
+  const handleCloseAndReload = async () => {
     setModalOpen(false);
-    setModalCreatePerfil(false);
-    setAprendices([]);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    const data = await GetDataAprendiz();
-    const aprendicesFiltrados = data.filter((item) =>
-      item.perfile?.nombre?.toLowerCase().includes("aprendiz")
-    );
-    const flattened = aprendicesFiltrados.map((item) => {
-      const ficha = item.fichas || {};
-      return {
-        ...item,
-        tipoPerfil: item.perfile?.nombre || "Sin perfil",
-        nombrePrograma: ficha.nombrePrograma || "Sin programa",
-        jornada: ficha.jornada || "Sin jornada",
-        icon:
-          ficha.jornada === "mañana"
-            ? "pi pi-sun"
-            : ficha.jornada === "tarde"
-            ? "pi pi-cloud"
-            : ficha.jornada === "noche"
-            ? "pi pi-moon"
-            : "pi pi-question",
-      };
-    });
-    setAprendices(flattened);
+    // Nota: Tu lógica original de reloadAprendices tenía un setTimeout.
+    // Usaremos la lógica LoadAprendices simplificada para una recarga inmediata.
+    await LoadAprendices();
   };
+
+  const handleClosePerfilModal = () => {
+    setModalCreatePerfil(false);
+    LoadAprendices(); // Recargar si un nuevo perfil afecta el filtrado
+  };
+
+  // Tu lógica original de reloadAprendices era muy compleja y potencialmente ineficiente.
+  // La he reemplazado por la función LoadAprendices en los callbacks.
 
   return (
     <div>
@@ -254,11 +281,13 @@ export function TableAprendizs() {
         tableTitle="Listar Aprendices"
         nameValue={nameValueAprendiz}
         dataTable={aprendices}
-        functionModal={() => setModalOpen(true)}
+        functionModal={() => setModalOpen(true)} // Abre modal para crear
         openCreatePerfil={() => setModalCreatePerfil(true)}
-        reloadTable={reloadAprendices}
+        reloadTable={LoadAprendices} // Usar LoadAprendices para recargas
+        isLoading={isLoading} // Pasar estado de carga
       />
 
+      {/* Modal de CREACIÓN de Aprendiz */}
       <Dialog
         header="Nuevo Aprendiz"
         visible={openModal}
@@ -266,9 +295,10 @@ export function TableAprendizs() {
         onHide={() => setModalOpen(false)}
         modal
       >
-        <FormAprendiz closeModal={() => setModalOpen(false)} />
+        <FormAprendiz closeModal={handleCloseAndReload} />{" "}
       </Dialog>
 
+      {/* Modal de Creación de Perfil */}
       <Dialog
         header="Nuevo Perfil"
         visible={openModalCreatePerfil}
@@ -276,7 +306,8 @@ export function TableAprendizs() {
         onHide={() => setModalCreatePerfil(false)}
         modal
       >
-        <FormPerfil closeModal={() => setModalCreatePerfil(false)} />
+        <FormPerfil closeModal={handleClosePerfilModal} />{" "}
+        {/* Cierra y recarga */}
       </Dialog>
     </div>
   );

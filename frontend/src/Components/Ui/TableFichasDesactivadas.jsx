@@ -15,6 +15,7 @@ import {
 } from "../Services/FetchServices";
 import "../../styles/TableFichasDesactivadas.css";
 import Swal from "sweetalert2";
+
 export default function TablaFichasDesactivadas() {
   const [fichas, setFichas] = useState([]);
   const [filteredFichas, setFilteredFichas] = useState([]);
@@ -55,20 +56,45 @@ export default function TablaFichasDesactivadas() {
       });
     } catch (error) {
       console.error("Error al eliminar ficha:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error al eliminar",
+        text: "No se pudo eliminar la ficha. Intenta nuevamente.",
+        confirmButtonText: "Cerrar",
+      });
     }
   };
 
   const eliminarTodasLasFichas = async () => {
+    // 1. Mostrar SweetAlert de carga (eliminando...)
+    Swal.fire({
+      title: "Eliminando fichas...",
+      text: "Por favor, espera. Esta acción puede tardar unos segundos.",
+      icon: "info",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     try {
       const ids = fichas.map((f) => f.id);
+      if (ids.length === 0) {
+        Swal.close();
+        return;
+      }
+
       await deleteFichasMasivo(ids);
       await cargarFichas();
+
+      // 2. Cerrar el SweetAlert de carga y mostrar el de éxito
       Swal.fire({
         icon: "success",
-        title: "Fichas eliminadas ",
-        text: "Fichas eliminadas correctamente",
+        title: "Fichas eliminadas",
+        text: "Todas las fichas desactivadas han sido eliminadas correctamente.",
         confirmButtonText: "Aceptar",
-        timer: 2000,
+        timer: 3000,
         timerProgressBar: true,
         showConfirmButton: true,
         customClass: {
@@ -77,6 +103,16 @@ export default function TablaFichasDesactivadas() {
       });
     } catch (error) {
       console.error("Error al eliminar todas las fichas:", error);
+
+      // 3. Cerrar el SweetAlert de carga y mostrar el de error
+      Swal.fire({
+        icon: "error",
+        title: "Error de Eliminación",
+        text: `Fallo al eliminar las fichas: ${
+          error.message || "Error desconocido"
+        }.`,
+        confirmButtonText: "Cerrar",
+      });
     }
   };
 
@@ -89,12 +125,23 @@ export default function TablaFichasDesactivadas() {
       setShowDialog(true);
     } catch (error) {
       console.error("Error al obtener usuarios de la ficha:", error);
+      // Opcional: Mostrar un toast o SweetAlert si falla la carga de usuarios
     }
   };
 
   const confirmarEliminarTodas = () => {
+    if (fichas.length === 0) {
+      toast.current.show({
+        severity: "info",
+        summary: "Información",
+        detail: "No hay fichas para eliminar.",
+        life: 3000,
+      });
+      return;
+    }
+
     confirmDialog({
-      message: `¿Estás seguro de eliminar todas las fichas desactivadas?, al hacer esto no podrás revertir esta acción.`,
+      message: `¿Estás seguro de eliminar todas las ${fichas.length} fichas desactivadas? Esta acción es irreversible.`,
       header: "Confirmar eliminación masiva",
       icon: "pi pi-exclamation-triangle",
       acceptClassName: "p-button-danger",
@@ -114,6 +161,8 @@ export default function TablaFichasDesactivadas() {
       icon="pi pi-trash"
       className="ButtonDelete"
       onClick={() => confirmarEliminarFicha(rowData.id)}
+      tooltip="Eliminar Ficha"
+      tooltipOptions={{ position: "top" }}
     />
   );
 
@@ -135,7 +184,7 @@ export default function TablaFichasDesactivadas() {
       <Button
         label="Cancelar"
         icon="pi pi-times"
-        className="btnCancelar"
+        className="btnCancelar p-button-secondary" // Agregado p-button-secondary para mejor estilo PrimeReact
         onClick={() => setShowDialog(false)}
       />
       <Button
@@ -152,6 +201,7 @@ export default function TablaFichasDesactivadas() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
+      {/* Diálogo de Confirmación de Eliminación Individual con Usuarios */}
       <Dialog
         header={
           fichaSeleccionada
@@ -169,7 +219,7 @@ export default function TablaFichasDesactivadas() {
           paginator
           rows={5}
           rowsPerPageOptions={[5, 10, 20]}
-          emptyMessage="No hay aprendices asociados."
+          emptyMessage="No hay aprendices asociados. La ficha se eliminará sin afectar usuarios."
           className="p-datatable-sm"
         >
           <Column field="nombre" header="Nombre" />
@@ -179,22 +229,27 @@ export default function TablaFichasDesactivadas() {
         </DataTable>
       </Dialog>
 
+      {/* Controles de la Tabla */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div className="flex-grow-1 me-3">
-          <InputText
-            value={globalFilter}
-            onChange={onGlobalFilterChange}
-            placeholder="Buscar..."
-            className="p-inputtext-sm "
-            style={{ width: "250px" }}
-          />
+          <span className="p-input-icon-left">
+          t  <InputText
+              value={globalFilter}
+              onChange={onGlobalFilterChange}
+              placeholder="Buscar por código, programa o jornada..."
+              className="p-inputtext-sm "
+              style={{ width: "300px" }} // Ajustado el ancho
+            />
+          </span>
         </div>
         <Button
-          label="Eliminar todas"
+          label={`Eliminar todas (${fichas.length})`}
           icon="pi pi-trash"
           className="p-button-danger"
           onClick={confirmarEliminarTodas}
           disabled={fichas.length === 0}
+          tooltip="Eliminar todas las fichas permanentemente"
+          tooltipOptions={{ position: "top" }}
         />
       </div>
 

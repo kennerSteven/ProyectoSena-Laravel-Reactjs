@@ -1,9 +1,18 @@
+// KpiCards.jsx
+
 import { useEffect, useState } from "react";
 import KPI from "./Kpi";
 import "../../../styles/KPI.css";
-import KPIBarChart from "../../Charts/BarChar";
+// Asegúrate de que esta ruta sea correcta para tu KPIDashboard
+import KPIDashboard from "../../Charts/BarChar";
 
-export default function KpiCards({ urlEntrada }) {
+// Recibe urlDoughnut y urlBarchar como props
+export default function KpiCards({
+  urlEntrada,
+  urlSalida,
+  urlBarchar,
+  urlDoughnut,
+}) {
   const [usuarios, setUsuarios] = useState({
     total: 0,
     aprendices: 0,
@@ -35,7 +44,7 @@ export default function KpiCards({ urlEntrada }) {
   useEffect(() => {
     const fetchKPIs = async () => {
       try {
-        // Usuarios agrupados por substring
+        // --- Usuarios ---
         const resUsuarios = await fetch(
           "http://localhost:8000/api/usuarios/estadisticakpi"
         );
@@ -45,8 +54,8 @@ export default function KpiCards({ urlEntrada }) {
         let instructores = 0;
         let administrativos = 0;
 
-        dataUsuarios.porperfil.forEach((p) => {
-          const perfil = p.perfil.toLowerCase();
+        (dataUsuarios.porperfil || []).forEach((p) => {
+          const perfil = p.perfil?.toLowerCase() || "";
           if (perfil.includes("aprendiz")) aprendices += p.cantidad;
           else if (perfil.includes("instructor")) instructores += p.cantidad;
           else if (perfil.includes("administrativo"))
@@ -60,7 +69,7 @@ export default function KpiCards({ urlEntrada }) {
           administrativos,
         });
 
-        // Fichas normalizadas
+        // --- Fichas ---
         const resFichas = await fetch(
           "http://localhost:8000/api/ficha/estadisticakpi"
         );
@@ -74,62 +83,75 @@ export default function KpiCards({ urlEntrada }) {
           noche: jornada["Noche"] || jornada["noche"] || 0,
         });
 
-        // Entradas y salidas desde array
-        const resMovimientos = await fetch(urlEntrada);
-        const data = await resMovimientos.json();
+        // --- Entradas (Usando urlEntrada) ---
+        if (urlEntrada) {
+          const resEntrada = await fetch(urlEntrada);
+          const dataEntrada = await resEntrada.json();
 
-        const entradaContador = {
-          total: 0,
-          aprendices: 0,
-          instructores: 0,
-          administrativos: 0,
-        };
-        const salidaContador = {
-          total: 0,
-          aprendices: 0,
-          instructores: 0,
-          administrativos: 0,
-        };
+          const entradaContador = {
+            total: 0,
+            aprendices: 0,
+            instructores: 0,
+            administrativos: 0,
+          };
 
-        data.forEach((item) => {
-          const tipo = item.tipo;
-          const perfil = item.usuarios?.perfile?.nombre?.toLowerCase() || "";
+          (dataEntrada || []).forEach((item) => {
+            const perfil = item.usuarios?.perfile?.nombre?.toLowerCase() || "";
+            const esAprendiz = perfil.includes("aprendiz");
+            const esInstructor = perfil.includes("instructor");
+            const esAdministrativo = perfil.includes("administrativo");
 
-          const esAprendiz = perfil.includes("aprendiz");
-          const esInstructor = perfil.includes("instructor");
-          const esAdministrativo = perfil.includes("administrativo");
+            if (item.tipo === "entrada" || item.tipo === "Entrada") {
+              entradaContador.total += 1;
+              if (esAprendiz) entradaContador.aprendices += 1;
+              else if (esInstructor) entradaContador.instructores += 1;
+              else if (esAdministrativo) entradaContador.administrativos += 1;
+            }
+          });
+          setEntrada(entradaContador);
+        }
 
-          if (tipo === "entrada") {
-            entradaContador.total += 1;
-            if (esAprendiz) entradaContador.aprendices += 1;
-            if (esInstructor) entradaContador.instructores += 1;
-            if (esAdministrativo) entradaContador.administrativos += 1;
-          }
+        // --- Salida (Usando urlSalida) ---
+        if (urlSalida) {
+          const resSalida = await fetch(urlSalida);
+          const dataSalida = await resSalida.json();
 
-          if (tipo === "salida") {
-            salidaContador.total += 1;
-            if (esAprendiz) salidaContador.aprendices += 1;
-            if (esInstructor) salidaContador.instructores += 1;
-            if (esAdministrativo) salidaContador.administrativos += 1;
-          }
-        });
+          const salidaContador = {
+            total: 0,
+            aprendices: 0,
+            instructores: 0,
+            administrativos: 0,
+          };
 
-        setEntrada(entradaContador);
-        setSalida(salidaContador);
+          (dataSalida || []).forEach((item) => {
+            const perfil = item.usuarios?.perfile?.nombre?.toLowerCase() || "";
+            const esAprendiz = perfil.includes("aprendiz");
+            const esInstructor = perfil.includes("instructor");
+            const esAdministrativo = perfil.includes("administrativo");
+
+            if (item.tipo === "salida" || item.tipo === "Salida") {
+              salidaContador.total += 1;
+              if (esAprendiz) salidaContador.aprendices += 1;
+              else if (esInstructor) salidaContador.instructores += 1;
+              else if (esAdministrativo) salidaContador.administrativos += 1;
+            }
+          });
+          setSalida(salidaContador);
+        }
       } catch (error) {
         console.error("Error al cargar KPIs:", error);
       }
     };
 
     fetchKPIs();
-  }, [urlEntrada]);
+  }, [urlEntrada, urlSalida]);
 
   return (
     <div className="container px-4 py-2 mt-1 mt-md-2 mt-lg-4 mt-xl-5">
-      <div className="">
+      <div>
         <div className="row justify-content-center gap-2">
           <div
-            className="col-12 col-md-6  mb-3 mb-xl-0"
+            className="col-12 col-md-6 mb-3 mb-xl-0"
             style={{ width: "350px" }}
           >
             <KPI
@@ -163,7 +185,7 @@ export default function KpiCards({ urlEntrada }) {
           </div>
 
           <div
-            className="col-12 col-md-6  mb-2 mb-xl-0"
+            className="col-12 col-md-6 mb-2 mb-xl-0"
             style={{ width: "250px" }}
           >
             <KPI
@@ -199,7 +221,8 @@ export default function KpiCards({ urlEntrada }) {
 
         <div className="row mt-4 justify-content-center">
           <div className="col-12 col-lg-10">
-            <KPIBarChart />
+            {/* Propagación de ambas URLs a KPIDashboard */}
+            <KPIDashboard urlBar={urlBarchar} urlDoughnut={urlDoughnut} />
           </div>
         </div>
       </div>

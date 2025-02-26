@@ -47,7 +47,7 @@ export default function FormRegister({ showEntrada = true, createRegister }) {
     if (tipoIngreso === "conVehiculo") {
       trigger(["documento"]).then((valid) => {
         if (!valid || !documento || documento.length < 6) {
-          toast.error("Completa el documento antes de continuar");
+          console.log("Completa el documento antes de continuar");
         } else {
           setVisible(true);
         }
@@ -150,12 +150,6 @@ export default function FormRegister({ showEntrada = true, createRegister }) {
               disabled={isBlocked || isSubmitting || !isValid}
             />
           </div>
-          <span className="my-2">
-            ¿Usuario no registrado?{" "}
-            <a className="forgetPassword" href="">
-              Cree uno
-            </a>
-          </span>
         </div>
 
         <Dialog

@@ -1,5 +1,5 @@
 import Dashboard from "../../Layout/Dashboard";
-import { registrarSalidaMasiva } from "../../Services/FetchServices";
+
 import {
   getRegisters,
   createRegister,
@@ -17,9 +17,7 @@ export function DashboardCata() {
     <Dashboard
       urlEntrada={urlEntrada}
       urlSalida={urlSalida}
-      salidaMasiva={() =>
-        registrarSalidaMasiva("http://localhost:8000/api/sena/salidamasiva")
-      }
+      salidaMasiva={"http://localhost:8000/api/sena/salidamasiva"}
       btnSalidaMasiva={true}
       showConVehiculoSalida={false}
       nameTopBar="CATA"
