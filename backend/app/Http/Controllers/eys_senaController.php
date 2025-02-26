@@ -281,6 +281,42 @@ class eys_senaController extends Controller
 }
 
 
+public function porcentajeEntradasPorPerfilSena()
+{
+    try {
+        // Total de entradas registradas en CASA DE APOYO
+        $totalEntradas = eyssena::where('tipo', 'entrada')->count();
+
+        if ($totalEntradas == 0) {
+            return response()->json([
+                'labels' => [],
+                'porcentajes' => [],
+            ]);
+        }
+
+        // Entradas agrupadas por perfil
+        $data = eyssena::selectRaw('perfiles.nombre as perfil, COUNT(*) as total')
+            ->join('usuarios', 'usuarios.id', '=', 'eys_sena.idusuario')
+            ->join('perfiles', 'perfiles.id', '=', 'usuarios.idperfil')
+            ->where('eys_sena.tipo', 'entrada')
+            ->groupBy('perfiles.nombre')
+            ->get();
+
+        return response()->json([
+            'labels' => $data->pluck('perfil'),
+            'porcentajes' => $data->map(fn($item) => round(($item->total / $totalEntradas) * 100, 2)),
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'linea' => $e->getLine(),
+            'archivo' => $e->getFile(),
+        ], 500);
+    }
+}
+
+
 
 
 

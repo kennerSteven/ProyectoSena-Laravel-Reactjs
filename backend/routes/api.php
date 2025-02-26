@@ -124,6 +124,9 @@ Route::get('/gym/entradapormes', [eys_gymController::class, 'entradasPorMesgym']
 Route::get('/sena/entradapormes', [eys_senaController::class, 'entradasPorMessena']);
 Route::get('/casadeapoyo/entradapormes', [EysCasadeapoyoController::class, 'entradasPorMescasaapoyo']);
 Route::get('/entradastipovehiculo', [eys_granjaController::class, 'entradasPorTipoVehiculo']);
+Route::get('/casadeapoyo/entradaperfile', [EysCasadeapoyoController::class, 'porcentajeEntradasPorPerfilCasaApoyo']);
+Route::get('/sena/entradaperfile', [eys_senaController::class, 'porcentajeEntradasPorPerfilSena']);
+Route::get('/gym/entradaperfile', [eys_gymController::class, 'porcentajeEntradasPorPerfilgym']);
 
 
 
