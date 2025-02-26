@@ -114,6 +114,11 @@ Route::get('/granja/salida', [eys_granjaController::class, 'EstadisticasSalidasG
 Route::get('/sena/salida', [eys_senaController::class, 'EstadisticasSalidasKPI']);
 Route::get('/casadeapoyo/salida', [EysCasadeapoyoController::class, 'EstadisticasSalidasKPI']);
 Route::get('/gym/salida', [eys_gymController::class, 'EstadisticasSalidasKPI']);
+
+
+
+
+
 Route::get('/granja/entradapormes', [eys_granjaController::class, 'entradasPorMes']);
 Route::get('/gym/entradapormes', [eys_gymController::class, 'entradasPorMesgym']);
 Route::get('/sena/entradapormes', [eys_senaController::class, 'entradasPorMessena']);
