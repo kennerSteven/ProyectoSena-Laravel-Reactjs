@@ -4,7 +4,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
+// import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import Swal from "sweetalert2";
 import "../styles/Table.css";
@@ -12,7 +12,7 @@ import "../styles/Table.css";
 export default function TableVisitantesDesactivados() {
   const [visitantes, setVisitantes] = useState([]);
   const [filtroGlobal, setFiltroGlobal] = useState("");
-  const [seleccionados, setSeleccionados] = useState([]);
+  // const [seleccionados, setSeleccionados] = useState([]);
   const toast = useRef(null);
 
   const cargarVisitantes = async () => {
@@ -37,74 +37,74 @@ export default function TableVisitantesDesactivados() {
     cargarVisitantes();
   }, []);
 
-  const eliminarVisitantes = async (ids) => {
-    const response = await fetch(
-      "http://localhost:8000/api/usuario/eliminarVisitantesMasivamente",
-      {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids }),
-      }
-    );
+  // const eliminarVisitantes = async (ids) => {
+  //   const response = await fetch(
+  //     "http://localhost:8000/api/usuario/eliminarVisitantesMasivamente",
+  //     {
+  //       method: "DELETE",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ ids }),
+  //     }
+  //   );
 
-    const text = await response.text();
-    let result;
+  //   const text = await response.text();
+  //   let result;
 
-    try {
-      result = JSON.parse(text);
-    } catch {
-      throw new Error("Respuesta inválida del servidor.");
-    }
+  //   try {
+  //     result = JSON.parse(text);
+  //   } catch {
+  //     throw new Error("Respuesta inválida del servidor.");
+  //   }
 
-    if (!response.ok) {
-      throw new Error(result?.error || "No se pudo eliminar los visitantes.");
-    }
+  //   if (!response.ok) {
+  //     throw new Error(result?.error || "No se pudo eliminar los visitantes.");
+  //   }
 
-    return result;
-  };
+  //   return result;
+  // };
 
-  const confirmarEliminacion = (ids) => {
-    confirmDialog({
-      message: `¿Seguro que deseas eliminar ${ids.length} visitante(s)?`,
-      header: "Confirmar eliminación",
-      icon: "pi pi-exclamation-triangle",
-      acceptLabel: "Sí",
-      rejectLabel: "No",
-      acceptClassName: "p-button-danger",
-      accept: async () => {
-        try {
-          const result = await eliminarVisitantes(ids);
-          Swal.fire({
-            icon: "success",
-            title: "Visitantes eliminados",
-            text: `${result.total_eliminados} visitante(s) eliminado(s) correctamente`,
-            confirmButtonText: "Aceptar",
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: true,
-            customClass: {
-              confirmButton: "buttonConfirmSwal",
-            },
-          });
-          setSeleccionados([]);
-          await cargarVisitantes();
-        } catch (error) {
-          Swal.fire({
-            icon: "error",
-            title: "Error al eliminar",
-            text: `No se pudo eliminar los visitantes seleccionados. ${error.message}`,
-            confirmButtonText: "Aceptar",
-            timer: 3000,
-            timerProgressBar: true,
-            showConfirmButton: true,
-            customClass: {
-              confirmButton: "buttonConfirmSwal",
-            },
-          });
-        }
-      },
-    });
-  };
+  // const confirmarEliminacion = (ids) => {
+  //   confirmDialog({
+  //     message: `¿Seguro que deseas eliminar ${ids.length} visitante(s)?`,
+  //     header: "Confirmar eliminación",
+  //     icon: "pi pi-exclamation-triangle",
+  //     acceptLabel: "Sí",
+  //     rejectLabel: "No",
+  //     acceptClassName: "p-button-danger",
+  //     accept: async () => {
+  //       try {
+  //         const result = await eliminarVisitantes(ids);
+  //         Swal.fire({
+  //           icon: "success",
+  //           title: "Visitantes eliminados",
+  //           text: `${result.total_eliminados} visitante(s) eliminado(s) correctamente`,
+  //           confirmButtonText: "Aceptar",
+  //           timer: 2000,
+  //           timerProgressBar: true,
+  //           showConfirmButton: true,
+  //           customClass: {
+  //             confirmButton: "buttonConfirmSwal",
+  //           },
+  //         });
+  //         setSeleccionados([]);
+  //         await cargarVisitantes();
+  //       } catch (error) {
+  //         Swal.fire({
+  //           icon: "error",
+  //           title: "Error al eliminar",
+  //           text: `No se pudo eliminar los visitantes seleccionados. ${error.message}`,
+  //           confirmButtonText: "Aceptar",
+  //           timer: 3000,
+  //           timerProgressBar: true,
+  //           showConfirmButton: true,
+  //           customClass: {
+  //             confirmButton: "buttonConfirmSwal",
+  //           },
+  //         });
+  //       }
+  //     },
+  //   });
+  // };
 
   const filtrarVisitantes = visitantes.filter((v) => {
     const texto = filtroGlobal.toLowerCase();
@@ -149,32 +149,31 @@ export default function TableVisitantesDesactivados() {
         />
       </div>
 
-      <Button
+      {/* <Button
         label="Eliminar seleccionados"
         icon="pi pi-trash"
         severity="danger"
         disabled={seleccionados.length === 0}
         onClick={() => confirmarEliminacion(seleccionados.map((v) => v.id))}
-      />
+      /> */}
     </div>
   );
 
   return (
     <div className="card">
       <Toast ref={toast} />
-      <ConfirmDialog />
+      {/* <ConfirmDialog /> */}
       <DataTable
         value={filtrarVisitantes}
         paginator
         rows={5}
         header={header}
         rowsPerPageOptions={[5, 10, 20]}
-        dataKey="id"
         emptyMessage="No hay visitantes inactivos registrados."
-        selection={seleccionados}
-        onSelectionChange={(e) => setSeleccionados(e.value)}
+
+        // onSelectionChange={(e) => setSeleccionados(e.value)}
       >
-        <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
+        {/* <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} /> */}
         <Column field="nombre" header="Nombre" />
         <Column field="apellido" header="Apellido" />
         <Column field="numeroDocumento" header="Número de Documento" />
