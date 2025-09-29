@@ -10,11 +10,10 @@ import DashboardCata from "./Components/Pages/Dashboard/DashboardCata";
 import App from "./Components/Routes/Routes";
 import Login from "./Components/Main/Login/Login";
 import UsuarioService from "./Components/Services/UserServices";
+import FormPerfil from "./Components/Form/FomPerfiles/FormPerfil";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-<BrowserRouter>
-<App/>
-</BrowserRouter>
+    <FormPerfil />
   </StrictMode>
 );

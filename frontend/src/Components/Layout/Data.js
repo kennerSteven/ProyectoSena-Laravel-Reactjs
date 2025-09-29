@@ -63,3 +63,10 @@ export const ItemsConfig = [
     link: "/logout", // ✅ esta puede quedarse así si redirige fuera del dashboard
   },
 ];
+
+export const TipoPerfil = [
+  { value: "Aprendiz", label: "Aprendiz" },
+  { value: "Instructor", label: "Instructor" },
+  { value: "Visitante", label: "Visitante" },
+];
+
