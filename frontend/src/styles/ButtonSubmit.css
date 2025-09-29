@@ -1,0 +1,40 @@
+.btn-container {
+  display: flex;
+}
+
+.btn-container .Btn {
+  margin-bottom: 15px;
+  margin-top: 10px;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 14px;
+
+  background-color: #007832;
+  color: rgb(240, 240, 240);
+  transition: transform 0.2s ease-in;
+}
+.btn-container .Btn:hover {
+  transform: scale(1.01);
+  background-color: #02923e;
+}
+
+.btn-container .btnDisabled {
+  margin-bottom: 15px;
+  margin-top: 10px;
+  border: none;
+  padding: 7px 40px;
+  border-radius: 14px;
+  background-color: #02923ea1;
+  color: rgb(240, 240, 240);
+  transition: transform 0.2s ease-in;
+}
+.btn-container .btnDisabled:hover {
+  transform: scale(1.01);
+  background-color: #02923e98;
+}
+
+.btnMaxWidth {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}

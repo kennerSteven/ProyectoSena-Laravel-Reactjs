@@ -1,0 +1,23 @@
+.cardImg {
+  width: 700px;
+}
+
+.containerCard {
+  border-radius: 30px;
+  border-left: 3px solid #ededed;
+  background-color: #ffffff;
+}
+
+.hour {
+  font-size: 15px;
+}
+
+.titleDash {
+  font-size: 24.4px;
+  color: #007832;
+}
+
+.hourIcon {
+  color: #007832;
+  font-size: 18px;
+}

@@ -1,0 +1,37 @@
+.cardSelectlogin {
+  width: 200px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border-left: 5px solid #007832;
+  cursor: pointer;
+  transition: transform 0.1s ease-in;
+  background-color: rgb(248, 248, 248);
+}
+
+.cardSelectlogin:hover {
+  transform: scale(1.04);
+  background: #f5f5f9;
+}
+
+.containerSelect {
+  background-color: #ffff;
+  border-radius: 20px;
+  width: 550px;
+  padding: 40px 30px;
+}
+
+.iconSelectLogin {
+  font-size: 40px;
+  font-weight: 800;
+  color: #007832;
+}
+.titleSelectLogin {
+  font-size: 27px;
+  font-weight: 800;
+  padding: 20px 0;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 600;
+}

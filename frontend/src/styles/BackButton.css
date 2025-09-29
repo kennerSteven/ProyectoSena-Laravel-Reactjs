@@ -1,0 +1,10 @@
+.backButton {
+  font-size: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.1s ease-in;
+}
+.backButton:hover {
+  color: #007832;
+  transform: scale(1.1);
+}

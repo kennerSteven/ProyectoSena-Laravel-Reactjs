@@ -1,0 +1,30 @@
+.CollapseOptions:hover {
+  background: #f5f5f9;
+  color: rgb(68, 68, 68);
+  cursor: pointer;
+}
+
+.CollapseOptions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 20px;
+  margin-top: 20px;
+  color: #303030;
+
+  text-decoration: none;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.pepe {
+  padding-left: 14px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.pepe:hover {
+  background: #f5f5f9;
+  color: rgb(42, 42, 42);
+  cursor: pointer;
+}

@@ -1,0 +1,8 @@
+npm install react-hook-form
+npm install sweetalert2
+npm install yup
+npm install @hookform/resolvers
+npm install react-hot-toast
+npm install @fontsource/inter
+npm install chart.js react-chartjs-2
+npm install react-router

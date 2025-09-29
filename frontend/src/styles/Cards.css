@@ -1,0 +1,32 @@
+.CardEarnings {
+  background-color: #fff;
+  border-left: 4px solid #007832;
+  border-radius: 8px;
+  padding: 16px 20px;
+  width: 350px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+.CardEarnings:hover {
+  background-color: #f8f8f8;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 4px;
+}
+
+.number {
+  font-size: 20px;
+  font-weight: 700;
+  color: #232323;
+  margin: 0;
+}
+
+.iconEarnings {
+  font-size: 28px;
+  color: #00783247;
+}

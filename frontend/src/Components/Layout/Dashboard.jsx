@@ -1,0 +1,27 @@
+import SideBar from "./Sidebar";
+import TopBar from "./TopBar";
+import logo from "../../assets/img/logoSena.png";
+import { Outlet } from "react-router-dom";
+
+export default function Dashboard({ ItemsDash, nameTopBar, nameAdmin }) {
+  return (
+    <div>
+      <div className="d-flex">
+        <div className="d-flex flex-column px-2 gap-4 sidebar">
+          <div className="d-flex align-items-center justify-content-center imgContainer">
+            <img src={logo} className="p-3" width="120px" alt="Logo Sena" />
+          </div>
+          <div className="d-flex flex-column mb-0">
+            <SideBar valueSidebarOptions={ItemsDash} />
+          </div>
+        </div>
+
+        <div className="w-100 d-flex flex-column">
+          <TopBar nameTopBar={nameTopBar} nameAdmin={nameAdmin} />
+
+          <Outlet />
+        </div>
+      </div>
+    </div>
+  );
+}

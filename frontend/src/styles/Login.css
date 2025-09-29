@@ -1,0 +1,18 @@
+.containerLogin {
+  background-color: #ffff;
+  width: 800px;
+  padding: 50px 90px;
+  border-radius: 20px;
+}
+
+.formContainer {
+  width: 350px;
+}
+
+.titleLogin {
+  font-size: 29px;
+}
+
+strong {
+  color: #007832;
+}
