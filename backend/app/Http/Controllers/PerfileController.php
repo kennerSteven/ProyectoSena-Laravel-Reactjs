@@ -9,11 +9,6 @@ use Illuminate\Http\Request;
 class PerfileController extends Controller
 {
 
-    // public function index()
-    // {
-    //     $perfiles = perfile::all();
-    //     return view('perfil.index', compact('perfiles'));
-    // }
 
     public function index()
     {
@@ -23,39 +18,36 @@ class PerfileController extends Controller
 
 
 
-    public function create()
-    {
-        return view('perfil.create');
-    }
+
 
     public function store(Request $request)
     {
-        perfile::create(request()->all());
-        return redirect()->route('perfiles.index');
+        perfile::create($request->all());
+        return response()->json('Creado Correctamente');
     }
 
 
 
 
-    public function edit($id)
+    public function show(string $id)
     {
         $item = perfile::findOrFail($id);
-        return view('perfil.edit', compact('item'));
+        return response()->json($item);
     }
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         $perfil = perfile::findOrFail($id);
         $perfil->update($request->all());
-        return redirect()->route('perfiles.index');
+        return response()->json('se actualizo correctamente');
     }
 
 
-    public function destroy($id)
+    public function destroy(string $id)
     {
         $perfil = perfile::findOrFail($id);
         $perfil->delete();
-        return redirect()->route('perfiles.index');
+        return response()->json('se elimino');
     }
 }
