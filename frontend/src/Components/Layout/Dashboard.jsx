@@ -2,12 +2,13 @@ import SideBar from "./Sidebar";
 import TopBar from "./TopBar";
 import logo from "../../assets/img/logoSena.png";
 import { Outlet } from "react-router-dom";
+import "../../styles/SidebarItems.css";
 
 export default function Dashboard({ ItemsDash, nameTopBar, nameAdmin }) {
   return (
     <div>
       <div className="d-flex">
-        <div className="d-flex flex-column px-2 gap-4 sidebar">
+        <div className="d-flex flex-column px-2 gap-4 sidebar shadow-sm">
           <div className="d-flex align-items-center justify-content-center imgContainer">
             <img src={logo} className="p-3" width="120px" alt="Logo Sena" />
           </div>
