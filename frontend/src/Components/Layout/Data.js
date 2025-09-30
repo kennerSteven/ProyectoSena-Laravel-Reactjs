@@ -4,6 +4,11 @@ export const ItemsConfig = [
     nameItem: "Inicio",
     link: "/Dashboard", // ✅ correcto
   },
+  {
+    iconClass: "bi bi-house-door-fill",
+    nameItem: "Tipo de Usuario",
+    link: "/Dashboard/TipoUsuario",
+  },
 
   {
     iconClass: "bi bi-person-plus-fill",
@@ -69,4 +74,3 @@ export const TipoPerfil = [
   { value: "Instructor", label: "Instructor" },
   { value: "Visitante", label: "Visitante" },
 ];
-

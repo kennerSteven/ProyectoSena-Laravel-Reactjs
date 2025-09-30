@@ -13,7 +13,7 @@ export default function Form({ SchemaValidation, handleValidation, FormName }) {
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidation);
 
-  const { onSubmit, onError } = handleValidation(reset);
+  const { onSubmit, onError } = handleValidation({ reset });
 
   return (
     <div className=" d-flex  justify-content-center align-items-center ">
@@ -102,7 +102,14 @@ export default function Form({ SchemaValidation, handleValidation, FormName }) {
           />
         </div>
       </form>
-      <Toaster />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            marginTop: "100px",
+          },
+        }}
+      />
     </div>
   );
 }

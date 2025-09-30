@@ -6,14 +6,15 @@ import "@fontsource/inter/400.css";
 
 import "./styles/global.css";
 import { BrowserRouter } from "react-router-dom";
-import DashboardCata from "./Components/Pages/Dashboard/DashboardCata";
+
 import App from "./Components/Routes/Routes";
-import Login from "./Components/Main/Login/Login";
-import UsuarioService from "./Components/Services/UserServices";
 import FormPerfil from "./Components/Form/FomPerfiles/FormPerfil";
+import { FormAdministrativo } from "./Components/Pages/Form/FormEntities";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <FormPerfil />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 );
