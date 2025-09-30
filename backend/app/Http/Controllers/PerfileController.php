@@ -18,8 +18,6 @@ class PerfileController extends Controller
 
 
 
-
-
     public function store(Request $request)
     {
         perfile::create($request->all());
@@ -44,10 +42,9 @@ class PerfileController extends Controller
     }
 
 
-    public function destroy(string $id)
+    public function destroy()
     {
-        $perfil = perfile::findOrFail($id);
-        $perfil->delete();
-        return response()->json('se elimino');
+        return response()->json(['error' => 'No se puede eliminar']);
+
     }
 }
