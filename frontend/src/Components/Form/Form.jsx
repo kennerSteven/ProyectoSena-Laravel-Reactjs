@@ -2,18 +2,37 @@ import ButtonSubmit from "../Ui/ButtonSubmit";
 import SelectOptions from "../Ui/SelectOptions";
 import InputField from "../Ui/InputField";
 import useFormWithYup from "./Validation/connectYupRhf";
-
+import { useInstructorForm } from "./Validation/HandleValidation/useHandle";
 import { Toaster } from "react-hot-toast";
 import "../../styles/FormUsers.css";
-export default function Form({ SchemaValidation, handleValidation, FormName }) {
+import InputAutoComplete from "../Ui/InputAutocomplete";
+
+import SchemaValidationUser from "../../Components/Form/Validation/SchemaValidation/SchemaValidationUser"
+
+export default function Form() {
   const {
     register,
     reset,
     handleSubmit,
+  control,
     formState: { isSubmitting, errors },
-  } = useFormWithYup(SchemaValidation);
+  } = useFormWithYup(SchemaValidationUser);
 
-  const { onSubmit, onError } = handleValidation({ reset });
+  const fichas = [
+    {
+      numeroFicha: "12345",
+      nombreFicha: "Ingeniería de Sistemas",
+      jornada: "Diurna",
+    },
+    {
+      numeroFicha: "54321",
+      nombreFicha: "Diseño Gráfico",
+      jornada: "Nocturna",
+    },
+    { numeroFicha: "67890", nombreFicha: "Administración", jornada: "Diurna" },
+  ];
+
+  const { onSubmit, onError } = useInstructorForm({ reset });
 
   return (
     <div className=" d-flex  justify-content-center align-items-center ">
@@ -22,7 +41,7 @@ export default function Form({ SchemaValidation, handleValidation, FormName }) {
         className="formUsers shadow-sm"
       >
         <div className="row flex-column gap-3">
-          <h1 className="fw-bold">{FormName}</h1>
+          <h1 className="fw-bold">Formulario</h1>
 
           <div className="d-flex gap-3">
             <InputField
@@ -60,6 +79,14 @@ export default function Form({ SchemaValidation, handleValidation, FormName }) {
               register={register}
               error={errors.documento}
               labelName="Documento"
+            />
+          </div>
+          <div>
+            <InputAutoComplete
+              objFormacion={fichas}
+              name="fichaSeleccionada"
+              control={control}
+           
             />
           </div>
 

@@ -33,6 +33,12 @@ const SchemaValidationUser = yup.object({
       "Tipo de sangre inválido"
     )
     .required("Selecciona el tipo de sangre"),
+
+  fichaSeleccionada: yup
+    .object()
+    .nullable()
+    .typeError("Selecciona una ficha de formación")
+    .required("Selecciona una ficha de formación"),
 });
 
 export default SchemaValidationUser;
