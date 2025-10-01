@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\vehiculosRequest;
 use App\Models\usuarios;
 use App\Models\vehiculo;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class VehiculoController extends Controller
     }
 
    
-     public function store(Request $request)
+     public function store(vehiculosRequest $request)
     {
         $vehiculos = vehiculo::create($request->all());
         return response()->json([$vehiculos], 201);
@@ -30,7 +31,7 @@ class VehiculoController extends Controller
         return response()->json([$vehiculos, $usuario]);
     }
 
-    public function update(Request $request, $id)
+    public function update(vehiculosRequest $request, $id)
    {
     $vehiculos = vehiculo::findOrFail($id);
     $vehiculos->update($request->all());
