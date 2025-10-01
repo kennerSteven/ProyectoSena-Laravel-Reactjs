@@ -9,7 +9,7 @@ import useHandleValidationVehicle from "../Validation/HandleValidation/HandleVal
 import ModalBase from "../../Ui/ModalBase";
 import UseModalControl from "../../Hooks/UseModalControl";
 import FormRegisterVehicles from "./FormRegisterVehicles";
-import "../../../styles/FormRegister.css";
+import "../../../styles/FormUser.css";
 
 export default function FormRegister() {
   const { open, openModal, closeModal } = UseModalControl();

@@ -7,14 +7,14 @@ import { Toaster } from "react-hot-toast";
 import "../../styles/FormUsers.css";
 import InputAutoComplete from "../Ui/InputAutocomplete";
 
-import SchemaValidationUser from "../../Components/Form/Validation/SchemaValidation/SchemaValidationUser"
+import SchemaValidationUser from "../../Components/Form/Validation/SchemaValidation/SchemaValidationUser";
 
 export default function Form() {
   const {
     register,
     reset,
     handleSubmit,
-  control,
+    control,
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidationUser);
 
@@ -81,14 +81,6 @@ export default function Form() {
               labelName="Documento"
             />
           </div>
-          <div>
-            <InputAutoComplete
-              objFormacion={fichas}
-              name="fichaSeleccionada"
-              control={control}
-           
-            />
-          </div>
 
           <div className="d-flex gap-3">
             <div className="col-lg-6">
@@ -118,6 +110,13 @@ export default function Form() {
                 ]}
               />
             </div>
+          </div>
+          <div className="my-3">
+            <InputAutoComplete
+              objFormacion={fichas}
+              name="fichaSeleccionada"
+              control={control}
+            />
           </div>
 
           <ButtonSubmit

@@ -1,3 +1,5 @@
+import "../../styles/InputField.css";
+
 export default function InputField({
   typeIntput,
   name,
@@ -12,7 +14,7 @@ export default function InputField({
       <input
         type={typeIntput}
         {...register(name)}
-        className={`form-control  ${error ? "is-invalid" : ""}`}
+        className={`form-control input  ${error ? "is-invalid" : ""}`}
         placeholder={placeholder}
       />
 

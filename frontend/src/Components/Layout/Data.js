@@ -1,71 +1,81 @@
 export const ItemsConfig = [
   {
-    iconClass: "bi bi-house-door-fill",
+    iconClass: "pi pi-home",
     nameItem: "Inicio",
-    link: "/Dashboard", // ✅ correcto
+    link: "/Dashboard",
   },
   {
-    iconClass: "bi bi-house-door-fill",
+    iconClass: "pi pi-users",
     nameItem: "Tipo de Usuario",
     link: "/Dashboard/TipoUsuario",
   },
 
   {
-    iconClass: "bi bi-person-plus-fill",
+    iconClass: "pi pi-user-plus",
     nameItem: "Crear Usuarios",
     subItems: [
       {
         label: "Instructor",
-        icon: "bi bi-person-badge-fill",
-        link: "/Dashboard/CrearInstructor", // ✅ corregido
+        icon: "pi pi-id-card",
+        link: "/Dashboard/CrearInstructor",
       },
       {
         label: "Aprendiz",
-        icon: "bi bi-person-fill",
-        link: "/Dashboard/CrearAprendiz", // ✅ corregido
+        icon: "pi pi-user",
+        link: "/Dashboard/CrearAprendiz",
       },
       {
         label: "Administrativo",
-        icon: "bi bi-person-workspace",
-        link: "/Dashboard/CrearAdministrativo", // ✅ corregido
+        icon: "pi pi-briefcase",
+        link: "/Dashboard/CrearAdministrativo",
       },
     ],
   },
 
   {
-    iconClass: "bi bi-clipboard-data-fill",
-    nameItem: "Registro",
+    iconClass: "pi pi-list",
+    nameItem: "Listar",
     subItems: [
       {
-        label: "Entrada",
-        icon: "bi bi-box-arrow-in-right",
-        link: "/Dashboard/RegistroEntrada", // ✅ corregido
+        label: "Aprendices",
+        icon: "pi pi-user",
+        link: "/Dashboard/RegistroEntrada",
       },
       {
-        label: "Salida",
-        icon: "bi bi-box-arrow-left",
-        link: "/Dashboard/RegistroSalida", // ✅ corregido
+        label: "Instructor",
+        icon: "pi pi-id-card",
+        link: "/Dashboard/RegistroEntrada",
+      },
+      {
+        label: "Visitante",
+        icon: "pi pi-user",
+        link: "/Dashboard/RegistroEntrada",
+      },
+      {
+        label: "Administrativo",
+        icon: "pi pi-briefcase",
+        link: "/Dashboard/RegistroSalida",
       },
     ],
   },
 
   {
-    iconClass: "bi bi-journal-text",
+    iconClass: "pi pi-history",
     nameItem: "Historial",
-    link: "/Dashboard/Historial", // ✅ corregido
+    link: "/Dashboard/Historial",
   },
 
   { type: "divider" },
 
   {
-    iconClass: "bi bi-shield-lock-fill",
+    iconClass: "pi pi-shield",
     nameItem: "Vigilantes",
-    link: "/Dashboard/Vigilantes", // ✅ corregido
+    link: "/Dashboard/Vigilantes",
   },
   {
-    iconClass: "bi bi-box-arrow-right",
+    iconClass: "pi pi-sign-out",
     nameItem: "Cerrar sesión",
-    link: "/logout", // ✅ esta puede quedarse así si redirige fuera del dashboard
+    link: "/logout",
   },
 ];
 
