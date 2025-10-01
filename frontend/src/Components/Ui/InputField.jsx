@@ -1,3 +1,5 @@
+import "../../styles/InputField.css";
+
 export default function InputField({
   typeIntput,
   name,
@@ -5,14 +7,16 @@ export default function InputField({
   error,
   placeholder,
   labelName,
+  disabled = false,
 }) {
   return (
     <div style={{ width: "100%" }}>
       <label className="form-label ">{labelName}</label>
       <input
+        disabled={disabled}
         type={typeIntput}
         {...register(name)}
-        className={`form-control  ${error ? "is-invalid" : ""}`}
+        className={`form-control input  ${error ? "is-invalid" : ""}`}
         placeholder={placeholder}
       />
 

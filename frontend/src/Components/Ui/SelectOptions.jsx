@@ -1,3 +1,5 @@
+import "../../styles/InputField.css";
+
 export default function SelectOptions({
   register,
   name,
@@ -12,7 +14,7 @@ export default function SelectOptions({
       <select
         {...register(name)}
         defaultValue={defaultValue}
-        className={`form-select shadow-sm ${error ? "is-invalid" : ""}`}
+        className={`input form-select shadow-sm ${error ? "is-invalid" : ""}`}
       >
         {defaultValue === "" && (
           <option value="" disabled>

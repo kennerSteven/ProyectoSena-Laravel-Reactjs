@@ -2,34 +2,42 @@ import ButtonSubmit from "../Ui/ButtonSubmit";
 import SelectOptions from "../Ui/SelectOptions";
 import InputField from "../Ui/InputField";
 import useFormWithYup from "./Validation/connectYupRhf";
+import { useInstructorForm } from "./Validation/HandleValidation/useHandle";
 import { Toaster } from "react-hot-toast";
 import "../../styles/FormUsers.css";
 import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
 
-export default function Form({
-  nameForm,
-  tipoPerfilValue,
-  SchemaValidation,
-  handleValidation,
-}) {
-  // Inicializa el formulario con el esquema pasado como prop
+import SchemaValidationUser from "./Validation/SchemaValidation/SchemaValidationUser";
+import { useEffect, useState } from "react";
+import InputAutoComplete from "../Ui/InputAutocomplete";
+
+export default function FormAprendiz() {
   const {
     register,
-    setValue,
+    control,
     reset,
     handleSubmit,
-    control,
+    setValue,
     formState: { isSubmitting, errors },
-  } = useFormWithYup(SchemaValidation);
+  } = useFormWithYup(SchemaValidationUser);
 
-  // Hook de manejo dinámico (Instructor, Administrativo, Aprendiz)
-  const { onSubmit, onError } = handleValidation({ reset });
+  useTipoPerfilFetch(setValue, "Aprendiz");
 
-  // Llenar el select de tipo de perfil
-  useTipoPerfilFetch(setValue,  tipoPerfilValue );
+  const fichas = [
+    {
+      numeroFicha: "12345",
+      nombreFicha: "Ingeniería de Sistemas",
+      jornada: "Diurna",
+    },
+    {
+      numeroFicha: "54321",
+      nombreFicha: "Diseño Gráfico",
+      jornada: "Nocturna",
+    },
+    { numeroFicha: "67890", nombreFicha: "Administración", jornada: "Diurna" },
+  ];
 
-  // Datos de ejemplo para fichas
-
+  const { onSubmit, onError } = useInstructorForm({ reset });
 
   return (
     <div className="d-flex justify-content-center align-items-center">
@@ -38,9 +46,8 @@ export default function Form({
         className="formUsers shadow-sm"
       >
         <div className="row flex-column gap-3">
-          <h1 className="fw-bold">{nameForm}</h1>
+          <h1 className="fw-bold">Formulario</h1>
 
-          {/* Nombre y Apellido */}
           <div className="d-flex gap-3">
             <InputField
               typeIntput="text"
@@ -58,7 +65,6 @@ export default function Form({
             />
           </div>
 
-          {/* Tipo de documento y Documento */}
           <div className="d-flex gap-3">
             <SelectOptions
               register={register}
@@ -79,7 +85,6 @@ export default function Form({
             />
           </div>
 
-          {/* Teléfono y Tipo de sangre */}
           <div className="d-flex gap-3">
             <div className="col-lg-6">
               <InputField
@@ -109,7 +114,17 @@ export default function Form({
               />
             </div>
           </div>
-          <div className="my-3">
+
+       
+          <div>
+            <InputAutoComplete
+              objFormacion={fichas}
+              name="tipoFormacion"
+              control={control}
+              label="Tipo de formación"
+            />
+          </div>
+             <div className="my-3">
             <InputField
               typeIntput="text"
               name="tipoPerfil"
@@ -120,7 +135,6 @@ export default function Form({
             />
           </div>
 
-          {/* Botón de envío */}
           <ButtonSubmit
             textSend="Guardar"
             textSending="Guardando..."
@@ -131,12 +145,9 @@ export default function Form({
         </div>
       </form>
 
-      {/* Toast */}
       <Toaster
         position="top-right"
-        toastOptions={{
-          style: { marginTop: "100px" },
-        }}
+        toastOptions={{ style: { marginTop: "100px" } }}
       />
     </div>
   );

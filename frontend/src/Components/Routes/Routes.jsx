@@ -3,9 +3,10 @@ import { Routes, Route } from "react-router-dom";
 import DashboardCata from "../Pages/Dashboard/DashboardCata";
 import Login from "../Main/Login/Login";
 import FormPerfil from "../Form/FomPerfiles/FormPerfil";
+import FormAprendiz from "../Form/FormAprendiz";
 import {
   FormAdministrativo,
-  FormAprendiz,
+ 
   FormInstructor,
 
 } from "../Pages/Form/FormEntities";
