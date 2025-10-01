@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('telefono');
             $table->enum('tipoSangre',['A+','A-','B+','B-','AB+','AB-','O+','O-']);
             $table->enum('estado',['activo','inactivo']);
-            $table->timestamp('fechaRegistro');
+            $table->timestamp('fechaRegistro')->useCurrent();
             $table->date('fechaExpiracion');
             $table->date('fechaFinContrato');
             $table->string('foto');

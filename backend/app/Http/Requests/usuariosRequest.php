@@ -32,7 +32,6 @@ class usuariosRequest extends FormRequest
         'fechaRegistro'    => 'required|date',
         'fechaExpiracion'  => 'nullable|date|after:fechaRegistro',
         'fechaFinContrato' => 'nullable|date|after_or_equal:fechaRegistro',
-        'foto'             => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         'idperfil'         => 'required|exists:perfiles,id',
 
         ];
@@ -76,9 +75,6 @@ class usuariosRequest extends FormRequest
         'fechaFinContrato.date'    => 'La fecha de fin de contrato no es válida',
         'fechaFinContrato.after_or_equal' => 'La fecha de fin de contrato debe ser igual o posterior a la fecha de registro',
 
-        'foto.image'               => 'La foto debe ser una imagen',
-        'foto.mimes'               => 'La foto debe estar en formato jpg, jpeg o png',
-        'foto.max'                 => 'La foto no puede superar los 2 MB',
 
         'idperfil.required'        => 'Debes elegir un perfil',
         'idperfil.exists'          => 'El perfil seleccionado no existe',
