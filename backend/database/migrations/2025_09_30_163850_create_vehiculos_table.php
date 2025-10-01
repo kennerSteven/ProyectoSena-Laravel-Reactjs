@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->enum('tipoVehiculo', ['moto','carro','bus','otro']);
             $table->string('placa');
-            $table->timestamp('fechaRegistro');
+            $table->timestamp('fechaRegistro')->useCurrent();
             $table->unsignedBigInteger('idusuario');
             $table->foreign('idusuario')->references('id')->on('usuarios');
             $table->timestamps();
