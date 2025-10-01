@@ -6,7 +6,7 @@ export const ItemsConfig = [
   },
   {
     iconClass: "pi pi-users",
-    nameItem: "Tipo de Usuario",
+    nameItem: "Perfiles",
     link: "/Dashboard/TipoUsuario",
   },
 
@@ -84,3 +84,5 @@ export const TipoPerfil = [
   { value: "Instructor", label: "Instructor" },
   { value: "Visitante", label: "Visitante" },
 ];
+
+

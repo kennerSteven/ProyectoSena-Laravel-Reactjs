@@ -15,7 +15,7 @@ import FormRegister from "./Components/Form/FormVehicles/FormRegister";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <FormRegister />
+      <App />
     </BrowserRouter>
   </StrictMode>
 );

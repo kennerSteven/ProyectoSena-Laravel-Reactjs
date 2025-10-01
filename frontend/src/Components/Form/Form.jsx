@@ -2,47 +2,45 @@ import ButtonSubmit from "../Ui/ButtonSubmit";
 import SelectOptions from "../Ui/SelectOptions";
 import InputField from "../Ui/InputField";
 import useFormWithYup from "./Validation/connectYupRhf";
-import { useInstructorForm } from "./Validation/HandleValidation/useHandle";
 import { Toaster } from "react-hot-toast";
 import "../../styles/FormUsers.css";
-import InputAutoComplete from "../Ui/InputAutocomplete";
+import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
 
-import SchemaValidationUser from "../../Components/Form/Validation/SchemaValidation/SchemaValidationUser";
-
-export default function Form() {
+export default function Form({
+  nameForm,
+  tipoPerfilValue,
+  SchemaValidation,
+  handleValidation,
+}) {
+  // Inicializa el formulario con el esquema pasado como prop
   const {
     register,
+    setValue,
     reset,
     handleSubmit,
     control,
     formState: { isSubmitting, errors },
-  } = useFormWithYup(SchemaValidationUser);
+  } = useFormWithYup(SchemaValidation);
 
-  const fichas = [
-    {
-      numeroFicha: "12345",
-      nombreFicha: "Ingeniería de Sistemas",
-      jornada: "Diurna",
-    },
-    {
-      numeroFicha: "54321",
-      nombreFicha: "Diseño Gráfico",
-      jornada: "Nocturna",
-    },
-    { numeroFicha: "67890", nombreFicha: "Administración", jornada: "Diurna" },
-  ];
+  // Hook de manejo dinámico (Instructor, Administrativo, Aprendiz)
+  const { onSubmit, onError } = handleValidation({ reset });
 
-  const { onSubmit, onError } = useInstructorForm({ reset });
+  // Llenar el select de tipo de perfil
+  useTipoPerfilFetch(setValue,  tipoPerfilValue );
+
+  // Datos de ejemplo para fichas
+
 
   return (
-    <div className=" d-flex  justify-content-center align-items-center ">
+    <div className="d-flex justify-content-center align-items-center">
       <form
         onSubmit={handleSubmit(onSubmit, onError)}
         className="formUsers shadow-sm"
       >
         <div className="row flex-column gap-3">
-          <h1 className="fw-bold">Formulario</h1>
+          <h1 className="fw-bold">{nameForm}</h1>
 
+          {/* Nombre y Apellido */}
           <div className="d-flex gap-3">
             <InputField
               typeIntput="text"
@@ -51,7 +49,6 @@ export default function Form() {
               error={errors.nombre}
               labelName="Nombre"
             />
-
             <InputField
               typeIntput="text"
               name="apellido"
@@ -61,6 +58,7 @@ export default function Form() {
             />
           </div>
 
+          {/* Tipo de documento y Documento */}
           <div className="d-flex gap-3">
             <SelectOptions
               register={register}
@@ -68,11 +66,10 @@ export default function Form() {
               nameSelect="Tipo documento"
               error={errors.tipoDocumento}
               values={[
-                { value: "CC", label: "Cedula de ciudadania" },
+                { value: "CC", label: "Cédula de ciudadanía" },
                 { value: "TI", label: "Tarjeta de identidad" },
               ]}
             />
-
             <InputField
               typeIntput="text"
               name="documento"
@@ -82,6 +79,7 @@ export default function Form() {
             />
           </div>
 
+          {/* Teléfono y Tipo de sangre */}
           <div className="d-flex gap-3">
             <div className="col-lg-6">
               <InputField
@@ -89,7 +87,7 @@ export default function Form() {
                 name="telefono"
                 register={register}
                 error={errors.telefono}
-                labelName="Telefono"
+                labelName="Teléfono"
               />
             </div>
             <div className="col-lg-6">
@@ -112,13 +110,17 @@ export default function Form() {
             </div>
           </div>
           <div className="my-3">
-            <InputAutoComplete
-              objFormacion={fichas}
-              name="fichaSeleccionada"
-              control={control}
+            <InputField
+              typeIntput="text"
+              name="tipoPerfil"
+              register={register}
+              error={errors.tipoPerfil}
+              labelName="Tipo perfil"
+              disabled={true}
             />
           </div>
 
+          {/* Botón de envío */}
           <ButtonSubmit
             textSend="Guardar"
             textSending="Guardando..."
@@ -128,12 +130,12 @@ export default function Form() {
           />
         </div>
       </form>
+
+      {/* Toast */}
       <Toaster
         position="top-right"
         toastOptions={{
-          style: {
-            marginTop: "100px",
-          },
+          style: { marginTop: "100px" },
         }}
       />
     </div>

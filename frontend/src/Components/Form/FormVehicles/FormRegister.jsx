@@ -5,11 +5,12 @@ import InputField from "../../Ui/InputField";
 import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import useFormWithYup from "../Validation/connectYupRhf";
-import useHandleValidationVehicle from "../Validation/HandleValidation/HandleValidationRegisterVehicle";
+
 import ModalBase from "../../Ui/ModalBase";
 import UseModalControl from "../../Hooks/UseModalControl";
 import FormRegisterVehicles from "./FormRegisterVehicles";
-import "../../../styles/FormUser.css";
+
+import useHandleValidationRegister from "../Validation/HandleValidation/HandleValidationRegister";
 
 export default function FormRegister() {
   const { open, openModal, closeModal } = UseModalControl();
@@ -23,7 +24,7 @@ export default function FormRegister() {
     formState: { errors, isSubmitting },
   } = useFormWithYup(SchemaValidationRegister, { mode: "onChange" });
 
-  const { onSubmit, onError } = useHandleValidationVehicle(reset, closeModal);
+  const { onSubmit, onError } = useHandleValidationRegister({reset,closeModal});
 
   const documento = watch("documento");
   const tipoIngreso = watch("tipoIngreso");
@@ -95,10 +96,11 @@ export default function FormRegister() {
           textSending="Registrando entrada..."
           isSubmitting={isSubmitting}
         />
-        <Toaster />
+      
         <ModalBase open={open} onClose={closeModal}>
           <FormRegisterVehicles closeModal={closeModal} />
         </ModalBase>
+          <Toaster />
       </form>
     </div>
   );

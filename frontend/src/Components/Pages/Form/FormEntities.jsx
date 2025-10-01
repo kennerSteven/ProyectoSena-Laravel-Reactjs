@@ -1,7 +1,6 @@
 import SchemaValidationUser from "../../Form/Validation/SchemaValidation/SchemaValidationUser";
 import {
   useAdministrativoForm,
-  useAprendizForm,
   useInstructorForm,
 } from "../../Form/Validation/HandleValidation/useHandle";
 import Form from "../../Form/Form";
@@ -11,8 +10,9 @@ export function FormAdministrativo() {
   return (
     <Form
       SchemaValidation={SchemaValidationUser}
-      handleValidation={useAdministrativoForm}
-      FormName="Crear nuevo administrativo"
+      handleValidation={useInstructorForm}
+      nameForm="Crear nuevo instructor"
+      tipoPerfilValue="Instructor"
     />
   );
 }
@@ -25,18 +25,10 @@ export function FormInstructor() {
     <Form
       SchemaValidation={SchemaValidationUser}
       handleValidation={useInstructorForm}
-      FormName="Crear nuevo instructor"
+      nameForm="Crear nuevo Instructor"
+      tipoPerfilValue="Instructor"
     />
   );
 }
 
 // Formulario Aprendiz
-export function FormAprendiz() {
-  return (
-    <Form
-      SchemaValidation={SchemaValidationUser}
-      handleValidation={useAprendizForm}
-      FormName="Crear nuevo aprendiz"
-    />
-  );
-}
