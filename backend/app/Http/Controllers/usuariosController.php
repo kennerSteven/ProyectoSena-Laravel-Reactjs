@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\usuariosRequest;
 use App\Models\perfile;
 use App\Models\usuarios;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class usuariosController extends Controller
     }
 
    
-     public function store(Request $request)
+     public function store(usuariosRequest $request)
     {
         $usuario = usuarios::create($request->all());
         return response()->json([$usuario], 201);
@@ -30,7 +31,7 @@ class usuariosController extends Controller
         return response()->json([$usuario, $perfil]);
     }
 
-    public function update(Request $request, $id)
+    public function update(usuariosRequest $request, $id)
    {
     $usuario = usuarios::findOrFail($id);
     $usuario->update($request->all());

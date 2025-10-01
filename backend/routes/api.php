@@ -17,7 +17,7 @@ Route::post("/perfiles/destroy/{id}", [PerfileController::class, "destroy"]);
 
 
 Route::get("/usuario/index", [usuariosController::class, "index"]);
-Route::post("/usuario/store", [usuariosController::class, "store"]);
+Route::post("/usuario/store", [usuariosController::class, "store"]); 
 Route::get("/usuario/show/{id}", [usuariosController::class, "show"]);
 Route::post("/usuario/update/{id}", [usuariosController::class, "update"]);
 Route::post("/usuario/destroy/{id}", [usuariosController::class, "destroy"]);

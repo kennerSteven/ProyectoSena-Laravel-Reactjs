@@ -30,6 +30,13 @@ class usuarios extends Model
     return $this->belongsTo(perfile::class, 'idperfil');
 }
 
+
+
+public function vehiculo()
+{
+    return $this->hasMany(vehiculo::class);
+}
+
 }
 
 
