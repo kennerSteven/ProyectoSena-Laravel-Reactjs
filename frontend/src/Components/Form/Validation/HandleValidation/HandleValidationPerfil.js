@@ -8,22 +8,22 @@ export default function usePerfilForm({ reset }) {
         nombre: data.tipoPerfil,
       };
 
-      const loadingToast = toast.loading("Validando datos...");
-      await new Promise((e) => setTimeout(e, 600));
+      toast.loading("Validando datos...");
+
       await onSubmitPerfil(dataLaravel);
-      toast.dismiss(loadingToast);
+      toast.dismiss();
       toast.success("Perfil registrado exitosamente");
       reset();
     } catch (error) {
+      toast.dismiss();
       toast.error("Error interno del servidor");
       console.error(error);
     }
   };
 
-  const onError = (errors) => {
+  const onError = () => {
     toast.dismiss();
     toast.error("Por favor revisa los campos vacios");
-    console.warn("Errores de validación:", errors);
   };
 
   return { onSubmit, onError };

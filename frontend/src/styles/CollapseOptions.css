@@ -1,35 +1,49 @@
-.CollapseOptions:hover {
-  background: #f5f5f9;
-  color: rgb(68, 68, 68);
-  cursor: pointer;
-}
-
 span {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .CollapseOptions {
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 45px;
-  margin-top: 13px;
+  font-size: 13px;
+  padding: 14px 45px;
+
   color: #303030;
 
   text-decoration: none;
   border-radius: 6px;
-  transition: 0.2s;
+  transition: transform 0.1s ease-in, background 0.1s ease-in;
+}
+.CollapseOptions:hover {
+  background: #f5f5f9;
+  color: rgb(68, 68, 68);
+  cursor: pointer;
+  transform: scale(1.04);
 }
 
 .pepe {
-  padding: 0 19px;
+  padding: 0 15px;
   border-radius: 6px;
   transition: 0.2s;
 }
 
 .pepe:hover {
-  background: #f5f5f9;
   color: rgb(42, 42, 42);
   cursor: pointer;
+}
+
+.gato {
+  padding: 10px 15px;
+  border-radius: 6px;
+  transition: 0.2s;
+  transition: transform 0.1s ease-in, background 0.1s ease-in;
+}
+
+.gato:hover {
+  color: rgb(42, 42, 42);
+  cursor: pointer;
+  background-color: #f5f5f9;
+  transform: scale(1.04);
 }

@@ -26,8 +26,6 @@ export default function FormRegisterVehicles() {
         className="formRegisterVehicles d-flex flex-column"
       >
         <div className="row flex-column">
-          <h2>Registrar Vehículos</h2>
-
           <div className="col-lg-12 mb-4">
             <InputField
               typeIntput="text"

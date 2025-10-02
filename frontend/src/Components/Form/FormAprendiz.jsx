@@ -8,7 +8,7 @@ import "../../styles/FormUsers.css";
 import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
 
 import SchemaValidationUser from "./Validation/SchemaValidation/SchemaValidationUser";
-import { useEffect, useState } from "react";
+
 import InputAutoComplete from "../Ui/InputAutocomplete";
 
 export default function FormAprendiz() {
@@ -43,7 +43,7 @@ export default function FormAprendiz() {
     <div className="d-flex justify-content-center align-items-center">
       <form
         onSubmit={handleSubmit(onSubmit, onError)}
-        className="formUsers shadow-sm"
+        className="formUsers shadow-sm "
       >
         <div className="row flex-column gap-3">
           <h1 className="fw-bold">Formulario</h1>
@@ -115,7 +115,6 @@ export default function FormAprendiz() {
             </div>
           </div>
 
-       
           <div>
             <InputAutoComplete
               objFormacion={fichas}
@@ -124,7 +123,7 @@ export default function FormAprendiz() {
               label="Tipo de formación"
             />
           </div>
-             <div className="my-3">
+          <div className="my-3">
             <InputField
               typeIntput="text"
               name="tipoPerfil"

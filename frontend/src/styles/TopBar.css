@@ -1,5 +1,5 @@
 .cardImg {
-  width: 700px;
+  width: 900px;
 }
 
 .containerCard {
@@ -9,7 +9,7 @@
 }
 
 .hour {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .titleDash {
@@ -20,4 +20,17 @@
 .hourIcon {
   color: #007832;
   font-size: 18px;
+}
+
+.btnSalidaEntrada {
+  background-color: #007832;
+  transition: transform 0.1s ease-in;
+  border: none;
+}
+
+.btnSalidaEntrada:hover {
+  background-color: #029b42;
+  cursor: pointer;
+
+  transform: scale(1.04);
 }

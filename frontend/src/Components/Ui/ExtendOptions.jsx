@@ -8,10 +8,10 @@ export default function ExtendOptions({ nameItem, iconClass, subItems = [] }) {
 
   return (
     <details
-      className=" text-dark p-3 rounded mb-3"
+      className=" mb-4 rounded pepe "
       onToggle={(e) => setIsOpen(e.target.open)}
     >
-      <summary className=" d-flex justify-content-between pepe ">
+      <summary className=" d-flex justify-content-between gato ">
         <span className="d-flex align-items-center">
           <i className={`${iconClass} me-2`}></i>
           {nameItem}

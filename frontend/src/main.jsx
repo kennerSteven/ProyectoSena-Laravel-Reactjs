@@ -6,7 +6,7 @@ import "primeicons/primeicons.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fontsource/inter/400.css";
-
+import BasicFilterDemo from "./prueba";
 import "./styles/global.css";
 import { BrowserRouter } from "react-router-dom";
 
@@ -15,7 +15,7 @@ import FormRegister from "./Components/Form/FormVehicles/FormRegister";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <BasicFilterDemo />
     </BrowserRouter>
   </StrictMode>
 );

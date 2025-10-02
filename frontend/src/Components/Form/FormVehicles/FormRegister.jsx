@@ -5,15 +5,13 @@ import InputField from "../../Ui/InputField";
 import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import useFormWithYup from "../Validation/connectYupRhf";
-
-import ModalBase from "../../Ui/ModalBase";
-import UseModalControl from "../../Hooks/UseModalControl";
-import FormRegisterVehicles from "./FormRegisterVehicles";
-
+import { Dialog } from "primereact/dialog";
+import { useState } from "react";
+import "../../../styles/FormRegisterVehicles.css";
 import useHandleValidationRegister from "../Validation/HandleValidation/HandleValidationRegister";
-
+import FormRegisterVehicles from "./FormRegisterVehicles";
 export default function FormRegister() {
-  const { open, openModal, closeModal } = UseModalControl();
+  const [visible, stateVisible] = useState(false);
 
   const {
     register,
@@ -24,7 +22,10 @@ export default function FormRegister() {
     formState: { errors, isSubmitting },
   } = useFormWithYup(SchemaValidationRegister, { mode: "onChange" });
 
-  const { onSubmit, onError } = useHandleValidationRegister({reset,closeModal});
+  const { onSubmit, onError } = useHandleValidationRegister({
+    reset,
+    setVisible: stateVisible,
+  });
 
   const documento = watch("documento");
   const tipoIngreso = watch("tipoIngreso");
@@ -38,7 +39,7 @@ export default function FormRegister() {
             "Seleccione tipo de documento y documento antes de continuar"
           );
         } else {
-          openModal();
+          stateVisible(true);
         }
       });
     }
@@ -46,14 +47,12 @@ export default function FormRegister() {
   }, [tipoIngreso, documento]);
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100">
+    <div className="">
       <form
         onSubmit={handleSubmit(onSubmit, onError)}
-        className="formRegister d-flex flex-column shadow"
+        className="p-3 d-flex flex-column rounded "
       >
         <div className="row flex-column">
-          <h2>Registrar Vehículos</h2>
-
           <div className="col-lg-12 mb-3">
             <SelectOptions
               register={register}
@@ -96,11 +95,17 @@ export default function FormRegister() {
           textSending="Registrando entrada..."
           isSubmitting={isSubmitting}
         />
-      
-        <ModalBase open={open} onClose={closeModal}>
-          <FormRegisterVehicles closeModal={closeModal} />
-        </ModalBase>
-          <Toaster />
+
+        <Dialog
+          header="Registar vehiculo"
+          visible={visible}
+          style={{ width: "25vw", maxHeight: "50vh" }}
+          modal
+          onHide={() => stateVisible(false)} // cerrar modal
+        >
+          <FormRegisterVehicles closeModal={() => stateVisible(false)} />
+        </Dialog>
+        <Toaster />
       </form>
     </div>
   );

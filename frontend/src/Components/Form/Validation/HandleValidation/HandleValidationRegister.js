@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 
-export default function useHandleValidationRegister({ reset, closeModal }) {
-  const onSubmit = async (data) => {
+export default function useHandleValidationRegister({ reset, setVisible }) {
+  const onSubmit = async () => {
     try {
       const loadingToast = toast.loading("Validando datos...");
       await new Promise((resolve) => setTimeout(resolve, 600));
@@ -9,15 +9,9 @@ export default function useHandleValidationRegister({ reset, closeModal }) {
       toast.dismiss(loadingToast);
       toast.success("Vehículo registrado exitosamente");
 
-      // 🔹 reset viene del useForm del formulario hijo
-      if (typeof reset === "function") {
-        reset();
-      }
+      reset();
 
-      // 🔹 closeModal viene como prop desde el componente padre
-      if (typeof closeModal === "function") {
-        closeModal();
-      }
+      setVisible(false);
     } catch (error) {
       toast.dismiss();
       toast.error("Error interno del servidor");

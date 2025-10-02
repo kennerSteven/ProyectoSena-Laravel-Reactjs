@@ -7,7 +7,7 @@ export default function SideBar({ valueSidebarOptions = [] }) {
   return (
     <div>
       {valueSidebarOptions.map((item, index) => {
-        if (item.type === "divider") return <hr />;
+        if (item.type === "divider") return <hr className="divider" />;
 
         if (item.subItems) {
           return (

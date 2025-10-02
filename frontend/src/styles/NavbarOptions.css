@@ -2,7 +2,7 @@
   background-color: #ffffff;
 
   height: 100vh;
-  width: 320px;
+  width: 300px;
 }
 
 .main {
@@ -30,6 +30,7 @@
 
 /* Separadores */
 hr {
-  width: 80%;
+  width: 90%;
   border: 1.2px solid rgb(186, 186, 186);
+  margin: 0 auto;
 }
