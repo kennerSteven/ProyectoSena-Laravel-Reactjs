@@ -17,8 +17,6 @@ Route::get("/perfiles/show/{id}", [PerfileController::class, "show"]);
 Route::put("/perfiles/update/{id}", [PerfileController::class, "update"]);
 Route::delete("/perfiles/destroy/{id}", [PerfileController::class, "destroy"]);
 
-
-
 Route::get("/vehiculo/index", [VehiculoController::class, "index"]);
 Route::post("/vehiculo/store", [VehiculoController::class, "store"]); 
 Route::get("/vehiculo/show/{id}", [VehiculoController::class, "show"]);
@@ -30,6 +28,13 @@ Route::post("/ficha/store", [FichasController::class, "store"]);
 Route::get("/ficha/show/{id}", [FichasController::class, "show"]);
 Route::put("/ficha/update/{id}", [FichasController::class, "update"]);
 Route::delete("/ficha/destroy/{id}", [FichasController::class, "destroy"]);
+
+Route::get("/usuario/index", [usuariosController::class, "index"]);
+Route::post("/usuario/store", [UsuariosController::class, "store"]); 
+Route::get("/usuario/show/{id}", [UsuariosController::class, "show"]);
+Route::put("/usuario/update/{id}", [UsuariosController::class, "update"]);
+Route::delete("/usuario/destroy/{id}", [UsuariosController::class, "destroy"]);
+
 
 
 

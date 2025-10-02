@@ -11,16 +11,25 @@ class VehiculoController extends Controller
 {
      public function index()
     {
-        $vehiculos = vehiculo::all();
+        $vehiculos = vehiculo::with([
+          'usuarios:id,numeroDocumento'
+        ])->get();
         return response()->json($vehiculos);
     }
 
    
-     public function store(vehiculosRequest $request)
-    {
-        $vehiculos = vehiculo::create($request->all());
-        return response()->json([$vehiculos], 201);
-    }
+    public function store(Request $request)
+{
+    $vehiculo = vehiculo::create($request->all());
+
+    $numeroDocumento = usuarios::where('id', $vehiculo->idusuario)->value('numeroDocumento');
+
+    return response()->json([
+        'vehiculo' => $vehiculo,
+        'numeroDocumentoUsuario' => $numeroDocumento
+    ], 201);
+}
+
    
 
      public function show($id)
