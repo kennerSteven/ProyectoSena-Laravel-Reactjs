@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FichasController;
 use App\Http\Controllers\PerfileController;
 use App\Http\Controllers\usuariosController;
 use App\Http\Controllers\VehiculoController;
@@ -28,6 +29,12 @@ Route::post("/vehiculo/store", [VehiculoController::class, "store"]);
 Route::get("/vehiculo/show/{id}", [VehiculoController::class, "show"]);
 Route::put("/vehiculo/update/{id}", [VehiculoController::class, "update"]);
 Route::delete("/vehiculo/destroy/{id}", [VehiculoController::class, "destroy"]);
+
+Route::get("/ficha/index", [FichasController::class, "index"]);
+Route::post("/ficha/store", [FichasController::class, "store"]); 
+Route::get("/ficha/show/{id}", [FichasController::class, "show"]);
+Route::put("/ficha/update/{id}", [FichasController::class, "update"]);
+Route::delete("/ficha/destroy/{id}", [FichasController::class, "destroy"]);
 
 
 
