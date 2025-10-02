@@ -11,21 +11,21 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
     <div className="d-flex justify-content-end align-items-center topbar ">
       <div className="d-flex  shadow-sm mt-4  containerCard">
         <div className="d-flex justify-content-between  px-3 py-1 ">
-          <div className="d-flex">
+          <div className="d-flex align-items-center">
             <div className="pt-3">
-              <p className="fw-bold  hour d-flex gap-3">
+              <p className="fw-bold  hour d-flex align-items-center gap-2">
                 <i className="bi bi-clock-history hourIcon"></i>
                 3:40 pm - 21-09-2025
               </p>
             </div>
             <div>
-              <h1 className="px-5 fw-bold titleDash">{nameTopBar}</h1>
+              <h2 className="px-4 fw-bold titleDash">{nameTopBar}</h2>
             </div>
           </div>
 
-          <div className="d-flex align-items-center gap-3 bg-light py-1 px-4 rounded">
+          <div className="d-flex align-items-center gap-3 bg-light  px-2 rounded">
             <div>
-              <h6 className="mb-0 fw-bold">{nameAdmin}</h6>
+              <h6 className="mb-0 fw-bold nameAdmin">{nameAdmin}</h6>
               <small className="text-muted">Administrador</small>
             </div>
             <div className="me-3">
@@ -41,21 +41,15 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               onClick={() => stateVisible(true)}
               className="d-flex gap-4 py-3 px-2 rounded  align-items-center btnSalidaEntrada"
             >
-              <i
-                className="pi pi-sign-in"
-                style={{ fontSize: "1.5rem", color: "white" }}
-              ></i>
-              <i
-                className="pi pi-sign-out"
-                style={{ fontSize: "1.5rem", color: "white" }}
-              ></i>
+              <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
+              <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
             </button>
 
             <Dialog
               header="Registrar Entrada"
               visible={visible}
               onHide={() => stateVisible(false)}
-              style={{ width: "550px", maxHeight: "660px" }}
+              style={{ width: "450px", maxHeight: "660px" }}
               modal
             >
               <FormRegister />

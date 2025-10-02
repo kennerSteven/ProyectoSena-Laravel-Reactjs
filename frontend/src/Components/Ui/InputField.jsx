@@ -11,12 +11,12 @@ export default function InputField({
 }) {
   return (
     <div style={{ width: "100%" }}>
-      <label className="form-label ">{labelName}</label>
+      <label className="form-label label">{labelName}</label>
       <input
         disabled={disabled}
         type={typeIntput}
         {...register(name)}
-        className={`form-control input  ${error ? "is-invalid" : ""}`}
+        className={` input form-control w-100 w-sm-50 w-md-40  ${error ? "is-invalid" : ""}`}
         placeholder={placeholder}
       />
 

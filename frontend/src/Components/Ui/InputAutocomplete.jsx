@@ -22,7 +22,7 @@ export default function InputAutoComplete({
 
   return (
     <div className="input-autocomplete">
-      <label htmlFor={name}>{label}</label>
+      <label className="form-label"  htmlFor={name}>{label}</label>
       <Controller
         name={name}
         control={control}

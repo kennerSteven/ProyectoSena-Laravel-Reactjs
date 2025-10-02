@@ -15,47 +15,49 @@ export default function FormPerfil() {
     reset,
   } = useFormWithYup(SchemaValidationFormPerfil);
 
-  const { onError, onSubmit } = usePerfilForm({reset});
+  const { onError, onSubmit } = usePerfilForm({ reset });
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit, onError)}
       className="d-flex justify-content-center align-items-center  "
     >
-      <div className="formRegister shadow-sm">
-        <div className="mb-4">
-          <h2 className="mt-2 mb-5">Crear tipo de perfil</h2>
-          <InputField
-            typeInput="text"
-            name="caracteristica"
-            register={register}
-            error={errors.caracteristica}
-            labelName="Característica"
+      <div className="row">
+        <div className="formRegister shadow-sm col-12 col-md-8 col-lg-6 mx-auto p-3">
+          <div className="mb-4">
+            <h2 className="mt-2 ">Crear tipo de perfil</h2>
+            <InputField
+              typeInput="text"
+              name="caracteristica"
+              register={register}
+              error={errors.caracteristica}
+              labelName="Característica"
+            />
+          </div>
+          <div className="mb-4">
+            <SelectOptions
+              name="tipoPerfil"
+              register={register}
+              nameSelect="Tipo de perfil"
+              values={TipoPerfil}
+              error={errors.tipoPerfil}
+            />
+          </div>
+          <ButtonSubmit
+            textSend="Guardar "
+            textSending="Guardando..."
+            isSubmitting={isSubmitting}
+            iconButton="bi bi-save"
+          />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                marginTop: "100px",
+              },
+            }}
           />
         </div>
-        <div className="mb-4">
-          <SelectOptions
-            name="tipoPerfil"
-            register={register}
-            nameSelect="Tipo de perfil"
-            values={TipoPerfil}
-            error={errors.tipoPerfil}
-          />
-        </div>
-        <ButtonSubmit
-          textSend="Guardar "
-          textSending="Guardando..."
-          isSubmitting={isSubmitting}
-          iconButton="bi bi-save"
-        />
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              marginTop: "100px",
-            },
-          }}
-        />
       </div>
     </form>
   );

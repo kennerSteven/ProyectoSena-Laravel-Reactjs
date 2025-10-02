@@ -1,19 +1,17 @@
-.cardImg {
-  width: 900px;
-}
+
 
 .containerCard {
   border-radius: 30px;
-  border-left: 3px solid #ededed;
+  border-left: 2px solid #ededed;
   background-color: #ffffff;
 }
 
 .hour {
-  font-size: 16px;
+  font-size: 13px;
 }
 
 .titleDash {
-  font-size: 24.4px;
+  font-size: 16px;
   color: #007832;
 }
 
@@ -33,4 +31,11 @@
   cursor: pointer;
 
   transform: scale(1.04);
+}
+
+.iconbtnSalidaEntrada{
+  color: white;
+}
+.nameAdmin{
+  font-size: 13px;
 }

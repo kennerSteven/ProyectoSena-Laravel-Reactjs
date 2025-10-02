@@ -1,7 +1,8 @@
 .formRegister {
-  margin-top: 100px;
-  padding: 40px;
+
+ margin-top: 80px;
   border-radius: 20px;
-  background-color: #fff;
-  width: 550px;
+  background-color: #fff; 
+  width: 400px;
+  font-size: 13px;
 }

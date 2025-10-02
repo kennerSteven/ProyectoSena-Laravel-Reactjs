@@ -11,11 +11,11 @@ import "./styles/global.css";
 import { BrowserRouter } from "react-router-dom";
 
 import App from "./Components/Routes/Routes";
-import FormRegister from "./Components/Form/FormVehicles/FormRegister";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <BasicFilterDemo />
+      <App />
     </BrowserRouter>
   </StrictMode>
 );

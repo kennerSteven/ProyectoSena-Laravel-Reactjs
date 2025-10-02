@@ -1,12 +1,21 @@
 .p-inputtext {
   width: 100%;
+  font-size: 13px;
+  height: 35px;
+
+}
+
+
+
+.form-control,
+.optionItem,
+.form-select,
+.label {
+  font-size: 13px;
 }
 
 .p-button {
   background-color: #007832;
   border: none;
-}
-
-.input {
-  padding: 10px;
+  height: 35px;
 }

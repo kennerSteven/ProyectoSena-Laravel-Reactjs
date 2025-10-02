@@ -11,7 +11,7 @@ export function FormAdministrativo() {
     <Form
       SchemaValidation={SchemaValidationUser}
       handleValidation={useInstructorForm}
-      nameForm="Crear nuevo instructor"
+      nameForm="Crear nuevo Administrativo"
       tipoPerfilValue="Instructor"
     />
   );
@@ -25,7 +25,7 @@ export function FormInstructor() {
     <Form
       SchemaValidation={SchemaValidationUser}
       handleValidation={useInstructorForm}
-      nameForm="Crear nuevo Instructor"
+      nameForm="Crear  Instructor"
       tipoPerfilValue="Instructor"
     />
   );

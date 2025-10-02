@@ -4,11 +4,8 @@ import InputField from "../Ui/InputField";
 import useFormWithYup from "./Validation/connectYupRhf";
 import { useInstructorForm } from "./Validation/HandleValidation/useHandle";
 import { Toaster } from "react-hot-toast";
-import "../../styles/FormUsers.css";
 import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
-
 import SchemaValidationUser from "./Validation/SchemaValidation/SchemaValidationUser";
-
 import InputAutoComplete from "../Ui/InputAutocomplete";
 
 export default function FormAprendiz() {
@@ -40,15 +37,16 @@ export default function FormAprendiz() {
   const { onSubmit, onError } = useInstructorForm({ reset });
 
   return (
-    <div className="d-flex justify-content-center align-items-center">
+    <div className="container ">
       <form
+        className="row mt-4 formUsers mx-auto"
         onSubmit={handleSubmit(onSubmit, onError)}
-        className="formUsers shadow-sm "
       >
-        <div className="row flex-column gap-3">
-          <h1 className="fw-bold">Formulario</h1>
+        <h2>Crear aprendiz</h2>
 
-          <div className="d-flex gap-3">
+        {/* Columna izquierda */}
+        <div className="col-12 col-lg-6">
+          <div className="mb-3">
             <InputField
               typeIntput="text"
               name="nombre"
@@ -56,6 +54,9 @@ export default function FormAprendiz() {
               error={errors.nombre}
               labelName="Nombre"
             />
+          </div>
+
+          <div className="mb-4">
             <InputField
               typeIntput="text"
               name="apellido"
@@ -65,28 +66,35 @@ export default function FormAprendiz() {
             />
           </div>
 
-          <div className="d-flex gap-3">
-            <SelectOptions
-              register={register}
-              name="tipoDocumento"
-              nameSelect="Tipo documento"
-              error={errors.tipoDocumento}
-              values={[
-                { value: "CC", label: "Cédula de ciudadanía" },
-                { value: "TI", label: "Tarjeta de identidad" },
-              ]}
-            />
-            <InputField
-              typeIntput="text"
-              name="documento"
-              register={register}
-              error={errors.documento}
-              labelName="Documento"
-            />
+          <div className="row g-3">
+            <div className="col-12 col-md-6">
+              <SelectOptions
+                register={register}
+                name="tipoDocumento"
+                nameSelect="Tipo documento"
+                error={errors.tipoDocumento}
+                values={[
+                  { value: "CC", label: "Cédula de ciudadanía" },
+                  { value: "TI", label: "Tarjeta de identidad" },
+                ]}
+              />
+            </div>
+            <div className="col-12 col-md-6">
+              <InputField
+                typeIntput="text"
+                name="documento"
+                register={register}
+                error={errors.documento}
+                labelName="Documento"
+              />
+            </div>
           </div>
+        </div>
 
-          <div className="d-flex gap-3">
-            <div className="col-lg-6">
+        {/* Columna derecha */}
+        <div className="col-12 col-lg-6">
+          <div className="row g-3">
+            <div className="col-12 col-md-6 mb-3">
               <InputField
                 typeIntput="number"
                 name="telefono"
@@ -95,7 +103,7 @@ export default function FormAprendiz() {
                 labelName="Teléfono"
               />
             </div>
-            <div className="col-lg-6">
+            <div className="col-12 col-md-6">
               <SelectOptions
                 register={register}
                 name="tipoSangre"
@@ -114,8 +122,7 @@ export default function FormAprendiz() {
               />
             </div>
           </div>
-
-          <div>
+          <div className="mb-3">
             <InputAutoComplete
               objFormacion={fichas}
               name="tipoFormacion"
@@ -123,17 +130,19 @@ export default function FormAprendiz() {
               label="Tipo de formación"
             />
           </div>
-          <div className="my-3">
-            <InputField
-              typeIntput="text"
-              name="tipoPerfil"
-              register={register}
-              error={errors.tipoPerfil}
-              labelName="Tipo perfil"
-              disabled={true}
-            />
-          </div>
 
+          <InputField
+            typeIntput="text"
+            name="tipoPerfil"
+            register={register}
+            error={errors.tipoPerfil}
+            labelName="Tipo perfil"
+            disabled={true}
+          />
+        </div>
+
+        {/* Botón Guardar */}
+        <div className="col-12 d-flex justify-content-end mt-2 mb-2">
           <ButtonSubmit
             textSend="Guardar"
             textSending="Guardando..."

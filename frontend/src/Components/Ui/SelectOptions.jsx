@@ -10,21 +10,21 @@ export default function SelectOptions({
 }) {
   return (
     <div style={{ width: "100%" }}>
-      <label className="form-label">{nameSelect}</label>
+      <label className="form-label label">{nameSelect}</label>
       <select
         {...register(name)}
         defaultValue={defaultValue}
         className={`input form-select shadow-sm ${error ? "is-invalid" : ""}`}
       >
         {defaultValue === "" && (
-          <option value="" disabled>
+          <option className="optionItem" disabled>
             {" "}
             Seleccionar opción{" "}
           </option>
         )}
 
         {values.map(({ value, label }) => (
-          <option key={value} value={value}>
+          <option className="optionItem" key={value} value={value}>
             {label}
           </option>
         ))}

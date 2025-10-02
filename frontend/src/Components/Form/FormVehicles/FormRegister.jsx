@@ -99,7 +99,7 @@ export default function FormRegister() {
         <Dialog
           header="Registar vehiculo"
           visible={visible}
-          style={{ width: "25vw", maxHeight: "50vh" }}
+          style={{ width: "30vw", maxHeight: "80vh" }}
           modal
           onHide={() => stateVisible(false)} // cerrar modal
         >

@@ -1,0 +1,48 @@
+.p-datatable-thead th {
+    background-color: #007832;
+    color: #fff;
+
+    font-size: 10px;
+
+}
+
+.btnGeneral {
+
+    border-radius: 10px;
+
+}
+
+.update {
+    background-color: #04c554;
+    transition: transform 0.1s ease-in, background-color 0.2s ease-in;
+}
+
+.update:hover {
+    background-color: #007832;
+    transform: scale(1.04);
+}
+
+.delete {
+    background-color: red;
+    transition: transform 0.1s ease-in, background-color 0.2s ease-in;
+}
+
+.delete:hover {
+    background-color: rgb(211, 4, 4);
+    transform: scale(1.04);
+}
+
+
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background-color: #007832;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+
+}
+
+.my-custom-row {
+    font-size: 12px;
+
+}
