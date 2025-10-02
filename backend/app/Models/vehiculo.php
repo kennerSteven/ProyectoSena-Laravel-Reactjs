@@ -17,10 +17,7 @@ class vehiculo extends Model
 
     
     
-    public function usuarios()
-{
-    return $this->belongsTo(usuarios::class, 'idusuario');
-}
+ 
 
 
 }
