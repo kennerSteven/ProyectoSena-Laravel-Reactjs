@@ -18,11 +18,6 @@ Route::put("/perfiles/update/{id}", [PerfileController::class, "update"]);
 Route::delete("/perfiles/destroy/{id}", [PerfileController::class, "destroy"]);
 
 
-Route::get("/usuario/index", [usuariosController::class, "index"]);
-Route::post("/usuario/store", [usuariosController::class, "store"]); 
-Route::get("/usuario/show/{id}", [usuariosController::class, "show"]);
-Route::put("/usuario/update/{id}", [usuariosController::class, "update"]);
-Route::delete("/usuario/destroy/{id}", [usuariosController::class, "destroy"]);
 
 Route::get("/vehiculo/index", [VehiculoController::class, "index"]);
 Route::post("/vehiculo/store", [VehiculoController::class, "store"]); 

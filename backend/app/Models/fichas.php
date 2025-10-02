@@ -13,4 +13,10 @@ class fichas extends Model
         'jornada',
         'estado'
     ];
+
+
+    public function usuarios() {
+
+        return $this->hasMany(usuarios::class);
+    }
 }
