@@ -13,11 +13,12 @@ class perfile extends Model
     ];
 
 
+     public function usuarios() {
+
+        return $this->hasMany(usuarios::class);
+    }
 
 
-    public function usuarios()
-{
-    return $this->hasMany(usuarios::class);
-}
+
 
 }

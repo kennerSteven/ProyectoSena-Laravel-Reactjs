@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class usuarios extends Model
 {
-     protected $table = 'usuarios';
-     protected $fillable = [
-
+      protected $table = 'usuarios';
+      protected $fillable = [
         'nombre',
         'apellido',
         'tipoDocumento',
@@ -20,24 +19,20 @@ class usuarios extends Model
         'fechaExpiracion',
         'fechaFinContrato',
         'foto',
-        'idperfil'
+        'idperfil',
+        'idficha'
+
     ];
 
+    public function perfile() {
+
+         return $this->belongsTo(perfile::class,'idperfil');
+    }
 
 
-    public function perfile()
-{
-    return $this->belongsTo(perfile::class, 'idperfil');
-}
+     public function fichas() {
 
-
-
-public function vehiculo()
-{
-    return $this->hasMany(vehiculo::class);
-}
+         return $this->belongsTo(fichas::class,'idficha');
+    }
 
 }
-
-
-

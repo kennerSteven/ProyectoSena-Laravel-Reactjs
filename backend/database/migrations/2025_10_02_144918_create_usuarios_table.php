@@ -26,7 +26,8 @@ return new class extends Migration
             $table->string('foto');
             $table->unsignedBigInteger('idperfil');
             $table->foreign('idperfil')->references('id')->on('perfiles');
-
+            $table->unsignedBigInteger('idficha');
+            $table->foreign('idficha')->references('id')->on('fichas');
             $table->timestamps();
         });
     }
