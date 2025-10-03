@@ -42,7 +42,7 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               className="d-flex gap-4 py-3 px-2 rounded  align-items-center btnSalidaEntrada"
             >
               <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
-              <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
+              <i className="pi pi-sign-out iconbtnSalidaEntrada"></i>
             </button>
 
             <Dialog

@@ -12,7 +12,7 @@ export default function ExtendOptions({ nameItem, iconClass, subItems = [] }) {
       onToggle={(e) => setIsOpen(e.target.open)}
     >
       <summary className=" d-flex justify-content-between gato pt-2 mb-3 ">
-        <span className="d-flex align-items-center collapseOptionsItems">
+        <span className="d-flex align-items-center">
           <i className={`${iconClass} me-2`}></i>
           {nameItem}
         </span>
@@ -22,7 +22,7 @@ export default function ExtendOptions({ nameItem, iconClass, subItems = [] }) {
       <ul className="list-unstyled d-flex flex-column  bg-light rounded shadow-sm mt-2 px-4  ">
         {subItems.map((item, idx) => (
           <Link to={item.link} key={idx} className="text-decoration-none py-5 py-lg-2 subItems ">
-            <span className="CollapseOptions d-flex align-items-center gap-2 collapseOptionsItems">
+            <span className="CollapseOptions d-flex align-items-center gap-2">
               <i className={`${item.icon} itemIconCollapse `}></i>
               {item.label}
             </span>
