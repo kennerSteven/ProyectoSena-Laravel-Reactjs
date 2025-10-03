@@ -1,9 +1,12 @@
 .p-datatable-thead th {
     background-color: #007832;
-    color: #fff;
+    color: #ffffff;
 
     font-size: 10px;
 
+}
+span{
+    font-weight: bold;
 }
 
 .btnGeneral {
@@ -13,29 +16,31 @@
 }
 
 .update {
-    background-color: #04c554;
+    color: #04c554;
+    background-color: white;
     transition: transform 0.1s ease-in, background-color 0.2s ease-in;
 }
 
 .update:hover {
-    background-color: #007832;
+    border: 1px solid #05a146;
     transform: scale(1.04);
 }
 
 .delete {
-    background-color: red;
+    color: red;
+    background-color: rgb(255, 255, 255);
     transition: transform 0.1s ease-in, background-color 0.2s ease-in;
 }
 
 .delete:hover {
-    background-color: rgb(211, 4, 4);
+    border: 1px solid rgb(206, 3, 3);
     transform: scale(1.04);
 }
 
 
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-    background-color: #007832;
+    background-color: #00783231;
     color: white;
     font-weight: bold;
     border-radius: 4px;
@@ -45,4 +50,8 @@
 .my-custom-row {
     font-size: 12px;
 
+}
+.p-paginator .p-paginator-pages .p-paginator-page{
+    height: 25px;
+    border-radius: 20px;
 }
