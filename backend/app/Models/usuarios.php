@@ -35,4 +35,9 @@ class usuarios extends Model
          return $this->belongsTo(fichas::class,'idficha');
     }
 
+     public function vehiculo() {
+
+        return $this->hasMany(vehiculo::class);
+    }
+
 }
