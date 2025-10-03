@@ -1,48 +1,68 @@
 .p-datatable-thead th {
-    background-color: #007832;
-    color: #fff;
-
-    font-size: 10px;
-
+  background-color: #007832;
+  color: #fcfcfc;
+  font-weight: bold;
+  font-size: 11px;
 }
 
 .btnGeneral {
-
-    border-radius: 10px;
-
+  border-radius: 10px;
 }
 
 .update {
-    background-color: #04c554;
-    transition: transform 0.1s ease-in, background-color 0.2s ease-in;
+  background-color: white;
+  color: #007832;
+  transition: transform 0.1s ease-in, background-color 0.2s ease-in;
 }
 
 .update:hover {
-    background-color: #007832;
-    transform: scale(1.04);
+  transform: scale(1.04);
+  color: #025b27;
+  border: 1px solid #007832;
 }
 
 .delete {
-    background-color: red;
-    transition: transform 0.1s ease-in, background-color 0.2s ease-in;
+  background-color: white;
+  color: #dc3545;
+  transition: transform 0.1s ease-in, background-color 0.2s ease-in;
 }
 
 .delete:hover {
-    background-color: rgb(211, 4, 4);
-    transform: scale(1.04);
+  background-color: rgb(244, 244, 244);
+  transform: scale(1.04);
+  color: #dc2b3d;
+  border: 1px solid red;
 }
 
-
-
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-    background-color: #007832;
-    color: white;
-    font-weight: bold;
-    border-radius: 4px;
-
+  background-color: #00783221;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  border-radius: 20px;
 }
 
 .my-custom-row {
-    font-size: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
 
+span {
+  font-weight: 600;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+  width: 2px;
+  height: 20px;
+  border-radius: 20px;
+}
+
+.p-paginator .p-dropdown {
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+ol,
+ul {
+  padding: 0;
+  outline: none;
 }

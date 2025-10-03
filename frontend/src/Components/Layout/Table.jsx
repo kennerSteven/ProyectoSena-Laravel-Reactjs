@@ -7,7 +7,7 @@ import { Button } from "primereact/button";
 import "../../styles/Table.css";
 
 export default function Table({ tableTitle, nameValue = [], dataTable }) {
-  const [valueTable, setValueTable] = useState(dataTable);
+  const [valueTable] = useState(dataTable);
   const [globalFilter, setGlobalFilter] = useState("");
 
   const globalFilterFields = [...nameValue];
@@ -40,9 +40,9 @@ export default function Table({ tableTitle, nameValue = [], dataTable }) {
   };
 
   return (
-    <div className="mx-auto mt-4 shadow-sm rounded" style={{ width: "1100px" }}>
+    <div className="mx-auto mt-4 shadow tableContainer" style={{ width: "1100px" }}>
       <DataTable
-       rowClassName={() => "my-custom-row"}
+        rowClassName={() => "my-custom-row"}
         selectionMode="single"
         value={valueTable}
         paginator
@@ -58,7 +58,11 @@ export default function Table({ tableTitle, nameValue = [], dataTable }) {
           <Column key={idx} field={colName} header={colName} />
         ))}
 
-        <Column header="Acciones" className="fw-bold" body={actionBodyTemplate} />
+        <Column
+          header="Acciones"
+          className="fw-bold"
+          body={actionBodyTemplate}
+        />
       </DataTable>
     </div>
   );
