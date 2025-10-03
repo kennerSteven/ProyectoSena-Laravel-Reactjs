@@ -41,3 +41,7 @@
   background-color: #f5f5f9;
   transform: scale(1.04);
 }
+
+.collapseOptionsItems{
+  font-weight: 400;
+}

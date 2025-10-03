@@ -5,36 +5,39 @@
     font-size: 10px;
 
 }
-span{
+
+span {
     font-weight: bold;
 }
 
 .btnGeneral {
-  border-radius: 10px;
+    border-radius: 10px;
 }
 
 .update {
-    background-color: #04c554;
+    background-color: #ffffff;
+    color: #04c554;
     transition: transform 0.1s ease-in, background-color 0.2s ease-in;
 }
 
 .update:hover {
-    background-color: #007832;
+    border: 1px solid #007832;
     transform: scale(1.04);
 }
 
 .delete {
-    background-color: red;
+    background-color: rgb(255, 255, 255);
+    color: red;
     transition: transform 0.1s ease-in, background-color 0.2s ease-in;
 }
 
 .delete:hover {
-    background-color: rgb(211, 4, 4);
+    border: 1px solid red;
     transform: scale(1.04);
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-    background-color: #007832;
+    background-color: #00783228;
     color: white;
     font-weight: bold;
     border-radius: 4px;
@@ -44,4 +47,37 @@ span{
 .my-custom-row {
     font-size: 12px;
 
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    height: 25px;
+    border-radius: 20px;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+    height: 25px;
+    border-radius: 20px;
+}
+
+
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last {
+    height: 24px;
+    border-radius: 20px;
+}
+
+.ol,
+ul {
+    padding-left: 0rem;
+    font-size: 13px;
+
+
+
+}
+
+.p-paginator .p-dropdown {
+
+    height: 2.2rem;
 }
