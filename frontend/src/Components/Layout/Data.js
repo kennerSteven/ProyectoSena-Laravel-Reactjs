@@ -5,28 +5,34 @@ export const ItemsConfig = [
     link: "/Dashboard",
   },
   {
-    iconClass: "pi pi-users",
-    nameItem: "Perfiles",
-    link: "/Dashboard/TipoUsuario",
-  },
-
-  {
     iconClass: "pi pi-user-plus",
-    nameItem: "Crear Usuarios",
+    nameItem: "Crear",
     subItems: [
       {
-        label: "Instructor",
-        icon: "pi pi-id-card",
-        link: "/Dashboard/CrearInstructor",
+        label: "Crear perfil",
+        icon: "pi pi-user-edit", 
+        link: "/Dashboard/CrearPerfil",
+      },
+        {
+        label: "Crear formación",
+        icon: "pi pi-book", 
+        link: "/Dashboard/crearFormacion",
       },
       {
+        label: "Instructor",
+        icon: "pi pi-id-card", 
+        link: "/Dashboard/CrearInstructor",
+      },
+
+    
+      {
         label: "Aprendiz",
-        icon: "pi pi-user",
+        icon: "pi pi-users", 
         link: "/Dashboard/CrearAprendiz",
       },
       {
         label: "Administrativo",
-        icon: "pi pi-briefcase",
+        icon: "pi pi-briefcase", 
         link: "/Dashboard/CrearAdministrativo",
       },
     ],

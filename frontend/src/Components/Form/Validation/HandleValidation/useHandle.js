@@ -5,6 +5,7 @@ import {
   onSubmitAdministrativo,
   onSubmitPerfil,
   onSubmitInstructor,
+  onSubmitFoormacion,
 } from "../../../Services/FetchServices";
 
 // Administrativo
@@ -57,4 +58,16 @@ export function usePerfilForm(reset) {
     FetchFuncion: onSubmitPerfil,
   });
   return { onSubmit, onError, formData };
+}
+
+export function useFormacionFOrm(reset) {
+  const { onSubmit, onError, formData } = HandleValidation({
+    toastLoading: "Guardando perfil...",
+    toastSuccess: "Perfil creado con éxito",
+    toastErrorServer: "Error al crear perfil",
+    toastErrorInput: "Por favor revisa los campos",
+    reset,
+    FetchFuncion: onSubmitFoormacion,
+  });
+    return { onSubmit, onError, formData };
 }

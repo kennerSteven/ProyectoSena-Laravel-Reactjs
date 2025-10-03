@@ -8,6 +8,7 @@ export default function SideBar({ valueSidebarOptions = [] }) {
     <div>
       {valueSidebarOptions.map((item, index) => {
         if (item.type === "divider") return <hr className="divider mx-auto mt-3" />;
+      
 
         if (item.subItems) {
           return (

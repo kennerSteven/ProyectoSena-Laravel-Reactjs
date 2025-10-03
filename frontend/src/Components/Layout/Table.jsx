@@ -40,7 +40,7 @@ export default function Table({ tableTitle, nameValue = [], dataTable }) {
   };
 
   return (
-    <div className="mx-auto mt-4 shadow tableContainer" style={{ width: "1100px" }}>
+    <div className="mx-auto mt-4 shadow tableContainer" style={{ width: "1050px" }}>
       <DataTable
         rowClassName={() => "my-custom-row"}
         selectionMode="single"

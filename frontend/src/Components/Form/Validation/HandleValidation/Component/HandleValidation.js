@@ -14,9 +14,12 @@ export default function HandleValidation({
   const onSubmit = async (data) => {
     try {
       setFormData(data);
-      const loadingToast = toast.loading(toastLoading);
+
+      toast.dismiss();
+      console.log(data);
       await FetchFuncion(data);
-      toast.dismiss(loadingToast);
+
+      toast.dismiss();
       toast.success(toastSuccess);
       reset();
     } catch (error) {

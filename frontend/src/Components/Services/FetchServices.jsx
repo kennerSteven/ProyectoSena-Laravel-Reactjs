@@ -20,3 +20,8 @@ export const onSubmitInstructor = async (data) => {
 export const onSubmitLogin = async (data) => {
   await sendDataFetch(data, "http://127.0.0.1:8000/api/login");
 };
+
+
+export const onSubmitFoormacion = async (data) => {
+  await sendDataFetch(data, "http://127.0.0.1:8000/api/ficha/store");
+};

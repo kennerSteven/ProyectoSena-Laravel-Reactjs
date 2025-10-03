@@ -17,7 +17,7 @@ export default function SelectOptions({
         className={`input form-select shadow-sm ${error ? "is-invalid" : ""}`}
       >
         {defaultValue === "" && (
-          <option className="optionItem" disabled>
+          <option className="optionItem" value="" disabled>
             {" "}
             Seleccionar opción{" "}
           </option>

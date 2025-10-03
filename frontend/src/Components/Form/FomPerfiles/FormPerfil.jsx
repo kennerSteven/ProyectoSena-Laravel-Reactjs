@@ -23,16 +23,9 @@ export default function FormPerfil() {
       className="d-flex justify-content-center align-items-center  "
     >
       <div className="row">
-        <div className="formRegister shadow-sm col-12 col-md-8 col-lg-6 mx-auto p-3">
+        <div className="formRegister shadow-sm col-12 col-md-8 col-lg-6 mx-auto p-4">
           <div className="mb-4">
             <h2 className="mt-2 ">Crear tipo de perfil</h2>
-            <InputField
-              typeInput="text"
-              name="caracteristica"
-              register={register}
-              error={errors.caracteristica}
-              labelName="Característica"
-            />
           </div>
           <div className="mb-4">
             <SelectOptions
@@ -43,6 +36,15 @@ export default function FormPerfil() {
               error={errors.tipoPerfil}
             />
           </div>
+       <div className="mb-4">
+           <InputField
+            typeInput="text"
+            name="caracteristica"
+            register={register}
+            error={errors.caracteristica}
+            labelName="Característica"
+          />
+       </div>
           <ButtonSubmit
             textSend="Guardar "
             textSending="Guardando..."
