@@ -71,3 +71,28 @@ ul {
 .p-paginator .p-dropdown {
   height: 2.2rem;
 }
+
+.tableContainer {
+  width: 100%;
+  max-width: 1150px;
+  margin: 0 auto; /* centra la tabla */
+  overflow-x: auto; /* permite desplazamiento si se pasa */
+  border: 1px solid #ccc; /* bordecito gris suave */
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff; /* para destacar la tabla */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* sombra sutil */
+}
+
+/* Ajuste en pantallas pequeñas */
+@media (max-width: 768px) {
+  .tableContainer {
+    width: 95%;
+    padding: 5px;
+    border-radius: 6px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+}

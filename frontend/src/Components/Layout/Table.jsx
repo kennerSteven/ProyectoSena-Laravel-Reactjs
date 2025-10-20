@@ -51,7 +51,7 @@ export default function Table({
   return (
     <div
       className="mx-auto mt-4 shadow tableContainer"
-      style={{ width: "1200px" }}
+
     >
       <DataTable
         rowClassName={() => "my-custom-row"}
