@@ -5,64 +5,30 @@ export const ItemsConfig = [
     link: "/Dashboard",
   },
   {
-    iconClass: "pi pi-user-plus",
-    nameItem: "Crear",
-    subItems: [
-      {
-        label: "Crear perfil",
-        icon: "pi pi-user-edit", 
-        link: "/Dashboard/CrearPerfil",
-      },
-        {
-        label: "Crear formación",
-        icon: "pi pi-book", 
-        link: "/Dashboard/crearFormacion",
-      },
-      {
-        label: "Instructor",
-        icon: "pi pi-id-card", 
-        link: "/Dashboard/CrearInstructor",
-      },
-
-    
-      {
-        label: "Aprendiz",
-        icon: "pi pi-users", 
-        link: "/Dashboard/CrearAprendiz",
-      },
-      {
-        label: "Administrativo",
-        icon: "pi pi-briefcase", 
-        link: "/Dashboard/CrearAdministrativo",
-      },
-    ],
+    iconClass: "pi pi-users",
+    nameItem: "Perfiles",
+    link: "/Dashboard/TipoUsuario",
   },
 
   {
-    iconClass: "pi pi-list",
-    nameItem: "Listar",
-    subItems: [
-      {
-        label: "Aprendices",
-        icon: "pi pi-user",
-        link: "/Dashboard/ListarAprendiz",
-      },
-      {
-        label: "Instructor",
-        icon: "pi pi-id-card",
-        link: "/Dashboard/ListarInstructor",
-      },
-      {
-        label: "Visitante",
-        icon: "pi pi-user",
-        link: "/Dashboard/ListarVisitante",
-      },
-      {
-        label: "Administrativo",
-        icon: "pi pi-briefcase",
-        link: "/Dashboard/ListarAdministrativo",
-      },
-    ],
+    nameItem: "Aprendices",
+    iconClass: "pi pi-user",
+    link: "/Dashboard/ListarAprendiz",
+  },
+  {
+    nameItem: "Instructor",
+    iconClass: "pi pi-id-card",
+    link: "/Dashboard/ListarInstructor",
+  },
+  {
+    nameItem: "Visitante",
+    iconClass: "pi pi-user",
+    link: "/Dashboard/ListarVisitante",
+  },
+  {
+    nameItem: "Administrativo",
+    iconClass: "pi pi-briefcase",
+    link: "/Dashboard/ListarAdministrativo",
   },
 
   {

@@ -42,8 +42,6 @@ export default function FormAprendiz() {
         className="row mt-4 formUsers mx-auto"
         onSubmit={handleSubmit(onSubmit, onError)}
       >
-        <h2>Crear aprendiz</h2>
-
         {/* Columna izquierda */}
         <div className="col-12 col-lg-6">
           <div className="mb-3">

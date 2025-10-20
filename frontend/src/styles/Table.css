@@ -1,13 +1,8 @@
 .p-datatable-thead th {
-    background-color: #007832;
-    color: #fff;
-
-    font-size: 11px;
-
-}
-
-span {
-    font-weight: bold;
+  background-color: #007832;
+  color: #fcfcfc;
+  font-weight: bold;
+  font-size: 11px;
 }
 
 .btnGeneral {
@@ -37,16 +32,15 @@ span {
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-    background-color: #00783228;
-    color: white;
-    font-weight: bold;
-    border-radius: 4px;
-
+  background-color: #00783221;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  border-radius: 20px;
 }
 
 .my-custom-row {
-    font-size: 12px;
-
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
@@ -55,8 +49,9 @@ span {
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page {
-    height: 25px;
-    border-radius: 20px;
+  width: 2px;
+  height: 20px;
+  border-radius: 20px;
 }
 
 

@@ -1,4 +1,3 @@
-import logo from "../../../assets/img/logoSena.png";
 import "../../../styles/Login.css";
 import InputField from "../../Ui/InputField";
 import SchemaValidationLogin from "../../Form/Validation/SchemaValidation/SchemaValidationLogin";
@@ -7,7 +6,7 @@ import useHandleValidationLogin from "../../Form/Validation/HandleValidation/Han
 import ButtonSubmit from "../../Ui/ButtonSubmit";
 import BackButton from "../../Ui/BackButton";
 import { Toaster } from "react-hot-toast";
-
+import granjaImg from "../../../assets/img/SENAGRANJA.jpg";
 export default function Login() {
   const {
     register,
@@ -18,52 +17,68 @@ export default function Login() {
   const { onSubmit, onError } = useHandleValidationLogin(reset);
 
   return (
-    <div className="d-flex align-items-center gap-5 justify-content-center min-vh-100 ">
-      <div className="d-flex  align-items-center justify-content-center gap-5 containerLogin shadow">
-        <div className="me-5">
-          <img src={logo} style={{ width: "230px", height: "220px" }} />
+    <div className="">
+      <div className="d-flex">
+        <div className="d-flex  align-items-center justify-content-center containerLogin shadow">
+          <div>
+            <form
+              onSubmit={handleSubmit(onSubmit, onError)}
+              className="d-flex flex-column formContainer "
+            >
+              <div className="d-flex flex-column">
+                <div className="d-flex align-items-center gap-4">
+                  <BackButton />
+                  <div className="d-flex align-items-center  gap-3">
+                    <h1 className="fw-bold titleLogin">Iniciar sesión</h1>
+                    <h3 className="pt-2">
+                      <strong>Granja</strong>
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-2">
+                <InputField
+                  className="w-100"
+                  typeIntput="text"
+                  name="usuario"
+                  placeholder="Usuario"
+                  register={register}
+                  error={errors.usuario}
+                />
+              </div>
+              <div>
+                <InputField
+                  typeIntput="password"
+                  name="contrasena"
+                  placeholder="Contraseña"
+                  register={register}
+                  error={errors.contrasena}
+                />
+              </div>
+              <a className="py-4 forgetPassword">Olvidó su contraseña?</a>
+
+              <ButtonSubmit
+                textSend="Iniciar sesión"
+                textSending="Iniciando Sesión..."
+                isSubmitting={isSubmitting}
+                maxWidth={true}
+                iconButton="bi bi-box-arrow-in-right"
+              />
+              <p className="text-center pt-4 msjCreateAccount">
+                No tiene una cuenta? <a className="forgetPassword">Cree una</a>
+              </p>
+
+              <Toaster />
+            </form>
+          </div>
         </div>
         <div>
-          <form
-            onSubmit={handleSubmit(onSubmit, onError)}
-            className="d-flex flex-column gap-4 formContainer "
-          >
-            <div className="d-flex align-items-center gap-3">
-              <BackButton />
-              <h1 className="fw-bold titleLogin">
-                Iniciar sesión - <strong>Granja</strong>
-              </h1>
-            </div>
-
-            <div>
-              <InputField
-                className="w-100"
-                typeIntput="text"
-                name="usuario"
-                labelName="Usuario"
-                register={register}
-                error={errors.usuario}
-              />
-            </div>
-            <div>
-              <InputField
-                typeIntput="password"
-                name="contrasena"
-                labelName="Contraseña"
-                register={register}
-                error={errors.contrasena}
-              />
-            </div>
-
-            <ButtonSubmit
-              textSend="Iniciar sesión"
-              textSending="Iniciando Sesión..."
-              isSubmitting={isSubmitting}
-              maxWidth={true}
-              iconButton="bi bi-box-arrow-in-right"
-            />
-            <Toaster />
-          </form>
+          <img
+            src={granjaImg}
+            className="img-fluid h-100 w-100 object-fit-cover"
+            alt=""
+          />
         </div>
       </div>
     </div>

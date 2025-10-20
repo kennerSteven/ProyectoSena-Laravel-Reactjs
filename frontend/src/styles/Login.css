@@ -1,18 +1,27 @@
 .containerLogin {
   background-color: #ffff;
-  width: 800px;
-  padding: 50px 90px;
-  border-radius: 20px;
+  padding: 60px;
+  border-radius: 10px;
 }
 
 .formContainer {
-  width: 350px;
+  width: 400px;
 }
 
 .titleLogin {
-  font-size: 26px;
+  font-size: 30px;
 }
 
 strong {
   color: #007832;
+  font-size: 22px;
+}
+
+.forgetPassword {
+  font-size: 15px;
+  color: #007832;
+}
+
+.msjCreateAccount {
+  font-size: 14px;
 }
