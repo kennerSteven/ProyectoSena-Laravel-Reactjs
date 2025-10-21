@@ -20,10 +20,10 @@ return new class extends Migration
             $table->string('telefono');
             $table->enum('tipoSangre',['A+','A-','B+','B-','AB+','AB-','O+','O-']);
             $table->enum('estado',['activo','inactivo']);
-            $table->timestamp('fechaRegistro')->useCurrent();
-            $table->date('fechaExpiracion');
-            $table->date('fechaFinContrato');
-            $table->string('foto');
+            $table->timestamp('fechaRegistro')->useCurrent()->nullable();
+            $table->date('fechaExpiracion')->nullable();
+            $table->date('fechaFinContrato')->nullable();
+            $table->string('foto')->nullable();
             $table->unsignedBigInteger('idperfil');
             $table->foreign('idperfil')->references('id')->on('perfiles');
             $table->unsignedBigInteger('idficha');
