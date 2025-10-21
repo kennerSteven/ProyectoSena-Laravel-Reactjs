@@ -70,7 +70,7 @@ export default function Form({
               />
               <InputField
                 typeIntput="text"
-                name="documento"
+                name="NumeroDocumento"
                 register={register}
                 error={errors.documento}
                 labelName="Documento"

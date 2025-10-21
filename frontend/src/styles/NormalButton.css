@@ -1,6 +1,6 @@
 .normalButton {
   border: none;
-  padding: 9px;
+  padding: 4px;
   background-color: #ffffff;
   color: #007832df;
   border: 1px solid #007832df;
@@ -15,7 +15,7 @@
 }
 
 .iconAdd {
-  font-size: 25px;
+  font-size: 20px;
   color: #007832df;
   font-weight: bolder;
 }

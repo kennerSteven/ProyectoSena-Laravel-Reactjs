@@ -1,4 +1,4 @@
-import Table from "../../Layout/Table";
+
 import {
   nameValueInstructor,
   nameValueAdministrativo,
@@ -6,22 +6,35 @@ import {
   nameValueAprendiz,
   dataAdministrativo,
   dataAprendiz,
-  dataInstructor,
   dataVisitante,
 } from "../../Layout/Data";
 import { useState } from "react";
 import { FormInstructor, FormAdministrativo } from "../Form/FormEntities";
 import { Dialog } from "primereact/dialog";
+import { useEffect } from "react";
+import { GetDataInstructor } from "../../Services/FetchServices";
 import FormAprendiz from "../../Form/FormAprendiz";
+import Table from "../../Layout/Tablet";
+
 export function TableInstructor() {
   const [openModal, setModalOpen] = useState(false);
+
+  const [instructor, setInstructor] = useState([]);
+
+  useEffect(() => {
+    async function LoadInstructor() {
+      const data = await GetDataInstructor();
+      setInstructor(data);
+    }
+    LoadInstructor();
+  }, []);
 
   return (
     <div>
       <Table
         tableTitle="Listar Instructores"
         nameValue={nameValueInstructor}
-        dataTable={dataInstructor}
+        dataTable={instructor}
         nameButton="Crear Instructor"
         functionModal={() => setModalOpen(true)}
       />

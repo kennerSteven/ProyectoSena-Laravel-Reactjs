@@ -1,27 +1,36 @@
 import SchemaValidationUser from "../../Form/Validation/SchemaValidation/SchemaValidationUser";
 import { useInstructorForm } from "../../Form/Validation/HandleValidation/useHandle";
 import Form from "../../Form/Form";
+import SchemaValidationInstructor from "../../Form/Validation/SchemaValidation/SchemaValidationInstructor";
 
-// Formulario Administrativo
 export function FormAdministrativo({closeModalFunction}) {
+
+
+
+
+
   return (
-    <Form
+ <div>
+     <Form
       SchemaValidation={SchemaValidationUser}
       handleValidation={useInstructorForm}
       nameForm="Crear nuevo Administrativo"
       tipoPerfilValue="Instructor"
       closeModal={closeModalFunction}
     />
+ </div>
   );
 }
 
-// Formulario Perfil
 
-// Formulario Instructor
 export function FormInstructor({closeModalFunction}) {
+
+
+
+
   return (
     <Form
-      SchemaValidation={SchemaValidationUser}
+      SchemaValidation={SchemaValidationInstructor}
       handleValidation={useInstructorForm}
       nameForm="Crear  Instructor"
       tipoPerfilValue="Instructor"

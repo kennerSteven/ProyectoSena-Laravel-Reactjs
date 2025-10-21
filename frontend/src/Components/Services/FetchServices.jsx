@@ -1,4 +1,12 @@
 import sendDataFetch from "./Component/SenDataFetch";
+import GetDataFetch from "./Component/GetDataFetch";
+
+
+
+export async function GetDataInstructor() {
+  await GetDataFetch("http://127.0.0.1:8000/api/perfiles/index")
+}
+
 
 export const onSubmitAdministrativo = async (data) => {
   await sendDataFetch(data, "http://127.0.0.1:8000/api/administrativos/store");
