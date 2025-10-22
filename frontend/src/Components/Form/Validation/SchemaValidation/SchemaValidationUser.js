@@ -16,7 +16,7 @@ const SchemaValidationUser = yup.object({
     .matches(/^\d{10}$/, "Debe tener 10 dígitos")
     .required("El teléfono es obligatorio"),
 
-  documento: yup
+  numeroDocumento: yup
     .string()
     .matches(/^\d{6,10}$/, "Documento inválido")
     .required("El documento es obligatorio"),
