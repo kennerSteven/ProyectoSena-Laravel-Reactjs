@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('numeroDocumento');
             $table->string('telefono');
             $table->enum('tipoSangre',['A+','A-','B+','B-','AB+','AB-','O+','O-']);
-             $table->enum('estado', ['activo', 'inactivo'])->default('activo')->change();
+             $table->enum('estado', ['activo', 'inactivo'])->default('activo');
             $table->timestamp('fechaRegistro')->useCurrent()->nullable();
             $table->date('fechaExpiracion')->nullable();
             $table->date('fechaFinContrato')->nullable();
