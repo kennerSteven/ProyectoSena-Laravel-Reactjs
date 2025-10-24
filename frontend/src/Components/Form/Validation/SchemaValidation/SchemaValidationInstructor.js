@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-const SchemaValidationUser = yup.object({
+const SchemaValidationInstructor = yup.object({
   nombre: yup
     .string()
     .required("El nombre es obligatorio")
@@ -13,18 +13,18 @@ const SchemaValidationUser = yup.object({
 
   telefono: yup
     .string()
-    .matches(/^\d{10}$/, "Debe tener 10 dígitos")
+    .matches(/^\d{10}$/, "El teléfono debe tener 10 dígitos")
     .required("El teléfono es obligatorio"),
-
-  numeroDocumento: yup
-    .string()
-    .matches(/^\d{6,10}$/, "Documento inválido")
-    .required("El documento es obligatorio"),
 
   tipoDocumento: yup
     .string()
     .oneOf(["CC", "TI"], "Tipo de documento inválido")
     .required("Selecciona el tipo de documento"),
+
+  numeroDocumento: yup
+    .string()
+    .matches(/^\d{6,10}$/, "Documento inválido")
+    .required("El documento es obligatorio"),
 
   tipoSangre: yup
     .string()
@@ -34,11 +34,10 @@ const SchemaValidationUser = yup.object({
     )
     .required("Selecciona el tipo de sangre"),
 
-  fichaSeleccionada: yup
-    .object()
-    .nullable()
-    .typeError("Selecciona una ficha de formación")
-    .required("Selecciona una ficha de formación"),
+  tipoPerfil: yup
+    .string()
+    .oneOf(["Instructor"], "Tipo de perfil inválido")
+    .required("El tipo de perfil es obligatorio"),
 });
 
-export default SchemaValidationUser;
+export default SchemaValidationInstructor;

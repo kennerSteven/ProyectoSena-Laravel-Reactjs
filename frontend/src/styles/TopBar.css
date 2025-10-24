@@ -1,8 +1,6 @@
-
-
 .containerCard {
   border-radius: 30px;
-  border-left: 2px solid #ededed;
+
   background-color: #ffffff;
 }
 
@@ -33,9 +31,9 @@
   transform: scale(1.04);
 }
 
-.iconbtnSalidaEntrada{
+.iconbtnSalidaEntrada {
   color: white;
 }
-.nameAdmin{
+.nameAdmin {
   font-size: 13px;
 }

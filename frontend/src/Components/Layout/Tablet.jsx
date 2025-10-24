@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
+import NormalButton from "../Ui/NormalButton";
+import SplitButtonComp from "../Ui/SplitButton";
 
-import { Button } from "primereact/button";
 import "../../styles/Table.css";
 
-export default function Table({ tableTitle, nameValue = [], dataTable }) {
+export default function Table({
+  tableTitle,
+  nameValue = [],
+  dataTable,
+  nameButton,
+  functionModal,
+}) {
   const [valueTable] = useState(dataTable);
   const [globalFilter, setGlobalFilter] = useState("");
 
@@ -21,26 +28,31 @@ export default function Table({ tableTitle, nameValue = [], dataTable }) {
       }}
     >
       <h2>{tableTitle}</h2>
-      <InputText
-        value={globalFilter}
-        onChange={(e) => setGlobalFilter(e.target.value)}
-        placeholder="Buscar..."
-        style={{ width: "350px" }}
-      />
+      <div className="d-flex align-items-center gap-2">
+        <NormalButton NameButton={nameButton} onClick={functionModal} />
+        <InputText
+          value={globalFilter}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          placeholder="Buscar..."
+          style={{ width: "350px" }}
+        />
+      </div>
     </div>
   );
 
   const actionBodyTemplate = () => {
     return (
       <div style={{ display: "flex", gap: "0.5rem" }}>
-        <Button icon="pi pi-pencil" className="btnGeneral update" />
-        <Button icon="pi pi-trash" className="btnGeneral delete" />
+        <SplitButtonComp />
       </div>
     );
   };
 
   return (
-    <div className="mx-auto mt-4 shadow tableContainer" style={{ width: "1050px" }}>
+    <div
+      className="mx-auto mt-4 shadow tableContainer"
+
+    >
       <DataTable
         rowClassName={() => "my-custom-row"}
         selectionMode="single"

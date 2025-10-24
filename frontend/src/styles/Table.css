@@ -1,83 +1,79 @@
 .p-datatable-thead th {
-    background-color: #007832;
-    color: #fff;
-
-    font-size: 11px;
-
-}
-
-span {
-    font-weight: bold;
+  background-color: #007832;
+  
+  color: #fcfcfc;
+  font-weight: bold;
+  font-size: 13px;
 }
 
 .btnGeneral {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
-.update {
-    background-color: #ffffff;
-    color: #04c554;
-    transition: transform 0.1s ease-in, background-color 0.2s ease-in;
-}
 
-.update:hover {
-    border: 1px solid #007832;
-    transform: scale(1.04);
-}
-
-.delete {
-    background-color: rgb(255, 255, 255);
-    color: red;
-    transition: transform 0.1s ease-in, background-color 0.2s ease-in;
-}
-
-.delete:hover {
-    border: 1px solid red;
-    transform: scale(1.04);
-}
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-    background-color: #00783228;
-    color: white;
-    font-weight: bold;
-    border-radius: 4px;
-
+  background-color: #007832;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  border-radius: 20px;
 }
 
 .my-custom-row {
-    font-size: 12px;
-
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-    height: 25px;
-    border-radius: 20px;
+  height: 25px;
+  border-radius: 20px;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page {
-    height: 25px;
-    border-radius: 20px;
+  width: 2px;
+  height: 30px;
+  border-radius: 20px;
 }
-
 
 .p-paginator .p-paginator-first,
 .p-paginator .p-paginator-prev,
 .p-paginator .p-paginator-next,
 .p-paginator .p-paginator-last {
-    height: 24px;
-    border-radius: 20px;
+  height: 24px;
+  border-radius: 20px;
 }
 
 .ol,
 ul {
-    padding-left: 0rem;
-    font-size: 13px;
-
-
-
+  padding-left: 0rem;
+  font-size: 13px;
 }
 
 .p-paginator .p-dropdown {
+  height: 2.2rem;
+}
 
-    height: 2.2rem;
+.tableContainer {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto; /* centra la tabla */
+  overflow-x: auto; /* permite desplazamiento si se pasa */
+  border: 1px solid #ccc; /* bordecito gris suave */
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff; /* para destacar la tabla */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* sombra sutil */
+}
+
+/* Ajuste en pantallas pequeñas */
+@media (max-width: 768px) {
+  .tableContainer {
+    width: 95%;
+    padding: 5px;
+    border-radius: 6px;
+  }
+
+  table {
+    font-size: 14px;
+  }
 }

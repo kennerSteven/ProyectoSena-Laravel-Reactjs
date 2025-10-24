@@ -5,9 +5,8 @@ import useFormWithYup from "./Validation/connectYupRhf";
 import { Toaster } from "react-hot-toast";
 import "../../styles/FormUsers.css";
 import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
-
+import { IoCloseSharp } from "react-icons/io5";
 export default function Form({
-  nameForm,
   tipoPerfilValue,
   SchemaValidation,
   handleValidation,
@@ -18,7 +17,6 @@ export default function Form({
     setValue,
     reset,
     handleSubmit,
-    control,
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidation);
 
@@ -31,9 +29,8 @@ export default function Form({
   // Datos de ejemplo para fichas
 
   return (
-    <div className="d-flex justify-content-center ">
-      <div className="row formUsers mt-5" style={{width:"600px"}}>
-        <h2>{nameForm}</h2>
+    <div className="d-flex justify-content-center  ">
+      <div className="row   ">
         <form
           className="d-flex gap-4"
           onSubmit={handleSubmit(onSubmit, onError)}
@@ -73,9 +70,9 @@ export default function Form({
               />
               <InputField
                 typeIntput="text"
-                name="documento"
+                name="numeroDocumento"
                 register={register}
-                error={errors.documento}
+                error={errors.numeroDocumento}
                 labelName="Documento"
               />
             </div>
@@ -121,7 +118,7 @@ export default function Form({
               />
             </div>
 
-            <div className="col-12 d-flex justify-content-end mt-2 mb-2">
+            <div className="col-12 d-flex justify-content-end mt-4 mb-2">
               <ButtonSubmit
                 textSend="Guardar"
                 textSending="Guardando..."

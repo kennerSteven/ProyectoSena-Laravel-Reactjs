@@ -16,7 +16,9 @@ export default function InputField({
         disabled={disabled}
         type={typeIntput}
         {...register(name)}
-        className={` input form-control w-100 w-sm-50 w-md-40  ${error ? "is-invalid" : ""}`}
+        className={` input form-control w-100 w-sm-50 w-md-40  ${
+          error ? "is-invalid" : ""
+        }`}
         placeholder={placeholder}
       />
 

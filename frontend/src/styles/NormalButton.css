@@ -1,0 +1,21 @@
+.normalButton {
+  border: none;
+  padding: 4px;
+  background-color: #ffffff;
+  color: #007832df;
+  border: 1px solid #007832df;
+  border-radius: 8px;
+}
+.normalButton:hover {
+  border: none;
+
+  background-color: #00783203;
+  border: 1px solid #007832df;
+  color: #007832df;
+}
+
+.iconAdd {
+  font-size: 20px;
+  color: #007832df;
+  font-weight: bolder;
+}
