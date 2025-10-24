@@ -40,4 +40,22 @@ class usuarios extends Model
         return $this->hasMany(vehiculo::class);
     }
 
+    public function eyssena() {
+
+        return $this->hasMany(eyssena::class);
+    }
+
+    public function eysgym() {
+
+        return $this->hasMany(eysgym::class);
+    }
+
+     public function eysgranja() {
+
+        return $this->hasMany(eysgranja::class);
+    }
+
+
+
+
 }

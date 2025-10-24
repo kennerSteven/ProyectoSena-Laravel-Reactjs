@@ -19,6 +19,11 @@ class vehiculo extends Model
 
          return $this->belongsTo(usuarios::class,'idusuario');
     }
+
+    public function eysgranja() {
+
+        return $this->hasMany(eysgranja::class);
+    }
     
  
 
