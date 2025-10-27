@@ -4,18 +4,19 @@ import {
   nameValueAdministrativo,
   nameValueVisitante,
   nameValueAprendiz,
-  dataAdministrativo,
+
   dataAprendiz,
   dataVisitante,
 } from "../../Layout/Data";
 import { useState } from "react";
-import { FormInstructor, FormAdministrativo } from "../Form/FormEntities";
+
 import { Dialog } from "primereact/dialog";
 import { useEffect } from "react";
 import { GetDataInstructor } from "../../Services/FetchServices";
 import FormAprendiz from "../../Form/FormAprendiz";
-import Table from "../../Layout/Tablet";
 
+import FormInstructor from "../../Form/FormInstructor";
+import Table from "../../Layout/Tablet";
 export function TableInstructor() {
   const [openModal, setModalOpen] = useState(false);
 
@@ -24,6 +25,7 @@ export function TableInstructor() {
   useEffect(() => {
     async function LoadInstructor() {
       const data = await GetDataInstructor();
+      console.log(data)
       setInstructor(data);
     }
     LoadInstructor();
@@ -42,11 +44,11 @@ export function TableInstructor() {
       <Dialog
         header="Formulario Instructor"
         visible={openModal}
-        style={{ width: "700px" }}
+        style={{ width: "850px" }}
         onHide={() => setModalOpen(false)}
         modal
       >
-        <FormInstructor />
+        <FormInstructor  closeModal={() => setModalVisible(false)} />
       </Dialog>
     </div>
   );

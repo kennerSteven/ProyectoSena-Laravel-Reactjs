@@ -2,12 +2,12 @@ import ButtonSubmit from "../Ui/ButtonSubmit";
 import SelectOptions from "../Ui/SelectOptions";
 import InputField from "../Ui/InputField";
 import useFormWithYup from "./Validation/connectYupRhf";
-import { useInstructorForm } from "./Validation/HandleValidation/useHandle";
+
 import { Toaster } from "react-hot-toast";
-import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
+
 import SchemaValidationUser from "./Validation/SchemaValidation/SchemaValidationUser";
 import InputAutoComplete from "../Ui/InputAutocomplete";
-
+import HandleValidationAprendiz from "./Validation/HandleValidation/HandleEntitie/HandleValidation.Aprendiz";
 export default function FormAprendiz() {
   const {
     register,
@@ -18,7 +18,7 @@ export default function FormAprendiz() {
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidationUser);
 
-  useTipoPerfilFetch(setValue, "Aprendiz");
+
 
   const fichas = [
     {
@@ -34,7 +34,7 @@ export default function FormAprendiz() {
     { numeroFicha: "67890", nombreFicha: "Administración", jornada: "Diurna" },
   ];
 
-  const { onSubmit, onError } = useInstructorForm({ reset });
+  const { onSubmit, onError } = HandleValidationAprendiz({ reset });
 
   return (
     <div className="container ">

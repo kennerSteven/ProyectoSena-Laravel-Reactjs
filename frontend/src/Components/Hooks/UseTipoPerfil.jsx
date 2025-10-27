@@ -1,6 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export default function useTipoPerfilFetch(setValue, perfil) {
+export default function useTipoPerfilFetch() {
+  const [perfiles, setPerfiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     async function fetchTipoPerfil() {
       try {
@@ -12,17 +16,27 @@ export default function useTipoPerfilFetch(setValue, perfil) {
           },
         });
 
+        if (!res.ok) throw new Error("Respuesta no válida del servidor");
+
         const data = await res.json();
-        const encontrado = data.find((item) => item.nombre === perfil);
-        console.log(data)
-        if (encontrado) {
-          setValue("tipoPerfil", perfil);
-        }
-      } catch (error) {
-        console.error(error);
+        const perfilesArray = Array.isArray(data) ? data : Object.values(data);
+
+        // Filtra solo el perfil con nombre "Juan"
+        const perfilJuan = perfilesArray.filter(
+          (p) => p.nombre?.toLowerCase() === "juan"
+        );
+
+        setPerfiles(perfilJuan); // ✅ solo se guarda el perfil "Juan"
+      } catch (err) {
+        console.error("Error al obtener perfiles:", err);
+        setError(err);
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchTipoPerfil();
-  }, [setValue, perfil]);
+  }, []);
+
+  return { perfiles, loading, error };
 }

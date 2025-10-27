@@ -10,7 +10,7 @@ import "../../styles/Table.css";
 export default function Table({
   tableTitle,
   nameValue = [],
-  dataTable,
+  dataTable=[],
   nameButton,
   functionModal,
 }) {

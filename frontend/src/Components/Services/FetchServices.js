@@ -3,8 +3,14 @@ import GetDataFetch from "./Component/GetDataFetch";
 
 
 
+export const onSubmitPerfil = async (data) => {
+  await sendDataFetch(data, "http://127.0.0.1:8000/api/perfiles/store");
+};
+
+
+
 export async function GetDataInstructor() {
-  await GetDataFetch("http://127.0.0.1:8000/api/perfiles/index")
+  await GetDataFetch("http://127.0.0.1:8000/api/usuario/index")
 }
 
 
@@ -12,9 +18,6 @@ export const onSubmitAdministrativo = async (data) => {
   await sendDataFetch(data, "http://127.0.0.1:8000/api/administrativos/store");
 };
 
-export const onSubmitPerfil = async (data) => {
-  await sendDataFetch(data, "http://127.0.0.1:8000/api/perfiles/store");
-};
 
 export const onSubmitAprendiz = async (data) => {
   await sendDataFetch(data, "http://127.0.0.1:8000/api/otra-ruta/store");

@@ -2,10 +2,10 @@ import ButtonSubmit from "../../Ui/ButtonSubmit";
 import InputField from "../../Ui/InputField";
 import SelectOptions from "../../Ui/SelectOptions";
 import useFormWithYup from "../Validation/connectYupRhf";
-import { useFormacionFOrm } from "../Validation/HandleValidation/useHandle";
+import HandleValidationInstructor from "../Validation/HandleValidation/HandleEntitie/HandleValidation.Instructor";
 import SchemaValidationFormacion from "../Validation/SchemaValidation/SchemaValidationFormacion";
 import "../../../styles/FormFormacion.css";
-import { Toast } from "bootstrap";
+  import { Toast } from "bootstrap";
 import { Toaster } from "react-hot-toast";
 export default function FormFormacion(params) {
   const {
@@ -15,7 +15,7 @@ export default function FormFormacion(params) {
     reset,
   } = useFormWithYup(SchemaValidationFormacion);
 
-  const { onError, onSubmit } = useFormacionFOrm(reset);
+  const { onError, onSubmit } = HandleValidationInstructor(reset);
 
   return (
     <form

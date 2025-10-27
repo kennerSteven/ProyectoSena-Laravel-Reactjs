@@ -1,7 +1,7 @@
 import ButtonSubmit from "../../Ui/ButtonSubmit";
-import SelectOptions from "../../Ui/SelectOptions";
+
 import InputField from "../../Ui/InputField";
-import { TipoPerfil } from "../../Layout/Data";
+
 import useFormWithYup from "../Validation/connectYupRhf";
 import usePerfilForm from "../Validation/HandleValidation/HandleValidationPerfil";
 import SchemaValidationFormPerfil from "../Validation/SchemaValidation/SchemaValidationFormPerfil";
@@ -27,22 +27,26 @@ export default function FormPerfil() {
           <div className="mb-4">
             <h2 className="mt-2 ">Crear tipo de perfil</h2>
           </div>
-          <div className="mb-4">
-            <SelectOptions
-              name="tipoPerfil"
-              register={register}
-              nameSelect="Tipo de perfil"
-              values={TipoPerfil}
-              error={errors.tipoPerfil}
-            />
-          </div>
+     
+
+   <div className="mb-4">
+       <InputField
+  typeInput="text"
+  name="tipoPerfil" // 👈 nombre claro y semántico
+  register={register}
+  error={errors.tipoPerfil}
+  labelName="Nombre del perfil"
+/>
+       </div>
+
+
        <div className="mb-4">
            <InputField
             typeInput="text"
-            name="caracteristica"
+            name="descripcion"
             register={register}
-            error={errors.caracteristica}
-            labelName="Característica"
+            error={errors.descripcion}
+            labelName="Descripcion"
           />
        </div>
           <ButtonSubmit

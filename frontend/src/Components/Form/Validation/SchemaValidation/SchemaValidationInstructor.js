@@ -18,7 +18,7 @@ const SchemaValidationInstructor = yup.object({
 
   tipoDocumento: yup
     .string()
-    .oneOf(["CC", "TI"], "Tipo de documento inválido")
+    .oneOf(["cc", "cc"], "Tipo de documento inválido")
     .required("Selecciona el tipo de documento"),
 
   numeroDocumento: yup
@@ -33,11 +33,11 @@ const SchemaValidationInstructor = yup.object({
       "Tipo de sangre inválido"
     )
     .required("Selecciona el tipo de sangre"),
-
   tipoPerfil: yup
     .string()
-    .oneOf(["Instructor"], "Tipo de perfil inválido")
-    .required("El tipo de perfil es obligatorio"),
+    .required("El tipo de perfil es obligatorio")
+    .min(2, "Mínimo 2 caracteres"),
+
 });
 
 export default SchemaValidationInstructor;

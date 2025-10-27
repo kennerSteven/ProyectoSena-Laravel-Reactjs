@@ -5,38 +5,40 @@ import useFormWithYup from "./Validation/connectYupRhf";
 import { Toaster } from "react-hot-toast";
 import "../../styles/FormUsers.css";
 import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
-import { IoCloseSharp } from "react-icons/io5";
-export default function Form({
-  tipoPerfilValue,
-  SchemaValidation,
-  handleValidation,
-}) {
-  // Inicializa el formulario con el esquema pasado como prop
+import HandleValidationInstructor from "./Validation/HandleValidation/HandleEntitie/HandleValidation.Instructor";
+import SchemaValidationInstructor from "./Validation/SchemaValidation/SchemaValidationInstructor";
+
+export default function FormInstructor() {
   const {
     register,
-    setValue,
     reset,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = useFormWithYup(SchemaValidation);
+  } = useFormWithYup(SchemaValidationInstructor);
 
-  // Hook de manejo dinámico (Instructor, Administrativo, Aprendiz)
-  const { onSubmit, onError } = handleValidation( reset );
+  const { perfiles, loading, error } = useTipoPerfilFetch();
 
-  // Llenar el select de tipo de perfil
-  useTipoPerfilFetch(setValue, tipoPerfilValue);
+  // Filtra solo el perfil "Juan"
+  const perfilesJuan = perfiles.filter(
+    (p) => p.nombre?.toLowerCase() === "juan"
+  );
 
-  // Datos de ejemplo para fichas
+  const opcionesPerfil = perfilesJuan.map((p) => ({
+    value: p.id,
+    label: p.nombre,
+  }));
+
+  const { onSubmit, onError } = HandleValidationInstructor({
+    reset,
+    perfiles: perfilesJuan,
+  });
 
   return (
-    <div className="d-flex justify-content-center  ">
-      <div className="row   ">
-        <form
-          className="d-flex gap-4"
-          onSubmit={handleSubmit(onSubmit, onError)}
-        >
+    <div className="d-flex justify-content-center">
+      <div className="row">
+        <form className="d-flex gap-4" onSubmit={handleSubmit(onSubmit, onError)}>
           <div>
-            <div className=" gap-3">
+            <div className="gap-3">
               <div className="col-lg-12 mb-3">
                 <InputField
                   typeIntput="text"
@@ -63,9 +65,7 @@ export default function Form({
                 name="tipoDocumento"
                 nameSelect="Tipo documento"
                 error={errors.tipoDocumento}
-                values={[
-                  { value: "cc", label: "Cédula de ciudadanía" },
-                ]}
+                values={[{ value: "cc", label: "Cédula de ciudadanía" }]}
               />
               <InputField
                 typeIntput="text"
@@ -76,8 +76,9 @@ export default function Form({
               />
             </div>
           </div>
+
           <div>
-            <div className=" ">
+            <div>
               <div className="col-lg-12 mb-3">
                 <InputField
                   typeIntput="number"
@@ -105,8 +106,22 @@ export default function Form({
                   ]}
                 />
               </div>
+              <div className="col-lg-12 mb-3">
+                <SelectOptions
+                  register={register}
+                  name="tipoPerfil"
+                  nameSelect="Tipo de perfil"
+                  error={errors.tipoPerfil}
+                  values={opcionesPerfil}
+                  disabled={loading}
+                />
+                {loading && <p className="text-muted">Cargando perfiles...</p>}
+                {error && <p className="text-danger">Error al cargar perfiles</p>}
+                {!loading && opcionesPerfil.length === 0 && (
+                  <p className="text-warning">No se encontró el perfil 'Juan'</p>
+                )}
+              </div>
             </div>
-      
 
             <div className="col-12 d-flex justify-content-end mt-4 mb-2">
               <ButtonSubmit
@@ -115,7 +130,6 @@ export default function Form({
                 isSubmitting={isSubmitting}
                 maxWidth={false}
                 iconButton="bi bi-save"
-                
               />
             </div>
 
