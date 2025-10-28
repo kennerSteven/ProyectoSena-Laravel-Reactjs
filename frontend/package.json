@@ -28,7 +28,7 @@
     "react-router": "^7.9.1",
     "react-router-dom": "^7.9.1",
     "responsive": "^2.0.0",
-    "sweetalert2": "^11.23.0",
+    "sweetalert2": "^11.26.3",
     "yup": "^1.7.0"
   },
   "devDependencies": {

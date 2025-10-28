@@ -1,10 +1,8 @@
-
 import {
   nameValueInstructor,
-  nameValueAdministrativo,
+  // nameValueAdministrativo,
   nameValueVisitante,
   nameValueAprendiz,
-
   dataAprendiz,
   dataVisitante,
 } from "../../Layout/Data";
@@ -25,7 +23,7 @@ export function TableInstructor() {
   useEffect(() => {
     async function LoadInstructor() {
       const data = await GetDataInstructor();
-      console.log(data)
+      console.log(data);
       setInstructor(data);
     }
     LoadInstructor();
@@ -48,37 +46,37 @@ export function TableInstructor() {
         onHide={() => setModalOpen(false)}
         modal
       >
-        <FormInstructor  closeModal={() => setModalVisible(false)} />
+        <FormInstructor closeModal={() => setModalOpen(false)} />
       </Dialog>
     </div>
   );
 }
 
-export function TableAdministrativo() {
-  const [openModal, setModalOpen] = useState(false);
+// export function TableAdministrativo() {
+//   const [openModal, setModalOpen] = useState(false);
 
-  return (
-    <div>
-      <Table
-        tableTitle="Listar administrativos"
-        nameValue={nameValueAdministrativo}
-        dataTable={dataAdministrativo}
-        nameButton="Crear Administrativo"
-        functionModal={() => setModalOpen(true)}
-      />
+//   return (
+//     <div>
+//       <Table
+//         tableTitle="Listar administrativos"
+//         nameValue={nameValueAdministrativo}
+//         dataTable={dataAdministrativo}
+//         nameButton="Crear Administrativo"
+//         functionModal={() => setModalOpen(true)}
+//       />
 
-      <Dialog
-        header="Crear nuevo Administrativo"
-        visible={openModal}
-        style={{ width: "700px" }}
-        onHide={() => setModalOpen(false)}
-        modal
-      >
-        <FormAdministrativo />
-      </Dialog>
-    </div>
-  );
-}
+//       <Dialog
+//         header="Crear nuevo Administrativo"
+//         visible={openModal}
+//         style={{ width: "700px" }}
+//         onHide={() => setModalOpen(false)}
+//         modal
+//       >
+//         <FormAdministrativo />
+//       </Dialog>
+//     </div>
+//   );
+// }
 
 export function TableAprendiz() {
   const [openModal, setModalOpen] = useState(false);

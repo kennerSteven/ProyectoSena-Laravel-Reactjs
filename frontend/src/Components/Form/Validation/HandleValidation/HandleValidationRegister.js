@@ -19,10 +19,8 @@ export default function useHandleValidationRegister({ reset, setVisible }) {
     }
   };
 
-  const onError = (errors) => {
+  const onError = () => {
     toast.dismiss();
-    toast.error("Por favor revisa los campos vacíos");
-    console.warn("Errores de validación:", errors);
   };
 
   return { onSubmit, onError };

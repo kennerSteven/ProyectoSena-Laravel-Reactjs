@@ -1,27 +1,18 @@
 import { useState } from "react";
-import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 import { onSubmitInstructor } from "../../../../Services/FetchServices";
+import toast from "react-hot-toast";
 
-export default function HandleValidationInstructor({ reset, perfiles,closeModal }) {
+export default function HandleValidationInstructor({
+  reset,
+  perfiles,
+  closeModal,
+}) {
   const [formData, setFormData] = useState();
 
   const onSubmit = async (data) => {
     toast.dismiss();
-
-    if (!Array.isArray(perfiles)) {
-      toast.error("Perfiles no disponibles");
-      console.warn("Perfiles es:", perfiles);
-      return;
-    }
-
-    const perfilJuan = perfiles.find(
-      (p) => p.nombre?.toLowerCase() === "juan"
-    );
-
-    if (!perfilJuan) {
-      toast.error("No se encontró el perfil 'Juan'");
-      return;
-    }
+    const perfilJuan = perfiles.find((p) => p.nombre?.toLowerCase() === "juan");
 
     const payload = {
       nombre: data.nombre,
@@ -38,21 +29,29 @@ export default function HandleValidationInstructor({ reset, perfiles,closeModal 
 
     try {
       await onSubmitInstructor(payload);
-      toast.success("Instructor creado exitosamente");
       reset();
-      closeModal()
-      setFormData(undefined);
+      closeModal();
+
+      // ✅ Espera 300ms para que el modal se cierre antes de mostrar SweetAlert
+
+      Swal.fire({
+        icon: "success",
+        title: "Instructor creado",
+        text: "El instructor fue guardado exitosamente",
+        confirmButtonText: "Aceptar",
+      });
+
+      setFormData(payload);
     } catch (error) {
-      toast.error("Error interno");
       console.error("Error en envío:", error);
     }
   };
 
   const onError = (errors) => {
-    toast.dismiss();
-    toast.error("Error de validación");
     console.warn("Errores de validación:", errors);
+    toast.dismiss();
+    toast.error("Errores de validacion");
   };
 
-  return { onSubmit, onError, formData,closeModal };
+  return { onSubmit, onError, formData, closeModal };
 }

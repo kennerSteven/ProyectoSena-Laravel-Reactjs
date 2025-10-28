@@ -8,7 +8,7 @@ import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
 import HandleValidationInstructor from "./Validation/HandleValidation/HandleEntitie/HandleValidation.Instructor";
 import SchemaValidationInstructor from "./Validation/SchemaValidation/SchemaValidationInstructor";
 
-export default function FormInstructor() {
+export default function FormInstructor({ closeModal }) {
   const {
     register,
     reset,
@@ -31,12 +31,16 @@ export default function FormInstructor() {
   const { onSubmit, onError } = HandleValidationInstructor({
     reset,
     perfiles: perfilesJuan,
+    closeModal,
   });
 
   return (
     <div className="d-flex justify-content-center">
       <div className="row">
-        <form className="d-flex gap-4" onSubmit={handleSubmit(onSubmit, onError)}>
+        <form
+          className="d-flex gap-4"
+          onSubmit={handleSubmit(onSubmit, onError)}
+        >
           <div>
             <div className="gap-3">
               <div className="col-lg-12 mb-3">
@@ -116,9 +120,13 @@ export default function FormInstructor() {
                   disabled={loading}
                 />
                 {loading && <p className="text-muted">Cargando perfiles...</p>}
-                {error && <p className="text-danger">Error al cargar perfiles</p>}
+                {error && (
+                  <p className="text-danger">Error al cargar perfiles</p>
+                )}
                 {!loading && opcionesPerfil.length === 0 && (
-                  <p className="text-warning">No se encontró el perfil 'Juan'</p>
+                  <p className="text-warning">
+                    No se encontró el perfil 'Juan'
+                  </p>
                 )}
               </div>
             </div>

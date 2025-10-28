@@ -18,7 +18,7 @@ export default function useHandleValidationVehicle() {
 
   const onError = (errors) => {
     toast.dismiss();
-    toast.error("Por favor revisa los campos vacíos");
+
     console.warn("Errores de validación:", errors);
   };
 
