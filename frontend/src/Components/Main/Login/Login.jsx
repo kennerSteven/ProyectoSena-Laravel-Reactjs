@@ -7,6 +7,7 @@ import ButtonSubmit from "../../Ui/ButtonSubmit";
 import BackButton from "../../Ui/BackButton";
 import { Toaster } from "react-hot-toast";
 import granjaImg from "../../../assets/img/SENAGRANJA.jpg";
+import logoSena from "../../../assets/img/logoSena.png";
 export default function Login() {
   const {
     register,
@@ -19,12 +20,15 @@ export default function Login() {
   return (
     <div className="">
       <div className="d-flex">
-        <div className="d-flex  align-items-center justify-content-center containerLogin shadow">
+        <div className="d-flex  containerLogin shadow">
           <div>
             <form
               onSubmit={handleSubmit(onSubmit, onError)}
               className="d-flex flex-column formContainer "
             >
+              <div className="mx-auto m-5">
+                <img src={logoSena} alt="" style={{ width: "200px" }} />
+              </div>
               <div className="d-flex flex-column">
                 <div className="d-flex align-items-center gap-4">
                   <BackButton />
