@@ -1,10 +1,61 @@
+/* Encabezado de la tabla */
 .p-datatable-thead th {
-  background-color: #007832;
-  
-  color: #fcfcfc;
-  font-weight: bold;
+  background-color: #ffffff;
+  /* Fondo blanco */
+  color: #007832;
+  /* Verde institucional para texto */
+  font-weight: 600;
   font-size: 13px;
+  border-bottom: 2px solid #007832;
+  /* Línea verde inferior */
 }
+
+/* Filas alternas para legibilidad */
+.p-datatable .p-datatable-tbody>tr:nth-child(even) {
+  background-color: #f8f9fa;
+  /* Gris claro para alternancia */
+}
+
+.p-datatable .p-datatable-tbody>tr:nth-child(odd) {
+  background-color: #ffffff;
+  /* Fondo blanco */
+}
+
+/* Hover sobre filas */
+.p-datatable .p-datatable-tbody>tr:hover {
+  background-color: #e6f4ea;
+  /* Verde suave al pasar el mouse */
+  cursor: pointer;
+}
+
+/* Celdas */
+.p-datatable .p-datatable-tbody td {
+  color: #343a40;
+  /* Texto gris oscuro */
+  font-size: 13px;
+  padding: 0.75rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .btnGeneral {
   border-radius: 10px;
@@ -54,15 +105,17 @@ ul {
 }
 
 .tableContainer {
-  width: 100%;
+  position: relative;
+  margin-left: 220px; 
+  padding: 1rem;
+
   max-width: 1100px;
-  margin: 0 auto; /* centra la tabla */
-  overflow-x: auto; /* permite desplazamiento si se pasa */
-  border: 1px solid #ccc; /* bordecito gris suave */
+  overflow-x: auto;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6; /* Gris Bootstrap */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  padding: 10px;
-  background-color: #fff; /* para destacar la tabla */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* sombra sutil */
+  z-index: 1;
 }
 
 /* Ajuste en pantallas pequeñas */
@@ -76,4 +129,39 @@ ul {
   table {
     font-size: 14px;
   }
+}
+
+
+
+
+
+
+
+/* Botón principal del SpeedDial */
+.p-speeddial-button.p-button-success {
+
+  /* Fondo blanco */
+
+  /* Borde verde institucional */
+  color: #ffffff;
+  /* Ícono verde */
+  border-radius: 5px;
+  transition: all 0.2s ease-in-out;
+}
+
+
+/* Botones de acción del SpeedDial */
+.p-speeddial-action {
+  background-color: #007832;
+
+  color: #ffffff;
+
+
+  transition: transform 0.2s ease;
+}
+
+.p-speeddial-action:hover {
+  background-color: #007832e0;
+
+  color: #ffffff;
 }

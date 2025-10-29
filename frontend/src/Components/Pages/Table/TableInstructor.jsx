@@ -1,31 +1,29 @@
-import {
-  nameValueInstructor,
-  // nameValueAdministrativo,
-  nameValueVisitante,
-  nameValueAprendiz,
-  dataAprendiz,
-  dataVisitante,
-} from "../../Layout/Data";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { Dialog } from "primereact/dialog";
-import { useEffect } from "react";
-import { GetDataInstructor } from "../../Services/FetchServices";
 import FormAprendiz from "../../Form/FormAprendiz";
-
+import { nameValueInstructor } from "../../Layout/Data";
+import { GetDataInstructor } from "../../Services/FetchServices";
+import { GetDataAprendiz } from "../../Services/FetchServices";
 import FormInstructor from "../../Form/FormInstructor";
 import Table from "../../Layout/Tablet";
+import FormPerfil from "../../Form/FomPerfiles/FormPerfil";
 export function TableInstructor() {
   const [openModal, setModalOpen] = useState(false);
-
+  const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
   const [instructor, setInstructor] = useState([]);
 
   useEffect(() => {
     async function LoadInstructor() {
       const data = await GetDataInstructor();
-      console.log(data);
-      setInstructor(data);
+
+      const flattened = data.map((item) => ({
+        ...item,
+        tipoPerfil: item.perfile?.nombre || "Sin perfil",
+      }));
+
+      setInstructor(flattened);
     }
+
     LoadInstructor();
   }, []);
 
@@ -37,78 +35,82 @@ export function TableInstructor() {
         dataTable={instructor}
         nameButton="Crear Instructor"
         functionModal={() => setModalOpen(true)}
+        openCreatePerfil={() => setModalCreatePerfil(true)}
       />
-
       <Dialog
-        header="Formulario Instructor"
+        header="Nuevo Instructor"
+      
         visible={openModal}
-        style={{ width: "850px" }}
-        onHide={() => setModalOpen(false)}
+        style={{ width: "750px" }}
+        onHide={() => setModalOpen(false)} // ← este cierra el correcto
         modal
       >
         <FormInstructor closeModal={() => setModalOpen(false)} />
       </Dialog>
-    </div>
-  );
-}
 
-// export function TableAdministrativo() {
-//   const [openModal, setModalOpen] = useState(false);
-
-//   return (
-//     <div>
-//       <Table
-//         tableTitle="Listar administrativos"
-//         nameValue={nameValueAdministrativo}
-//         dataTable={dataAdministrativo}
-//         nameButton="Crear Administrativo"
-//         functionModal={() => setModalOpen(true)}
-//       />
-
-//       <Dialog
-//         header="Crear nuevo Administrativo"
-//         visible={openModal}
-//         style={{ width: "700px" }}
-//         onHide={() => setModalOpen(false)}
-//         modal
-//       >
-//         <FormAdministrativo />
-//       </Dialog>
-//     </div>
-//   );
-// }
-
-export function TableAprendiz() {
-  const [openModal, setModalOpen] = useState(false);
-  return (
-    <div>
-      <Table
-        tableTitle="Listar aprendiz"
-        nameValue={nameValueAprendiz}
-        dataTable={dataAprendiz}
-        nameButton="Crear Aprendiz"
-        functionModal={() => setModalOpen(true)}
-      />
       <Dialog
-        header="Crear nuevo Aprendiz"
-        visible={openModal}
-        style={{ width: "950px" }}
-        onHide={() => setModalOpen(false)}
+        header="Nuevo Perfil"
+        visible={openModalCreatePerfil} // ← aquí estaba el error
+        style={{ width: "450px" }}
+        onHide={() => setModalCreatePerfil(false)} // ← también estaba mal
         modal
       >
-        <FormAprendiz />
+        <FormPerfil closeModal={() => setModalCreatePerfil(false)} />
       </Dialog>
     </div>
   );
 }
 
-export function TableVisitante() {
+export function TableAprendiz() {
+  const [openModal, setModalOpen] = useState(false);
+  const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
+  const [aprendiz, setAprendiz] = useState([]);
+
+  useEffect(() => {
+    async function LoadAprendiz() {
+      const data = await GetDataAprendiz();
+
+      const flattened = data.map((item) => ({
+        ...item,
+        tipoPerfil: item.perfile?.nombre || "Sin perfil",
+      }));
+
+      setAprendiz(flattened);
+    }
+
+    LoadAprendiz();
+  }, []);
+
   return (
-    <Table
-      tableTitle="Listar visitantes"
-      nameValue={nameValueVisitante}
-      dataTable={dataVisitante}
-      nameButton="Crear Visitante"
-    />
+    <div>
+      <Table
+        tableTitle="Listar Aprendices"
+        nameValue={nameValueInstructor}
+        dataTable={aprendiz}
+
+        functionModal={() => setModalOpen(true)}
+        openCreatePerfil={() => setModalCreatePerfil(true)}
+      />
+      <Dialog
+        header="Nuevo Aprendiz"
+      
+        visible={openModal}
+        style={{ width: "850px" }}
+        onHide={() => setModalOpen(false)} // ← este cierra el correcto
+        modal
+      >
+        <FormAprendiz  />
+      </Dialog>
+
+      <Dialog
+        header="Nuevo Perfil"
+        visible={openModalCreatePerfil} // ← aquí estaba el error
+        style={{ width: "450px" }}
+        onHide={() => setModalCreatePerfil(false)} // ← también estaba mal
+        modal
+      >
+        <FormPerfil closeModal={() => setModalCreatePerfil(false)} />
+      </Dialog>
+    </div>
   );
 }

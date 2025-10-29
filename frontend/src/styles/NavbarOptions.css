@@ -1,15 +1,17 @@
 .sidebar {
-  background-color: #ffffff;
+position: fixed;
 
-  min-height: 100vh;
-  width: 220px;
+  width: 200px; /* o el ancho que uses */
+  height: 100%;
+  background-color: #007832;
+
 }
 
 .main {
   display: flex;
   align-items: center;
   margin: 50px;
-  color: #2f2f38;
+  color: #fff;
 
   text-decoration: none;
   border-radius: 6px;

@@ -16,36 +16,28 @@ export default function FormInstructor({ closeModal }) {
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidationInstructor);
 
-  const { perfiles, loading, error } = useTipoPerfilFetch();
+  const { perfil } = useTipoPerfilFetch("Instructor");
 
-  // Filtra solo el perfil "Juan"
-  const perfilesJuan = perfiles.filter(
-    (p) => p.nombre?.toLowerCase() === "juan"
-  );
-
-  const opcionesPerfil = perfilesJuan.map((p) => ({
-    value: p.id,
-    label: p.nombre,
-  }));
+  const opcionesPerfil = perfil
+    ? [{ value: perfil.id, label: perfil.nombre }]
+    : [];
 
   const { onSubmit, onError } = HandleValidationInstructor({
     reset,
-    perfiles: perfilesJuan,
+    perfiles: perfil ? [perfil] : [],
     closeModal,
+    perfil: "Instructor",
   });
 
   return (
     <div className="d-flex justify-content-center">
       <div className="row">
-        <form
-          className="d-flex gap-4"
-          onSubmit={handleSubmit(onSubmit, onError)}
-        >
+        <form className="d-flex gap-4" onSubmit={handleSubmit(onSubmit, onError)}>
           <div>
             <div className="gap-3">
               <div className="col-lg-12 mb-3">
                 <InputField
-                  typeIntput="text"
+                  typeInput="text"
                   name="nombre"
                   register={register}
                   error={errors.nombre}
@@ -54,7 +46,7 @@ export default function FormInstructor({ closeModal }) {
               </div>
               <div className="col-lg-12 mb-3">
                 <InputField
-                  typeIntput="text"
+                  typeInput="text"
                   name="apellido"
                   register={register}
                   error={errors.apellido}
@@ -72,7 +64,7 @@ export default function FormInstructor({ closeModal }) {
                 values={[{ value: "cc", label: "Cédula de ciudadanía" }]}
               />
               <InputField
-                typeIntput="text"
+                typeInput="text"
                 name="numeroDocumento"
                 register={register}
                 error={errors.numeroDocumento}
@@ -85,7 +77,7 @@ export default function FormInstructor({ closeModal }) {
             <div>
               <div className="col-lg-12 mb-3">
                 <InputField
-                  typeIntput="number"
+                  typeInput="number"
                   name="telefono"
                   register={register}
                   error={errors.telefono}
@@ -117,17 +109,7 @@ export default function FormInstructor({ closeModal }) {
                   nameSelect="Tipo de perfil"
                   error={errors.tipoPerfil}
                   values={opcionesPerfil}
-                  disabled={loading}
                 />
-                {loading && <p className="text-muted">Cargando perfiles...</p>}
-                {error && (
-                  <p className="text-danger">Error al cargar perfiles</p>
-                )}
-                {!loading && opcionesPerfil.length === 0 && (
-                  <p className="text-warning">
-                    No se encontró el perfil 'Juan'
-                  </p>
-                )}
               </div>
             </div>
 

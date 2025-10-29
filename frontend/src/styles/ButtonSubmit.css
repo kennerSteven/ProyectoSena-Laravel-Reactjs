@@ -36,3 +36,11 @@
   justify-content: center;
   text-align: center;
 }
+
+
+.swal-confirm-green {
+  background-color: #007832 !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: none !important;
+}

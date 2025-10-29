@@ -24,12 +24,12 @@ export default function Login() {
           <div>
             <form
               onSubmit={handleSubmit(onSubmit, onError)}
-              className="d-flex flex-column formContainer "
+              className="d-flex flex-column  formContainer "
             >
-              <div className="mx-auto m-5">
-                <img src={logoSena} alt="" style={{ width: "200px" }} />
-              </div>
-              <div className="d-flex flex-column">
+                  {/* <div className="mx-auto m-5">
+                    <img src={logoSena} alt="" style={{ width: "200px" }} />
+                  </div> */}
+              <div className="d-flex flex-column align-items-center justify-content-center">
                 <div className="d-flex align-items-center gap-4">
                   <BackButton />
                   <div className="d-flex align-items-center  gap-3">

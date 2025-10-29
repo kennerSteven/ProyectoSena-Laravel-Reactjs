@@ -8,9 +8,25 @@ export const onSubmitPerfil = async (data) => {
 };
 
 
-
 export async function GetDataInstructor() {
-  await GetDataFetch("http://127.0.0.1:8000/api/usuario/index")
+  try {
+    const result = await GetDataFetch("http://127.0.0.1:8000/api/usuario/index");
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error("Error en GetDataInstructor:", error);
+    return [];
+  }
+}
+
+
+export async function GetDataAprendiz() {
+  try {
+    const result = await GetDataFetch("http://127.0.0.1:8000/api/usuario/index");
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error("Error en GetDataAprendiz:", error);
+    return [];
+  }
 }
 
 

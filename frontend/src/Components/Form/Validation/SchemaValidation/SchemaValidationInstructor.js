@@ -33,11 +33,12 @@ const SchemaValidationInstructor = yup.object({
       "Tipo de sangre inválido"
     )
     .required("Selecciona el tipo de sangre"),
-  tipoPerfil: yup
-    .string()
-    .required("El tipo de perfil es obligatorio")
-    .min(2, "Mínimo 2 caracteres"),
-
+tipoPerfil: yup
+  .number()
+  .transform((value, originalValue) =>
+    String(originalValue).trim() === "" ? undefined : value
+  )
+  .required("El tipo de perfil es obligatorio"),
 });
 
 export default SchemaValidationInstructor;

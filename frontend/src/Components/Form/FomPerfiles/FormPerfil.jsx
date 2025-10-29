@@ -23,46 +23,35 @@ export default function FormPerfil() {
       className="d-flex justify-content-center align-items-center  "
     >
       <div className="row">
-        <div className="formRegister shadow-sm col-12 col-md-8 col-lg-6 mx-auto p-4">
+        <div className="formRegister shadow-sm">
+        
+
           <div className="mb-4">
-            <h2 className="mt-2 ">Crear tipo de perfil</h2>
+            <InputField
+              typeInput="text"
+              name="tipoPerfil"
+              register={register}
+              error={errors.tipoPerfil}
+              labelName="Nombre del perfil"
+            />
           </div>
-     
 
-   <div className="mb-4">
-       <InputField
-  typeInput="text"
-  name="tipoPerfil" // 👈 nombre claro y semántico
-  register={register}
-  error={errors.tipoPerfil}
-  labelName="Nombre del perfil"
-/>
-       </div>
-
-
-       <div className="mb-4">
-           <InputField
-            typeInput="text"
-            name="descripcion"
-            register={register}
-            error={errors.descripcion}
-            labelName="Descripcion"
-          />
-       </div>
+          <div className="mb-4">
+            <InputField
+              typeInput="text"
+              name="descripcion"
+              register={register}
+              error={errors.descripcion}
+              labelName="Descripcion"
+            />
+          </div>
           <ButtonSubmit
             textSend="Guardar "
             textSending="Guardando..."
             isSubmitting={isSubmitting}
             iconButton="bi bi-save"
           />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: {
-                marginTop: "100px",
-              },
-            }}
-          />
+       
         </div>
       </div>
     </form>

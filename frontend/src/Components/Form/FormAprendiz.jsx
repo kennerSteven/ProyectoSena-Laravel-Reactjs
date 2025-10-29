@@ -7,8 +7,9 @@ import { Toaster } from "react-hot-toast";
 
 import SchemaValidationUser from "./Validation/SchemaValidation/SchemaValidationUser";
 import InputAutoComplete from "../Ui/InputAutocomplete";
+import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
 import HandleValidationAprendiz from "./Validation/HandleValidation/HandleEntitie/HandleValidation.Aprendiz";
-export default function FormAprendiz() {
+export default function FormAprendiz({closeModal}) {
   const {
     register,
     control,
@@ -18,6 +19,24 @@ export default function FormAprendiz() {
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidationUser);
 
+
+
+  const { perfil } = useTipoPerfilFetch("Aprendiz");
+
+
+
+  const opcionesPerfil = perfil
+    ? [{ value: perfil.id, label: perfil.nombre }]
+    : [];
+
+
+
+  const { onSubmit, onError } = HandleValidationAprendiz({
+    reset,
+    perfiles: perfil ? [perfil] : [],
+    closeModal,
+    perfil: "Aprendiz",
+  });
 
 
   const fichas = [
@@ -34,19 +53,19 @@ export default function FormAprendiz() {
     { numeroFicha: "67890", nombreFicha: "Administración", jornada: "Diurna" },
   ];
 
-  const { onSubmit, onError } = HandleValidationAprendiz({ reset });
+
 
   return (
     <div className="container ">
       <form
         className="row mt-4 formUsers mx-auto"
-        onSubmit={handleSubmit(onSubmit, onError)}
+         onSubmit={handleSubmit(onSubmit, onError)}
       >
         {/* Columna izquierda */}
         <div className="col-12 col-lg-6">
           <div className="mb-3">
             <InputField
-              typeIntput="text"
+              typeInput="text"
               name="nombre"
               register={register}
               error={errors.nombre}
@@ -56,7 +75,7 @@ export default function FormAprendiz() {
 
           <div className="mb-4">
             <InputField
-              typeIntput="text"
+              typeInput="text"
               name="apellido"
               register={register}
               error={errors.apellido}
@@ -129,13 +148,13 @@ export default function FormAprendiz() {
             />
           </div>
 
-          <InputField
+          <SelectOptions
             typeIntput="text"
             name="tipoPerfil"
             register={register}
             error={errors.tipoPerfil}
             labelName="Tipo perfil"
-            disabled={true}
+           values={opcionesPerfil}
           />
         </div>
 

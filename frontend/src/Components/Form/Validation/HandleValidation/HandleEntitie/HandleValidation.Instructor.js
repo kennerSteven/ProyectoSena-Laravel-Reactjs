@@ -2,17 +2,27 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { onSubmitInstructor } from "../../../../Services/FetchServices";
 import toast from "react-hot-toast";
+import "../../../../../styles/ButtonSubmit.css"
 
 export default function HandleValidationInstructor({
   reset,
   perfiles,
   closeModal,
+  perfil: nombrePerfil, // ✅ renombrado para evitar conflicto
 }) {
   const [formData, setFormData] = useState();
 
   const onSubmit = async (data) => {
     toast.dismiss();
-    const perfilJuan = perfiles.find((p) => p.nombre?.toLowerCase() === "juan");
+
+    const perfilSeleccionado = perfiles.find(
+      (p) => p.nombre?.toLowerCase() === nombrePerfil?.toLowerCase()
+    );
+
+    if (!perfilSeleccionado) {
+      toast.error("No se encontró el perfil solicitado");
+      return;
+    }
 
     const payload = {
       nombre: data.nombre,
@@ -21,7 +31,7 @@ export default function HandleValidationInstructor({
       numeroDocumento: data.numeroDocumento,
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
-      idperfil: perfilJuan.id,
+      idperfil: perfilSeleccionado.id,
     };
 
     console.table(payload);
@@ -32,25 +42,27 @@ export default function HandleValidationInstructor({
       reset();
       closeModal();
 
-      // ✅ Espera 300ms para que el modal se cierre antes de mostrar SweetAlert
-
-      Swal.fire({
-        icon: "success",
-        title: "Instructor creado",
-        text: "El instructor fue guardado exitosamente",
-        confirmButtonText: "Aceptar",
-      });
-
-      setFormData(payload);
+Swal.fire({
+  icon: "success",
+  title: "Instructor creado",
+  text: "El instructor fue guardado exitosamente",
+  confirmButtonText: "Aceptar",
+  timer: 2000,
+  timerProgressBar: true,
+  showConfirmButton: true,
+  customClass: {
+    confirmButton: "swal-confirm-green",
+  },
+});
     } catch (error) {
       console.error("Error en envío:", error);
+      toast.error("Error al guardar el instructor");
     }
   };
 
   const onError = (errors) => {
     console.warn("Errores de validación:", errors);
     toast.dismiss();
-    toast.error("Errores de validacion");
   };
 
   return { onSubmit, onError, formData, closeModal };
