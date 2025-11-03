@@ -2,7 +2,7 @@ export const ItemsConfig = [
   {
     iconClass: "pi pi-home",
     nameItem: "Inicio",
-    link: "/Dashboard",
+    link: "/Dashboard/inicio",
   },
   {
     iconClass: "pi pi-users",

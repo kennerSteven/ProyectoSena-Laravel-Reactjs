@@ -1,6 +1,6 @@
 .containerLogin {
   background-color: #ffff;
-  padding: 60px;
+  padding: 20px;
   border-radius: 10px;
 }
 
@@ -12,10 +12,10 @@
   font-size: 30px;
 }
 
-strong {
+/* strong {
   color: #007832;
   font-size: 22px;
-}
+} */
 
 .forgetPassword {
   font-size: 15px;
