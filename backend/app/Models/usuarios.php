@@ -55,7 +55,10 @@ class usuarios extends Model
         return $this->hasMany(eysgranja::class);
     }
 
+ public function eyscasadeapoyo() {
 
+        return $this->hasMany(eyscasadeapoyo::class);
+    }
 
 
 }

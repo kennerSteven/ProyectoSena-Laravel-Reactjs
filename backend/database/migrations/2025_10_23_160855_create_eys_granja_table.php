@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('eys_granja', function (Blueprint $table) {
-             $table->id();
+            $table->id();
             $table->string('numeroDocumento');
             $table->timestamp('fechaRegistro')->useCurrent();
-            $table->unsignedBigInteger('idusuario')->nullable();
-            $table->foreign('idusuario')->references('id')->on('usuarios')->nullable();
+            $table->enum('tipo', ['entrada', 'salida']);
+            $table->unsignedBigInteger('idusuario');
+            $table->foreign('idusuario')->references('id')->on('usuarios');
             $table->unsignedBigInteger('idvehiculo')->nullable();
-            $table->foreign('idvehiculo')->references('id')->on('vehiculos')->nullable();
+            $table->foreign('idvehiculo')->references('id')->on('vehiculos');
             $table->timestamps();
         });
     }

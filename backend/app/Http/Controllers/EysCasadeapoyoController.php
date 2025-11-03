@@ -2,29 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\eys_sena;
-use App\Models\eyssena;
+use App\Models\eyscasadeapoyo;
 use App\Models\usuarios;
 use Illuminate\Http\Request;
 
-class eys_senaController extends Controller
+class EysCasadeapoyoController extends Controller
 {
-    public function index()
+     public function index()
     {
-        $registros = eyssena::with(['usuarios'])->get();
+        $registros = eyscasadeapoyo::with(['usuarios'])->get();
         return response()->json($registros);
     }
 
    
-    public function entradasena(Request $request)
+    public function entradacasadeapoyo(Request $request)
     {
 
-        $request->validate(['numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'], ]);
+         $request->validate(['numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'], ]);
 
         $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
         
-        $entrada = eyssena::create([
+        $entrada = eyscasadeapoyo::create([
             'numeroDocumento' => $usuario->numeroDocumento,
             'tipo' => 'entrada',
             'idusuario' => $usuario->id,
@@ -39,14 +38,13 @@ class eys_senaController extends Controller
     }
 
 
-     public function salidasena(Request $request)
+     public function salidacasadeapoyo(Request $request)
     {
-
-       $request->validate(['numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],]);
+        $request->validate(['numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],]);
 
        $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
-       $ultimoRegistro = eyssena::where('idusuario', $usuario->id)->latest()->first();
+       $ultimoRegistro = eyscasadeapoyo::where('idusuario', $usuario->id)->latest()->first();
 
 
     if (!$ultimoRegistro || $ultimoRegistro->tipo === 'salida') {
@@ -56,7 +54,7 @@ class eys_senaController extends Controller
     }
         
 
-        $salida = eyssena::create([
+        $salida = eyscasadeapoyo::create([
             'numeroDocumento' => $usuario->numeroDocumento,
             'tipo' => 'salida',
             'idusuario' => $usuario->id,
@@ -69,8 +67,4 @@ class eys_senaController extends Controller
             'entrada' => $salida
         ]);
     }
-
-
-    
-
 }

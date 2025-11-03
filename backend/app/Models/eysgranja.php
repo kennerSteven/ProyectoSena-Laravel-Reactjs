@@ -10,6 +10,7 @@ class eysgranja extends Model
      protected $fillable = [
         'numeroDocumento',
         'fechaRegistro',
+        'tipo',
         'idusuario',
         'idvehiculo'
        

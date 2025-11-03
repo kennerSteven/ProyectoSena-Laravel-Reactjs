@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('numeroDocumento');
             $table->timestamp('fechaRegistro')->useCurrent();
-            $table->unsignedBigInteger('idusuario')->nullable();
-            $table->foreign('idusuario')->references('id')->on('usuarios')->nullable();
+            $table->enum('tipo', ['entrada', 'salida']);
+            $table->unsignedBigInteger('idusuario');
+            $table->foreign('idusuario')->references('id')->on('usuarios');
             $table->timestamps();
         });
     }

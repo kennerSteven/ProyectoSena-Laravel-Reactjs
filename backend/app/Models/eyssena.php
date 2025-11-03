@@ -10,6 +10,7 @@ class eyssena extends Model
     protected $fillable = [
         'numeroDocumento',
         'fechaRegistro',
+        'tipo',
         'idusuario'
        
     ];

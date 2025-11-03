@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class eysgym extends Model
+class eyscasadeapoyo extends Model
 {
-    protected $table = 'eys_gym';
+    protected $table = 'eys_casadeapoyo';
     protected $fillable = [
         'numeroDocumento',
         'fechaRegistro',
@@ -15,7 +15,7 @@ class eysgym extends Model
        
     ];
 
-    public function usuarios() {
+     public function usuarios() {
 
          return $this->belongsTo(usuarios::class,'idusuario');
     }
