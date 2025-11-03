@@ -4,27 +4,33 @@ namespace Database\Seeders;
 
 use App\Models\fichas;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 
 class fichasSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+   public function run(): void
     {
-        fichas::create([
-            'numeroFicha'    => '2424185',
-            'nombrePrograma' => 'Tecnología en Análisis y Desarrollo de Software',
-            'jornada'        => 'Mañana',
-            'estado'         => 'activo',
-        ]);
+        $faker = Faker::create('es_ES');
 
-        fichas::create([
-            'numeroFicha'    => '2424167',
-            'nombrePrograma' => 'Técnico en Cocina',
-            'jornada'        => 'Tarde',
-            'estado'         => 'inactivo',
-        ]);
+        for ($i = 0; $i < 500; $i++) {
+            fichas::create([
+                'numeroFicha' => $faker->unique()->numerify('#######'),
+                'nombrePrograma' => $faker->randomElement([
+                    'Análisis y Desarrollo de Software',
+                    'Cocina',
+                    'Contabilidad y Finanzas',
+                    'Gestión Empresarial',
+                    'Mecatrónica',
+                    'Diseño Gráfico',
+                    'Salud Ocupacional',
+                    'Marketing Digital',
+                    'Panadería y Pastelería',
+                    'Gestión del Talento Humano'
+                ]),
+                'jornada' => $faker->randomElement(['Mañana', 'Tarde', 'Noche']),
+                'estado' => $faker->randomElement(['activo', 'inactivo']),
+            ]);
+        }
     }
 }

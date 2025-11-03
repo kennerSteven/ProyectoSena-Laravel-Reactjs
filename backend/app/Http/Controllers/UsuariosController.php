@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\eysgym;
+use App\Models\eyssena;
 use App\Models\usuarios;
 use Illuminate\Http\Request;
 
@@ -15,12 +16,47 @@ class UsuariosController extends Controller
 
    }
 
-   public function store(Request $request){
+   public function store(Request $request)
+{
+    // Crear el usuario
+    $usuario = Usuarios::create($request->all());
 
-    $usuario = usuarios::create($request->all());
-    return response()->json(['message' => 'Usuario creado correctamente',
-    'data' => $usuario], 201);
-   }
+    //  Obtener el tipo de entrada desde el frontend
+    $tipoEntrada = $request->input('tipoEntrada'); // gym, granja o casa
+    $entrada = null;
+
+    //  Crear la entrada según el tipo
+    if ($tipoEntrada === 'gym') {
+        $entrada = eysgym::create([
+            'numeroDocumento' => $usuario->numeroDocumento,
+            'tipo' => 'entrada',
+            'idusuario' => $usuario->id,
+            'fechaRegistro' => now(),
+        ]);
+    } elseif ($tipoEntrada === 'granja') {
+        $entrada = eysgym::create([
+            'numeroDocumento' => $usuario->numeroDocumento,
+            'tipo' => 'entrada',
+            'idusuario' => $usuario->id,
+            'fechaRegistro' => now(),
+        ]);
+    } elseif ($tipoEntrada === 'casa') {
+        $entrada = eyssena::create([
+            'numeroDocumento' => $usuario->numeroDocumento,
+            'tipo' => 'entrada',
+            'idusuario' => $usuario->id,
+            'fechaRegistro' => now(),
+        ]);
+    }
+
+    
+    return response()->json([
+        'message' => 'Usuario y entrada registrados correctamente',
+        'usuario' => $usuario,
+        'entrada' => $entrada
+    ], 201);
+}
+
 
 
    public function show(string $id){
