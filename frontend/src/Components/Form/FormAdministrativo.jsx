@@ -6,28 +6,31 @@ import useFormWithYup from "./Validation/connectYupRhf";
 import { Toaster } from "react-hot-toast";
 import "../../styles/FormUsers.css";
 import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
-import HandleValidationInstructor from "./Validation/HandleValidation/HandleEntitie/HandleValidation.Instructor";
-import SchemaValidationInstructor from "./Validation/SchemaValidation/SchemaValidationInstructor";
+import HandleValidationAdministrativo from "./Validation/HandleValidation/HandleEntitie/HandleValidation.Administrativo";
+import SchemaValidationAdministrativo from "./Validation/SchemaValidation/SchemaValidationAdministrativo";
 
-export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
+export default function FormAdministrativo({
+  closeModal,
+  usuarioSeleccionado,
+}) {
   const {
     register,
     reset,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = useFormWithYup(SchemaValidationInstructor);
+  } = useFormWithYup(SchemaValidationAdministrativo);
 
-  const { perfil } = useTipoPerfilFetch("Instructor");
+  const { perfil } = useTipoPerfilFetch("Administrativo");
 
   const opcionesPerfil = perfil
     ? [{ value: perfil.id, label: perfil.nombre }]
     : [];
 
-  const { onSubmit, onError } = HandleValidationInstructor({
+  const { onSubmit, onError } = HandleValidationAdministrativo({
     reset,
     perfiles: perfil ? [perfil] : [],
     closeModal,
-    perfil: "Instructor",
+    perfil: "Administrativo",
     usuarioSeleccionado,
   });
 
@@ -35,8 +38,8 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
     if (usuarioSeleccionado && perfil) {
       reset({
         nombre: usuarioSeleccionado.nombre || "",
-        apellido: usuarioSeleccionado.apellido,
-        tipoDocumento: usuarioSeleccionado.tipoDocumento,
+        apellido: usuarioSeleccionado.apellido || "",
+        tipoDocumento: usuarioSeleccionado.tipoDocumento || "cc",
         numeroDocumento: usuarioSeleccionado.numeroDocumento || "",
         telefono: usuarioSeleccionado.telefono || "",
         tipoSangre: usuarioSeleccionado.tipoSangre || "",

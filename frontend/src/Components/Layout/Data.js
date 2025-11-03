@@ -57,18 +57,23 @@ export const TipoPerfil = [
   { value: "Visitante", label: "Visitante" },
 ];
 
-
-
 export const nameValueInstructor = [
   { field: "nombre", header: "Nombre" },
   { field: "apellido", header: "Apellido" },
   { field: "tipoPerfil", header: "Perfil" },
-
-  { field: "numeroDocumento", header: "N°Documento" },
+  { field: "numeroDocumento", header: "Documento" },
   { field: "telefono", header: "Teléfono" },
-  { field: "tipoSangre", header: "Sangre" },
-  { field: "estado", header: "Estado" },
-  { field: "fechaRegistro", header: "Fecha Registro" }
+  { field: "fechaRegistro", header: "Fecha de Registro" }, // ✅ agregado
+];
+
+export const nameValueAprendiz = [
+  { field: "nombre", header: "Nombre" },
+  { field: "apellido", header: "Apellido" },
+  { field: "tipoPerfil", header: "Perfil" },
+  { field: "numeroDocumento", header: "Documento" },
+  { field: "telefono", header: "Teléfono" },
+  { field: "tipoSangre", header: "Tipo de Sangre" },
+  { field: "fechaRegistro", header: "Fecha de Registro" }, // ✅ agregado
 ];
 export const nameValueVisitante = [
   "Id",
@@ -82,17 +87,12 @@ export const nameValueVisitante = [
   "Estado",
   "Fecha registro",
 ];
-
 export const nameValueAdministrativo = [
-  "Id",
-  "Nombre",
-  "Apellido",
-  "Tipo perfil",
-  "Tipo Documento",
-  "Numero Documento",
-  "Telefono",
-  "Tipo sangre",
-  "Estado",
-  "Fecha registro",
+  { field: "nombre", header: "Nombre" },
+  { field: "apellido", header: "Apellido" },
+  { field: "tipoPerfil", header: "Perfil" },
+  { field: "numeroDocumento", header: "Documento" },
+  { field: "telefono", header: "Teléfono" },
+  { field: "tipoSangre", header: "Tipo de Sangre" },
+  { field: "fechaRegistro", header: "Fecha de Registro" }, // ✅ agregado
 ];
-

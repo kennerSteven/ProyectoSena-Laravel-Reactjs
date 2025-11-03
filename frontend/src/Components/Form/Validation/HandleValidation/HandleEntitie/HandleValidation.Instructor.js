@@ -1,14 +1,18 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { onSubmitInstructor } from "../../../../Services/FetchServices";
+import {
+  onSubmitInstructor,
+  updateInstructor,
+} from "../../../../Services/FetchServices";
 import toast from "react-hot-toast";
-import "../../../../../styles/ButtonSubmit.css"
+import "../../../../../styles/ButtonSubmit.css";
 
 export default function HandleValidationInstructor({
   reset,
   perfiles,
   closeModal,
-  perfil: nombrePerfil, // ✅ renombrado para evitar conflicto
+  perfil: nombrePerfil,
+  usuarioSeleccionado,
 }) {
   const [formData, setFormData] = useState();
 
@@ -38,22 +42,38 @@ export default function HandleValidationInstructor({
     setFormData(payload);
 
     try {
-      await onSubmitInstructor(payload);
+      if (usuarioSeleccionado?.id) {
+        await updateInstructor(usuarioSeleccionado.id, payload);
+        Swal.fire({
+          icon: "success",
+          title: "Instructor actualizado",
+          text: "El instructor fue actualizado exitosamente",
+          confirmButtonText: "Aceptar",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          customClass: {
+            confirmButton: "swal-confirm-green",
+          },
+        });
+      } else {
+        await onSubmitInstructor(payload);
+        Swal.fire({
+          icon: "success",
+          title: "Instructor creado",
+          text: "El instructor fue guardado exitosamente",
+          confirmButtonText: "Aceptar",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          customClass: {
+            confirmButton: "swal-confirm-green",
+          },
+        });
+      }
+
       reset();
       closeModal();
-
-Swal.fire({
-  icon: "success",
-  title: "Instructor creado",
-  text: "El instructor fue guardado exitosamente",
-  confirmButtonText: "Aceptar",
-  timer: 2000,
-  timerProgressBar: true,
-  showConfirmButton: true,
-  customClass: {
-    confirmButton: "swal-confirm-green",
-  },
-});
     } catch (error) {
       console.error("Error en envío:", error);
       toast.error("Error al guardar el instructor");

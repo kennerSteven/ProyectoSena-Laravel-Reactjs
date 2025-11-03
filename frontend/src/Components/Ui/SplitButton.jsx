@@ -1,21 +1,27 @@
 import { SplitButton } from "primereact/splitbutton";
 import "../../styles/SplitButton.css";
 
-export default function SplitButtonComp() {
+import "primeicons/primeicons.css";
+
+export default function SplitButtonComp({ rowData, onEdit, onDelete }) {
   const items = [
     {
-      label: "Actualizar ",
-      icon: "pi pi-refresh text-primary", // Ícono azul Bootstrap
+      label: "Editar",
+      icon: "pi pi-pencil",
+      command: () => onEdit(rowData),
     },
     {
       label: "Eliminar",
-      icon: "pi pi-times text-danger", // Ícono rojo Bootstrap
+      icon: "pi pi-trash",
+      command: () => onDelete(rowData),
     },
   ];
 
   return (
-    <div className="card flex justify-content-center">
-      <SplitButton label="Acciones" model={items} />
-    </div>
+    <SplitButton
+      label="Acciones"
+      model={items}
+      className="p-button-sm p-button-outlined"
+    />
   );
 }

@@ -4,8 +4,7 @@ import DashboardCata from "../Pages/Dashboard/DashboardCata";
 import Login from "../Main/Login/Login";
 import FormPerfil from "../Form/FomPerfiles/FormPerfil";
 import FormFormacion from "../Form/FormFormacion/FormFormacion";
-import FormInstructor from "../Form/FormInstructor";
-
+import { TableAdministrativo } from "../Pages/Table/TableInstructor";
 import MainDashboard from "../Pages/MainDash/MainDashboard";
 import { TableInstructor, TableAprendiz } from "../Pages/Table/TableInstructor";
 
@@ -20,8 +19,8 @@ export default function App() {
         <Route path="CrearPerfil" element={<FormPerfil />} />
         <Route path="crearFormacion" element={<FormFormacion />} />
         <Route path="TipoUsuario" element={<FormPerfil />} />
-        <Route path="CrearInstructor" element={<FormInstructor />} />
         <Route path="ListarInstructor" element={<TableInstructor />} />
+        <Route path="ListarAdministrativo" element={<TableAdministrativo />} />
         <Route path="ListarAprendiz" element={<TableAprendiz />} />
       </Route>
     </Routes>

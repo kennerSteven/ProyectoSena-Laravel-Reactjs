@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function useTipoPerfilFetch(nombreFiltro = "") {
-  const [perfil, setPerfil] = useState(null);
+  const [perfiles, setPerfiles] = useState([]);
 
   useEffect(() => {
     async function fetchTipoPerfil() {
@@ -19,21 +19,24 @@ export default function useTipoPerfilFetch(nombreFiltro = "") {
         const data = await res.json();
         const perfilesArray = Array.isArray(data) ? data : Object.values(data);
 
-        const perfilEncontrado = nombreFiltro
-          ? perfilesArray.find(
-              (p) => p.nombre?.toLowerCase() === nombreFiltro.toLowerCase()
+        const perfilesFiltrados = nombreFiltro
+          ? perfilesArray.filter((p) =>
+              p.nombre?.toLowerCase().includes(nombreFiltro.toLowerCase())
             )
-          : perfilesArray[0]; 
+          : perfilesArray;
 
-        setPerfil(perfilEncontrado || null); 
+        setPerfiles(perfilesFiltrados);
       } catch (err) {
-        console.error("Error al obtener perfil:", err);
-        setPerfil(null);
+        console.error("Error al obtener perfiles:", err);
+        setPerfiles([]);
       }
     }
 
     fetchTipoPerfil();
   }, [nombreFiltro]);
 
-  return { perfil };
+  return {
+    perfiles, // ✅ array completo filtrado
+    perfil: perfiles.length > 0 ? perfiles[0] : null, // ✅ primero como fallback
+  };
 }
