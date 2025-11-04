@@ -1,18 +1,24 @@
 import toast from "react-hot-toast";
 
 export default function useHandleValidationRegister({ reset, setVisible }) {
-  const onSubmit = async (formData) => {
+  const onSubmit = async ({ numeroDocumento, tipo }) => {
     try {
       const loadingToast = toast.loading("Enviando datos...");
 
+      const payload = {
+        numeroDocumento,
+        tipo,
+      };
+
       const response = await fetch(
-        "http://127.0.0.1:8000/api/entradaysalidacasa/index",
+        "http://127.0.0.1:8000/api/entradaysalidagym/entradagym",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Accept: "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         }
       );
 

@@ -1,5 +1,6 @@
 .containerLogin {
-  background-color: #ffff;
+  background: #fff;
+
   padding: 20px;
   border-radius: 10px;
 }
@@ -24,4 +25,8 @@
 
 .msjCreateAccount {
   font-size: 14px;
+}
+
+.gato {
+  height: 100%;
 }

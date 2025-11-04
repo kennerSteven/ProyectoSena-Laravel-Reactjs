@@ -1,0 +1,15 @@
+.bgBarChar {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgb(216, 216, 216);
+  font-size: 13px;
+}
+
+.bgBarDoug {
+  background-color: #fff;
+
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgb(216, 216, 216);
+  font-size: 13px;
+}

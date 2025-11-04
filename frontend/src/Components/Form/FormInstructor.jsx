@@ -80,7 +80,10 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                 name="tipoDocumento"
                 nameSelect="Tipo documento"
                 error={errors.tipoDocumento}
-                values={[{ value: "cc", label: "Cédula de ciudadanía" }]}
+                values={[
+                  { value: "cc", label: "Cédula de ciudadanía" },
+                  { value: "otro", label: "Otro..." },
+                ]}
               />
               <InputField
                 typeInput="text"

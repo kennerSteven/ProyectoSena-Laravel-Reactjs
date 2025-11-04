@@ -7,9 +7,9 @@ import "../../styles/SidebarItems.css";
 export default function Dashboard({ ItemsDash, nameTopBar, nameAdmin }) {
   return (
     <div>
-      <div className="d-flex">
+      <div className="d-flex  ">
         <div className="d-flex flex-column px-4    sidebar">
-          <div className="d-flex align-items-center justify-content-center ">
+          <div className="d-flex align-items-center justify-content-center mt-3 ">
             <img
               src={logo}
               className="pt-2 pb-3"
@@ -18,7 +18,7 @@ export default function Dashboard({ ItemsDash, nameTopBar, nameAdmin }) {
             />
           </div>
           <hr />
-          <div className="d-flex flex-column ">
+          <div className="d-flex flex-column shadow p-2 rounded ">
             <SideBar valueSidebarOptions={ItemsDash} />
           </div>
         </div>

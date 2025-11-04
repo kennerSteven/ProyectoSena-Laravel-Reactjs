@@ -41,7 +41,7 @@
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-  background-color: #007832;
+  background: linear-gradient(to right, #007832, #66b98a);
   color: rgb(255, 255, 255);
   font-weight: bold;
   border-radius: 20px;
@@ -107,7 +107,7 @@ ul {
 
 /* Botones de acción del SpeedDial */
 .p-speeddial-action {
-  background-color: #007832;
+  background: linear-gradient(to right, #007832, #66b98a);
 
   color: #ffffff;
 
@@ -115,7 +115,7 @@ ul {
 }
 
 .p-speeddial-action:hover {
-  background-color: #007832e0;
+  background: linear-gradient(to right, #007832, #66b98a);
 
   color: #ffffff;
 }

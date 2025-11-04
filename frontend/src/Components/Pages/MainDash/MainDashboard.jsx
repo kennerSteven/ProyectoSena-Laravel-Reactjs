@@ -4,46 +4,73 @@ import KPIBarChart from "../../Charts/BarChar";
 
 export default function MainDashboard() {
   return (
-    <div className="containerMain  mx-auto  ">
-      <div className="containerMainDash   ">
-        <div className="d-flex justify-content-center gap-5 flex-wrap py-3 ">
-          <KPI
-            nameKpi="Usuarios"
-            bigValue="582"
-            labelSubNameFirst="Aprendices"
-            valueFirst="255"
-            labelSubNameSecond="Instructores"
-            valueSecond="80"
-            labelSubNameThird="Administrativos"
-            valueThird="35"
-            icon={<i className="bi bi-people iconStyle"></i>}
-          />
+    <div className="container px-4 py-3 mt-5">
+      <div className="">
+        {/* KPIs distribuidos responsivamente y centrados */}
+        <div className="row justify-content-center gap-2">
+          <div className="col-12 col-md-6 col-xl-2">
+            <KPI
+              nameKpi="Usuarios"
+              bigValue="582"
+              labelSubNameFirst="Aprendices"
+              valueFirst="255"
+              labelSubNameSecond="Instructores"
+              valueSecond="80"
+              labelSubNameThird="Administrativos"
+              valueThird="35"
+              icon={<i className="bi bi-people iconStyle"></i>}
+            />
+          </div>
 
-          <KPI
-            nameKpi="Formaciones"
-            bigValue="14"
-            labelSubNameFirst="Mañana"
-            valueFirst="8"
-            labelSubNameSecond="Tarde"
-            valueSecond="4"
-            labelSubNameThird="Noche"
-            valueThird="2"
-            icon={<i className="bi bi-journal-text iconStyle"></i>}
-          />
+          <div className="col-12 col-md-6 col-xl-3">
+            <KPI
+              nameKpi="Formaciones"
+              bigValue="14"
+              labelSubNameFirst="Mañana"
+              valueFirst="8"
+              labelSubNameSecond="Tarde"
+              valueSecond="4"
+              labelSubNameThird="Noche"
+              valueThird="2"
+              icon={<i className="bi bi-journal-text iconStyle"></i>}
+            />
+          </div>
 
-          <KPI
-            nameKpi="Entradas"
-            bigValue="56%"
-            labelSubNameFirst="Instructores"
-            valueFirst="22"
-            labelSubNameSecond="Aprendices"
-            valueSecond="120"
-            labelSubNameThird="Administrativos"
-            valueThird="32"
-            icon={<i className="bi bi-door-open iconStyle"></i>}
-          />
+          <div className="col-12 col-md-6 col-xl-3">
+            <KPI
+              nameKpi="Entradas"
+              bigValue="56%"
+              labelSubNameFirst="Instructores"
+              valueFirst="22"
+              labelSubNameSecond="Aprendices"
+              valueSecond="120"
+              labelSubNameThird="Administrativos"
+              valueThird="32"
+              icon={<i className="bi bi-door-open iconStyle"></i>}
+            />
+          </div>
+
+          <div className="col-12 col-md-6 col-xl-2">
+            <KPI
+              nameKpi="Salidas"
+              bigValue="44%"
+              labelSubNameFirst="Instructores"
+              valueFirst="18"
+              labelSubNameSecond="Aprendices"
+              valueSecond="95"
+              labelSubNameThird="Administrativos"
+              valueThird="28"
+              icon={<i className="bi bi-box-arrow-right iconStyle"></i>}
+            />
+          </div>
         </div>
-        <KPIBarChart />
+
+        {/* Gráfica institucional centrada */}
+        <div className="row mt-4 justify-content-center">
+          <div className="col-12 col-lg-10">
+            <KPIBarChart />
+          </div>
+        </div>
       </div>
     </div>
   );

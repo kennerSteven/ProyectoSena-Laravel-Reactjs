@@ -18,7 +18,7 @@ const SchemaValidationInstructor = yup.object({
 
   tipoDocumento: yup
     .string()
-    .oneOf(["cc", "cc"], "Tipo de documento inválido")
+    .oneOf(["cc", "cc","otro"], "Tipo de documento inválido")
     .required("Selecciona el tipo de documento"),
 
   numeroDocumento: yup

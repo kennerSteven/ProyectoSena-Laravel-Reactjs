@@ -8,7 +8,7 @@ const SchemaValidationRegister = yup.object({
 
   tipoDocumento: yup
     .string()
-    .oneOf(["CC", "TI"], "Tipo de documento inválido")
+    .oneOf(["cc", "ti","otro"], "Tipo de documento inválido")
     .required("Selecciona el tipo de documento"),
 
   tipoIngreso: yup

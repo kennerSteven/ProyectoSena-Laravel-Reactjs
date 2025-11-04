@@ -5,9 +5,9 @@ export const ItemsConfig = [
     link: "/Dashboard/inicio",
   },
   {
-    iconClass: "pi pi-users",
-    nameItem: "Perfiles",
-    link: "/Dashboard/TipoUsuario",
+    iconClass: "pi pi-history",
+    nameItem: "Historial",
+    link: "/Dashboard/Historial",
   },
 
   {
@@ -29,12 +29,6 @@ export const ItemsConfig = [
     nameItem: "Administrativo",
     iconClass: "pi pi-briefcase",
     link: "/Dashboard/ListarAdministrativo",
-  },
-
-  {
-    iconClass: "pi pi-history",
-    nameItem: "Historial",
-    link: "/Dashboard/Historial",
   },
 
   { type: "divider" },

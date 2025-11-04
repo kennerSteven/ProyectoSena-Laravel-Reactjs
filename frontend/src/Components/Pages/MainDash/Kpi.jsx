@@ -12,7 +12,7 @@ export default function KPI({
   icon,
 }) {
   return (
-    <div className="kpiContainer">
+    <div className="kpiContainer shadow">
       <small>{nameKpi}</small>
 
       <div className="d-flex justify-content-between align-items-center">

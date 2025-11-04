@@ -14,7 +14,7 @@ export default function App() {
       <Route path="/" element={<Login />} />
 
       <Route path="/Dashboard" element={<DashboardCata />}>
-        <Route index element={<MainDashboard />} /> // ← Esta es la clave
+        <Route index element={<MainDashboard />} />
         <Route path="inicio" element={<MainDashboard />} />
         <Route path="CrearPerfil" element={<FormPerfil />} />
         <Route path="crearFormacion" element={<FormFormacion />} />

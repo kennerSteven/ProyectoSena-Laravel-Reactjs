@@ -44,9 +44,10 @@ export default function FormRegister() {
         }
       });
     } else {
-      setVehiculoData(null); // Limpiar si cambia a sinVehiculo
+      setVehiculoData(null);
     }
-  }, [tipoIngreso, documento, trigger]); // ✅ incluye trigger
+  }, [tipoIngreso, documento, trigger]);
+
   const handleVehiculoSuccess = (dataVehiculo) => {
     setVehiculoData(dataVehiculo);
     stateVisible(false);
@@ -54,11 +55,19 @@ export default function FormRegister() {
 
   const handleFinalSubmit = (formData) => {
     const payload = {
-      ...formData,
+      numeroDocumento: formData.documento?.trim(),
+      tipo: "entrada", 
+
       ...(formData.tipoIngreso === "conVehiculo" && vehiculoData
         ? { vehiculo: vehiculoData }
         : {}),
     };
+
+    if (!payload.numeroDocumento || !payload.tipo) {
+      console.warn("Payload incompleto:", payload);
+      toast.error("Faltan datos para registrar la entrada");
+      return;
+    }
 
     onSubmit(payload);
   };
@@ -79,8 +88,9 @@ export default function FormRegister() {
               nameSelect="Tipo documento"
               error={errors.tipoDocumento}
               values={[
-                { value: "CC", label: "Cédula de ciudadanía" },
-                { value: "TI", label: "Tarjeta de identidad" },
+                { value: "cc", label: "Cédula de ciudadanía" },
+                { value: "ti", label: "Tarjeta de identidad" },
+                { value: "otro", label: "Otro..." },
               ]}
             />
           </div>

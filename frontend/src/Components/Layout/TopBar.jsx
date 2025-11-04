@@ -4,22 +4,25 @@ import "../../styles/TopBar.css";
 import "primeicons/primeicons.css";
 import { Dialog } from "primereact/dialog";
 import FormRegister from "../Form/FormVehicles/FormRegister";
+import ClockDisplay from "../ClockDisplay";
 export default function TopBar({ nameTopBar, nameAdmin }) {
   const [visible, stateVisible] = useState(false);
 
   return (
     <div className="d-flex justify-content-end align-items-center topbar ">
-      <div className="d-flex  shadow-sm mt-4  containerCard">
+      <div className="d-flex  shadow-sm mt-4   containerCard">
         <div className="d-flex justify-content-between  px-3 py-1 ">
-          <div className="d-flex align-items-center">
-            <div className="pt-3">
-              <p className="fw-bold  hour d-flex align-items-center gap-2">
-                <i className="bi bi-clock-history hourIcon"></i>
-                3:40 pm - 21-09-2025
-              </p>
+          <div className="d-flex align-items-center gap-4 ">
+            <div className="d-flex gap-2 pt-2">
+              <div>
+                <i className="bi bi-clock-history hourIcon  "></i>
+              </div>
+              <div className="mt-1">
+                <ClockDisplay />
+              </div>
             </div>
-            <div>
-              <h2 className="px-4 fw-bold titleDash">{nameTopBar}</h2>
+            <div className="me-3">
+              <h2 className="fw-bold titleDash">{nameTopBar}</h2>
             </div>
           </div>
 
@@ -37,22 +40,27 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               />
             </div>
 
-            <button
-              onClick={() => stateVisible(true)}
-              className="d-flex gap-4 py-3 px-2 rounded  align-items-center btnSalidaEntrada"
-            >
-              <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
+            <div className="d-flex gap-3 ">
+              <button
+                onClick={() => stateVisible(true)}
+                className="d-flex gap-2 py-3 px-2 rounded  align-items-center btnSalidaEntrada"
+              >
+                <span className="d-flex align-items-center gap-2">
+                  <strong className="labelBtnOutAndSign">Entrada</strong>{" "}
+                  <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
+                </span>
+              </button>
 
-            </button>
-
-             <button  onClick={() => stateVisible(true)}
-              className="d-flex gap-4 py-3 px-2 rounded  align-items-center btnSalidaEntrada"
-            >i
-              <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
-
-            </button>
-
-                <i className="pi pi-sign-out iconbtnSalidaEntrada"></i>
+              <button
+                onClick={() => stateVisible(true)}
+                className="d-flex gap-2 py-3 px-2 rounded  align-items-center btnSalidaEntrada  bg-danger"
+              >
+                <span className="d-flex align-items-center gap-2">
+                  <strong className="labelBtnOutAndSign">Salida</strong>{" "}
+                  <i className="pi pi-sign-out iconbtnSalidaEntrada"></i>
+                </span>
+              </button>
+            </div>
 
             <Dialog
               header="Registrar Entrada"
