@@ -1,0 +1,55 @@
+.containerCarnet {
+
+    background-color: #f7f7f7;
+    padding: 0 10px;
+    border-radius: 10px;
+    width: 320px;
+    margin: auto;
+}
+
+
+
+.infoCarnet {
+    background-color: #ffff;
+
+}
+
+.normalText {
+    margin-top: 20px;
+    font-size: 11px;
+    margin: 0;
+    
+}
+
+.strong1 {
+    color: #007832;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.strong2 {
+    color: #007832;
+    font-size: 10px;
+}
+
+.SeparatorCarnet {
+    margin: 0;
+    margin: 10px auto;
+    border: 0.2px solid #007832;
+
+}
+
+.btnCloseCarnet {
+    border: none;
+    padding: 6px 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    background: #007832;
+    color: rgb(240, 240, 240);
+    transition: transform 0.2s ease-in;
+}
+
+.btnCloseCarnet:hover {
+    transform: scale(1.01);
+    background-color: #02923e;
+}

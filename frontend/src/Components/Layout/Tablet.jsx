@@ -220,7 +220,7 @@ export default function Table({
           style={{
             width: "350px",
             position: "absolute",
-            left: "400px",
+            left: "350px",
             top: "33px",
           }}
         />
@@ -254,7 +254,7 @@ export default function Table({
   );
 
   return (
-    <div className="mx-auto mt-5 shadow tableContainer">
+    <div className="mx-auto mt-2 shadow tableContainer">
       <Toast ref={toast} />
       <DataTable
         value={dataTable}
@@ -266,7 +266,8 @@ export default function Table({
         globalFilterFields={globalFilterFields}
         emptyMessage="No se encontraron resultados."
         scrollable
-        scrollHeight="490px"
+      
+        scrollHeight="420px"
         rowClassName={() => "my-custom-row"}
       >
         {nameValue.map(({ field, header }, idx) => (
@@ -279,7 +280,7 @@ export default function Table({
         ))}
         <Column
           header="Acciones"
-          className="fw-bold"
+          className="fw-bold"  
           body={actionBodyTemplate}
         />
       </DataTable>

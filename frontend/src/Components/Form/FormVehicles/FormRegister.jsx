@@ -9,10 +9,12 @@ import { Dialog } from "primereact/dialog";
 import "../../../styles/FormRegisterVehicles.css";
 import useHandleValidationRegister from "../Validation/HandleValidation/HandleValidationRegister";
 import FormRegisterVehicles from "./FormRegisterVehicles";
+import Carnet from "../../Carnet";
 
 export default function FormRegister() {
   const [visible, stateVisible] = useState(false);
   const [vehiculoData, setVehiculoData] = useState(null);
+  const [modalCarnet, setModalCarnet] = useState(false);
 
   const {
     register,
@@ -23,10 +25,11 @@ export default function FormRegister() {
     formState: { errors, isSubmitting, isValid },
   } = useFormWithYup(SchemaValidationRegister, { mode: "onChange" });
 
-  const { onSubmit, onError } = useHandleValidationRegister({
-    reset,
-    setVisible: stateVisible,
-  });
+  const { onSubmit, onError, entradaData, dataCarnet } =
+    useHandleValidationRegister({
+      reset,
+      setVisible: stateVisible,
+    });
 
   const documento = watch("documento");
   const tipoIngreso = watch("tipoIngreso");
@@ -48,16 +51,25 @@ export default function FormRegister() {
     }
   }, [tipoIngreso, documento, trigger]);
 
+  useEffect(() => {
+    if (dataCarnet && dataCarnet.nombre) {
+      setModalCarnet(true);
+    }
+  }, [dataCarnet]);
+
   const handleVehiculoSuccess = (dataVehiculo) => {
     setVehiculoData(dataVehiculo);
     stateVisible(false);
   };
 
+  function closeModalCarnet(params) {
+    setModalCarnet(false);
+  }
+
   const handleFinalSubmit = (formData) => {
     const payload = {
       numeroDocumento: formData.documento?.trim(),
-      tipo: "entrada", 
-
+      tipo: "entrada",
       ...(formData.tipoIngreso === "conVehiculo" && vehiculoData
         ? { vehiculo: vehiculoData }
         : {}),
@@ -81,19 +93,7 @@ export default function FormRegister() {
         className="p-3 d-flex flex-column rounded"
       >
         <div className="row flex-column">
-          <div className="col-lg-12 mb-3">
-            <SelectOptions
-              register={register}
-              name="tipoDocumento"
-              nameSelect="Tipo documento"
-              error={errors.tipoDocumento}
-              values={[
-                { value: "cc", label: "Cédula de ciudadanía" },
-                { value: "ti", label: "Tarjeta de identidad" },
-                { value: "otro", label: "Otro..." },
-              ]}
-            />
-          </div>
+          <div className="col-lg-12 mb-3"></div>
           <div className="col-lg-12 mb-3">
             <InputField
               typeIntput="text"
@@ -137,8 +137,29 @@ export default function FormRegister() {
             onSuccess={handleVehiculoSuccess}
           />
         </Dialog>
+
         <Toaster />
       </form>
+
+      <Dialog
+        header="Entrada registrada exitosamente"
+        visible={modalCarnet}
+        style={{ width: "400px" }}
+        onHide={() => setModalCarnet(false)}
+      >
+        {dataCarnet && (
+          <Carnet
+            nombre={dataCarnet.nombre}
+            apellido={dataCarnet.apellido}
+            tipoDoc={dataCarnet.tipoDocumento}
+            numeroDoc={dataCarnet.numeroDocumento}
+            telefono={dataCarnet.telefono}
+            sangre={dataCarnet.tipoSangre}
+            tipoPerfil={dataCarnet.perfile?.nombre}
+            closeCarnet={closeModalCarnet}
+          />
+        )}
+      </Dialog>
     </div>
   );
 }

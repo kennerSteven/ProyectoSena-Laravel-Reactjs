@@ -40,23 +40,21 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               />
             </div>
 
-            <div className="d-flex gap-3 ">
+            <div className="d-flex gap-2 ">
               <button
                 onClick={() => stateVisible(true)}
-                className="d-flex gap-2 py-3 px-2 rounded  align-items-center btnSalidaEntrada"
+                className="d-flex gap-2 py-2 px-3 rounded  align-items-center btnSalidaEntrada"
               >
                 <span className="d-flex align-items-center gap-2">
-                  <strong className="labelBtnOutAndSign">Entrada</strong>{" "}
                   <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
                 </span>
               </button>
 
               <button
                 onClick={() => stateVisible(true)}
-                className="d-flex gap-2 py-3 px-2 rounded  align-items-center btnSalidaEntrada  bg-danger"
+                className="d-flex gap-2 py-3 px-3 rounded  align-items-center btnSalidaEntrada  bg-danger"
               >
                 <span className="d-flex align-items-center gap-2">
-                  <strong className="labelBtnOutAndSign">Salida</strong>{" "}
                   <i className="pi pi-sign-out iconbtnSalidaEntrada"></i>
                 </span>
               </button>
@@ -66,8 +64,7 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               header="Registrar Entrada"
               visible={visible}
               onHide={() => stateVisible(false)}
-              style={{ width: "450px", maxHeight: "660px" }}
-              modal
+              style={{ width: "370px", maxHeight: "660px" }}
             >
               <FormRegister />
             </Dialog>

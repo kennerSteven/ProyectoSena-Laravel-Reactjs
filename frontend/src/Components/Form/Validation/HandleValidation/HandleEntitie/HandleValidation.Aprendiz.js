@@ -1,9 +1,8 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { onSubmitInstructor } from "../../../../Services/FetchServices";
 import toast from "react-hot-toast";
 import "../../../../../styles/ButtonSubmit.css";
-
+import { onSubmitAprendiz } from "../../../../Services/FetchServices";
 export default function HandleValidationAprendiz({
   reset,
   perfiles,
@@ -32,13 +31,14 @@ export default function HandleValidationAprendiz({
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
       idperfil: perfilSeleccionado.id,
+      fichaSeleccionada : 2
     };
 
     console.table(payload);
     setFormData(payload);
 
     try {
-      await onSubmitInstructor(payload);
+      await onSubmitAprendiz(payload);
       reset();
       closeModal();
 

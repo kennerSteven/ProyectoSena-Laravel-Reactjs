@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
-
+import TablaHistorial from "./Components/TableHistorial";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fontsource/inter/400.css";
 import BasicFilterDemo from "./prueba";

@@ -99,10 +99,10 @@ export default function FormAprendiz({closeModal}) {
             <div className="col-12 col-md-6">
               <InputField
                 typeIntput="text"
-                name="documento"
+                name="numeroDocumento"
                 register={register}
-                error={errors.documento}
-                labelName="Documento"
+                error={errors.numeroDocumento}
+                labelName="Numero de documento"
               />
             </div>
           </div>

@@ -1,6 +1,6 @@
 .kpiContainer {
   background-color: #fff;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border-radius: 10px;
 
   font-size: 13px;
@@ -17,16 +17,7 @@
   font-size: 20px;
 }
 
-.containerMainDash {
-  /* width: 1000px;
-    padding: 13px 0;
-    margin-left:  230px;
-    background-color: #fffffff1;
-    border-radius: 10px;
-    
-    box-shadow: 0 5px 5px rgb(221, 221, 221); */
-  margin-top: 50px;
-}
+
 
 .labelKpi {
   font-size: 12px;

@@ -6,10 +6,10 @@ const SchemaValidationRegister = yup.object({
     .matches(/^\d{10}$/, "Documento inválido")
     .required("El documento es obligatorio"),
 
-  tipoDocumento: yup
-    .string()
-    .oneOf(["cc", "ti","otro"], "Tipo de documento inválido")
-    .required("Selecciona el tipo de documento"),
+  // tipoDocumento: yup
+  //   .string()
+  //   .oneOf(["cc", "ti","otro"], "Tipo de documento inválido")
+  //   .required("Selecciona el tipo de documento"),
 
   tipoIngreso: yup
     .string()

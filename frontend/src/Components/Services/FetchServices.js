@@ -46,7 +46,7 @@ export const onSubmitAdministrativo = async (data) => {
 };
 
 export const onSubmitAprendiz = async (data) => {
-  await sendDataFetch(data, "http://127.0.0.1:8000/api/otra-ruta/store");
+  await sendDataFetch(data, "http://127.0.0.1:8000/api/usuario/store");
 };
 
 export const onSubmitInstructor = async (data) => {
@@ -104,4 +104,32 @@ export async function deleteInstructor(id) {
   }
 
   return await res.json();
+}
+
+export async function getIdForCarnet(id) {
+  const response = await fetch(`http://127.0.0.1:8000/api/usuario/show/${id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    console.error("Error del backend:", errorText);
+    throw new Error("Error al obtener datos del carnet");
+  }
+
+  const usuario = await response.json();
+  console.log("Datos del usuario:", usuario); // ✅ verificación visual
+  return usuario;
+}
+
+export async function getAllRegisters() {
+  try {
+    const result = await GetDataFetch(
+      "http://127.0.0.1:8000/api/entradaysalidagym/index"
+    );
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error("Error en GetDataAprendiz:", error);
+    return [];
+  }
 }

@@ -1,14 +1,13 @@
+import { useState } from "react";
 import toast from "react-hot-toast";
-
+import { getIdForCarnet } from "../../../Services/FetchServices";
 export default function useHandleValidationRegister({ reset, setVisible }) {
-  const onSubmit = async ({ numeroDocumento, tipo }) => {
-    try {
-      const loadingToast = toast.loading("Enviando datos...");
+  const [entradaData, setDataEntrada] = useState([]);
+  const [dataCarnet, setDataCarnet] = useState([]);
 
-      const payload = {
-        numeroDocumento,
-        tipo,
-      };
+  const onSubmit = async (payload) => {
+    try {
+      const loadingToast = toast.loading("Validando...");
 
       const response = await fetch(
         "http://127.0.0.1:8000/api/entradaysalidagym/entradagym",
@@ -33,21 +32,24 @@ export default function useHandleValidationRegister({ reset, setVisible }) {
 
       const result = await response.json();
       console.log("Respuesta del servidor:", result);
+      setDataEntrada(result);
 
-      toast.success("Entrada registrada exitosamente");
+      const idUserCarnet = result.entrada.idusuario;
+      console.log("id to find user", idUserCarnet);
+
+      const datosCarnet = await getIdForCarnet(idUserCarnet);
+      setDataCarnet(datosCarnet);
+
       reset();
       setVisible(false);
     } catch (error) {
-      toast.dismiss();
-      toast.error("Error interno del servidor");
       console.error("Error en onSubmit:", error);
     }
   };
 
   const onError = (errors) => {
-    toast.dismiss();
     console.warn("Errores de validación:", errors);
   };
 
-  return { onSubmit, onError };
+  return { onSubmit, onError, entradaData, dataCarnet };
 }

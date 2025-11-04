@@ -24,7 +24,7 @@ ChartJS.register(
 
 const KPIDashboard = () => {
   return (
-    <div className="row mt-2 gy-4 align-items-center">
+    <div className="row  gy-4 align-items-center">
       <div className="col-12 col-lg-8">
         <div className="bgBarChar shadow h-100">
           <Bar data={kpiData} options={kpiOptions} />
