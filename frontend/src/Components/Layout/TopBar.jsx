@@ -13,7 +13,7 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
 
   return (
     <div className="d-flex justify-content-end align-items-center topbar">
-      <div className="d-flex shadow-sm mt-4 containerCard">
+      <div className="d-flex shadow-sm  containerCard">
         <div className="d-flex justify-content-between px-3 py-1 w-100">
           {/* Left section */}
           <div className="d-flex align-items-center gap-4">
