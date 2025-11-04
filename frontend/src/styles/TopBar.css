@@ -40,3 +40,13 @@
 .labelBtnOutAndSign {
   color: white;
 }
+
+.iconRegistros {
+  color: #007832;
+}
+.btnRegistros {
+  background-color: #007832;
+  border-radius: 10px;
+  border: none;
+  color: #ffffff;
+}

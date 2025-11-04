@@ -4,11 +4,6 @@ export const ItemsConfig = [
     nameItem: "Inicio",
     link: "/Dashboard/inicio",
   },
-  {
-    iconClass: "pi pi-history",
-    nameItem: "Historial",
-    link: "/Dashboard/Historial",
-  },
 
   {
     nameItem: "Aprendices",

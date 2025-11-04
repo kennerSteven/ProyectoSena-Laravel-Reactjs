@@ -5,18 +5,20 @@ import "primeicons/primeicons.css";
 import { Dialog } from "primereact/dialog";
 import FormRegister from "../Form/FormVehicles/FormRegister";
 import ClockDisplay from "../ClockDisplay";
+import TablaHistorial from "../TableHistorial";
+
 export default function TopBar({ nameTopBar, nameAdmin }) {
   const [visible, stateVisible] = useState(false);
+  const [visibleTableHistorial, setVisibleTableHistorial] = useState(false);
 
   return (
-    <div className="d-flex justify-content-end align-items-center topbar ">
-      <div className="d-flex  shadow-sm mt-4   containerCard">
-        <div className="d-flex justify-content-between  px-3 py-1 ">
-          <div className="d-flex align-items-center gap-4 ">
+    <div className="d-flex justify-content-end align-items-center topbar">
+      <div className="d-flex shadow-sm mt-4 containerCard">
+        <div className="d-flex justify-content-between px-3 py-1 w-100">
+          {/* Left section */}
+          <div className="d-flex align-items-center gap-4">
             <div className="d-flex gap-2 pt-2">
-              <div>
-                <i className="bi bi-clock-history hourIcon  "></i>
-              </div>
+              <i className="bi bi-clock-history hourIcon"></i>
               <div className="mt-1">
                 <ClockDisplay />
               </div>
@@ -26,7 +28,8 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
             </div>
           </div>
 
-          <div className="d-flex align-items-center gap-3 bg-light  px-2 rounded">
+          {/* Right section */}
+          <div className="d-flex align-items-center gap-3 bg-light px-2 rounded">
             <div>
               <h6 className="mb-0 fw-bold nameAdmin">{nameAdmin}</h6>
               <small className="text-muted">Administrador</small>
@@ -34,25 +37,38 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
             <div className="me-3">
               <img
                 src={logo}
-                alt="Perfil de Douglas McGee"
+                alt="Perfil de administrador"
                 width="35"
                 height="35"
               />
             </div>
 
-            <div className="d-flex gap-2 ">
+            <div className="d-flex gap-2">
+              {/* Botón Ver registros */}
+              <button
+                onClick={() => setVisibleTableHistorial(true)}
+                className="btnRegistros"
+              >
+                <span className="d-flex align-items-center gap-2">
+                  <i className="pi pi-table iconRegistros text-light"></i>
+                  <span>Ver registros</span>
+                </span>
+              </button>
+
+              {/* Botón Entrada */}
               <button
                 onClick={() => stateVisible(true)}
-                className="d-flex gap-2 py-2 px-3 rounded  align-items-center btnSalidaEntrada"
+                className="d-flex gap-2 py-2 px-3 rounded align-items-center btnSalidaEntrada"
               >
                 <span className="d-flex align-items-center gap-2">
                   <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
                 </span>
               </button>
 
+              {/* Botón Salida */}
               <button
                 onClick={() => stateVisible(true)}
-                className="d-flex gap-2 py-3 px-3 rounded  align-items-center btnSalidaEntrada  bg-danger"
+                className="d-flex gap-2 py-3 px-3 rounded align-items-center btnSalidaEntrada bg-danger"
               >
                 <span className="d-flex align-items-center gap-2">
                   <i className="pi pi-sign-out iconbtnSalidaEntrada"></i>
@@ -60,6 +76,7 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               </button>
             </div>
 
+            {/* Modal Entrada */}
             <Dialog
               header="Registrar Entrada"
               visible={visible}
@@ -67,6 +84,16 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               style={{ width: "370px", maxHeight: "660px" }}
             >
               <FormRegister />
+            </Dialog>
+
+            {/* Modal Historial */}
+            <Dialog
+              header="Historial de registros"
+              visible={visibleTableHistorial}
+              onHide={() => setVisibleTableHistorial(false)}
+              className="shadow-sm"
+            >
+              <TablaHistorial />
             </Dialog>
           </div>
         </div>

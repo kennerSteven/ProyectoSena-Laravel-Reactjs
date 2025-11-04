@@ -1,6 +1,7 @@
 import KPI from "./Kpi";
 import "../../../styles/KPI.css";
 import KPIBarChart from "../../Charts/BarChar";
+import TablaHistorial from "../../TableHistorial";
 
 export default function MainDashboard() {
   return (
