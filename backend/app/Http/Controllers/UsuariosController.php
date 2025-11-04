@@ -83,6 +83,8 @@ class UsuariosController extends Controller
     usuarios::findOrFail($id)->delete();
     return response()->json('se elimino correctamente',200);
 
+    
+
    }
 
 
