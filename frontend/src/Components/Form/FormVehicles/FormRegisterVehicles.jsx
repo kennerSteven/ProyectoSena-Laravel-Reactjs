@@ -7,17 +7,23 @@ import useFormWithYup from "../Validation/connectYupRhf";
 import "../../../styles/FormRegisterVehicles.css";
 import useHandleValidationVehicle from "../Validation/HandleValidation/HandleValidationRegisterVehicle";
 
-export default function FormRegisterVehicles() {
+export default function FormRegisterVehicles({ closeModal, onSuccess }) {
   const {
     register,
-
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
   } = useFormWithYup(SchemaValidationRegisterVehicle, { mode: "onChange" });
 
-  const { onSubmit, onError } = useHandleValidationVehicle();
+  const { onSubmit: handleVehicleSubmit, onError } =
+    useHandleValidationVehicle();
 
-  const ValidationButtonDisabled = !isValid || isSubmitting;
+  const onSubmit = async (data) => {
+    const vehiculo = await handleVehicleSubmit(data); // ✅ recibe el objeto validado
+    if (vehiculo) {
+      onSuccess(vehiculo); // ✅ pasa el objeto al padre
+      closeModal();
+    }
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center">
@@ -58,7 +64,7 @@ export default function FormRegisterVehicles() {
           textSend="Registrar vehículo"
           textSending="Registrando vehículo..."
           isSubmitting={isSubmitting}
-          disabled={ValidationButtonDisabled}
+          disabled={!isValid || isSubmitting}
         />
       </form>
     </div>

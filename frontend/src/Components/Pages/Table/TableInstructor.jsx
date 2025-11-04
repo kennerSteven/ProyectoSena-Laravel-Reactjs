@@ -85,21 +85,25 @@ export function TableInstructor() {
 export function TableAprendiz() {
   const [openModal, setModalOpen] = useState(false);
   const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
-  const [aprendiz, setAprendiz] = useState([]);
+  const [aprendices, setAprendices] = useState([]);
 
   useEffect(() => {
-    async function LoadAprendiz() {
+    async function LoadAprendices() {
       const data = await GetDataAprendiz();
 
-      const flattened = data.map((item) => ({
+      const aprendicesFiltrados = data.filter((item) =>
+        item.perfile?.nombre?.toLowerCase().includes("aprendiz")
+      );
+
+      const flattened = aprendicesFiltrados.map((item) => ({
         ...item,
         tipoPerfil: item.perfile?.nombre || "Sin perfil",
       }));
 
-      setAprendiz(flattened);
+      setAprendices(flattened);
     }
 
-    LoadAprendiz();
+    LoadAprendices();
   }, []);
 
   return (
@@ -107,25 +111,26 @@ export function TableAprendiz() {
       <Table
         tableTitle="Listar Aprendices"
         nameValue={nameValueInstructor}
-        dataTable={aprendiz}
+        dataTable={aprendices}
         functionModal={() => setModalOpen(true)}
         openCreatePerfil={() => setModalCreatePerfil(true)}
       />
+
       <Dialog
         header="Nuevo Aprendiz"
         visible={openModal}
         style={{ width: "850px" }}
-        onHide={() => setModalOpen(false)} // ← este cierra el correcto
+        onHide={() => setModalOpen(false)}
         modal
       >
-        <FormAprendiz />
+        <FormAprendiz closeModal={() => setModalOpen(false)} />
       </Dialog>
 
       <Dialog
         header="Nuevo Perfil"
-        visible={openModalCreatePerfil} // ← aquí estaba el error
+        visible={openModalCreatePerfil}
         style={{ width: "450px" }}
-        onHide={() => setModalCreatePerfil(false)} // ← también estaba mal
+        onHide={() => setModalCreatePerfil(false)}
         modal
       >
         <FormPerfil closeModal={() => setModalCreatePerfil(false)} />
@@ -133,7 +138,6 @@ export function TableAprendiz() {
     </div>
   );
 }
-
 export function TableAdministrativo() {
   const [openModal, setModalOpen] = useState(false);
   const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);

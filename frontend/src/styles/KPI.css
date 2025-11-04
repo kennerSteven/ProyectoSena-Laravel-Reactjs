@@ -1,37 +1,34 @@
 .kpiContainer {
-    background-color: #fff;
-    padding: 0 20px;
-    border-radius: 10px;
-    box-shadow: 0 1px 5px rgb(216, 216, 216);
-    font-size: 13px;
-    width: 240px;
+  background-color: #fff;
+  padding: 0 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgb(216, 216, 216);
+  font-size: 13px;
+  width: 240px;
 }
 
 .iconStyle {
-    font-size: 20px;
-    color: #007832;
-    font-weight: bolder;
+  font-size: 20px;
+  color: #007832;
+  font-weight: bolder;
 }
 
 .bigValue {
-    padding-top: 2px;
-    font-size: 20px;
+  padding-top: 2px;
+  font-size: 20px;
 }
 
-
-
 .containerMainDash {
-
-    width: 1000px;
+  /* width: 1000px;
     padding: 13px 0;
     margin-left:  230px;
     background-color: #fffffff1;
     border-radius: 10px;
     
-    box-shadow: 0 5px 5px rgb(221, 221, 221);
-
+    box-shadow: 0 5px 5px rgb(221, 221, 221); */
+  margin-top: 50px;
 }
 
 .labelKpi {
-    font-size: 12px;
+  font-size: 12px;
 }
