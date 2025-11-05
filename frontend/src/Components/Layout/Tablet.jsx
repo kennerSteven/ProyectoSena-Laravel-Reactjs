@@ -228,7 +228,7 @@ export default function Table({
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
           placeholder="Buscar..."
-          style={{ width: "350px", position: "relative" }}
+          style={{ width: "250px", position: "relative" }}
         />
       </div>
     </div>
@@ -266,7 +266,6 @@ export default function Table({
         globalFilterFields={globalFilterFields}
         emptyMessage="No se encontraron resultados."
         scrollable
-      
         scrollHeight="420px"
         rowClassName={() => "my-custom-row"}
       >
@@ -280,7 +279,7 @@ export default function Table({
         ))}
         <Column
           header="Acciones"
-          className="fw-bold"  
+          className="fw-bold"
           body={actionBodyTemplate}
         />
       </DataTable>
