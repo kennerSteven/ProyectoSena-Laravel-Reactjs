@@ -5,7 +5,7 @@ import TablaHistorial from "../../TableHistorial";
 
 export default function MainDashboard() {
   return (
-    <div className="container px-4 py-3 mt-2 mt-md-2 mt-lg-2 mt-xl-4">
+    <div className="container px-4 py-3 mt-1 mt-md-2 mt-lg-2 mt-xl-2">
       <div className="">
         {/* KPIs distribuidos responsivamente y centrados */}
         <div className="row justify-content-center gap-2">
