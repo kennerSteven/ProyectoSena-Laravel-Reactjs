@@ -48,13 +48,10 @@ export default function Table({
       ),
       header: "Confirmar eliminación",
       className: "custom-confirm-dialog",
-      style: {
-        borderRadius: "10px",
-      },
+      style: { borderRadius: "10px" },
       accept: async () => {
         try {
           await deleteInstructor(rowData.id);
-
           confirmDialog({
             message: (
               <div
@@ -69,9 +66,7 @@ export default function Table({
             ),
             header: "Usuario eliminado",
             className: "custom-confirm-dialog",
-            style: {
-              borderRadius: "10px",
-            },
+            style: { borderRadius: "10px" },
             acceptLabel: "Aceptar",
             rejectVisible: false,
             footer: (props) => (
@@ -98,11 +93,9 @@ export default function Table({
               </div>
             ),
           });
-
           if (reloadTable) reloadTable();
         } catch (error) {
           console.error("Error al eliminar:", error);
-
           confirmDialog({
             message: (
               <div
@@ -117,9 +110,7 @@ export default function Table({
             ),
             header: "Error al eliminar",
             className: "custom-confirm-dialog",
-            style: {
-              borderRadius: "10px",
-            },
+            style: { borderRadius: "10px" },
             acceptLabel: "Aceptar",
             rejectVisible: false,
             footer: (props) => (
@@ -188,6 +179,7 @@ export default function Table({
       ),
     });
   };
+
   const handleEditUser = (rowData) => {
     setSelectedUser(rowData);
     setOpenUpdateModal(true);
@@ -269,14 +261,50 @@ export default function Table({
         scrollHeight="420px"
         rowClassName={() => "my-custom-row"}
       >
+        {/* Columnas normales */}
         {nameValue.map(({ field, header }, idx) => (
           <Column
             key={idx}
             field={field}
             header={header}
-            body={renderCell(field)}
+            body={(rowData) =>
+              rowData[field] !== null &&
+              rowData[field] !== undefined &&
+              rowData[field] !== "" ? (
+                rowData[field]
+              ) : (
+                <span className="text-muted">—</span>
+              )
+            }
           />
         ))}
+
+        {/* Columna de foto */}
+        <Column
+          header="Foto"
+          body={(rowData) => {
+            const ruta = rowData.foto;
+            const url = ruta ? `http://localhost:8000/${ruta}` : null;
+
+            return url ? (
+              <img
+                src={url}
+                alt="Foto"
+                className="img-thumbnail"
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
+              />
+            ) : (
+              <span className="text-muted">—</span>
+            );
+          }}
+        />
+
+        {/* Columna de acciones */}
         <Column
           header="Acciones"
           className="fw-bold"

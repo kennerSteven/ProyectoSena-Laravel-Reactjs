@@ -3,7 +3,7 @@ import * as yup from "yup";
 const SchemaValidationRegister = yup.object({
   documento: yup
     .string()
-    .matches(/^\d{10}$/, "Documento inválido")
+    .matches(/^\d{8}$/, "Documento inválido")
     .required("El documento es obligatorio"),
 
   // tipoDocumento: yup

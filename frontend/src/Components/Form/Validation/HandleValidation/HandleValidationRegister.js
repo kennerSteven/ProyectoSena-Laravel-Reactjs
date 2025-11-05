@@ -1,8 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { getIdForCarnet } from "../../../Services/FetchServices";
+
 export default function useHandleValidationRegister({ reset, setVisible }) {
-  const [entradaData, setDataEntrada] = useState([]);
   const [dataCarnet, setDataCarnet] = useState([]);
 
   const onSubmit = async (payload) => {
@@ -31,19 +31,23 @@ export default function useHandleValidationRegister({ reset, setVisible }) {
       }
 
       const result = await response.json();
-      console.log("Respuesta del servidor:", result);
-      setDataEntrada(result);
-
       const idUserCarnet = result.entrada.idusuario;
-      console.log("id to find user", idUserCarnet);
 
       const datosCarnet = await getIdForCarnet(idUserCarnet);
-      setDataCarnet(datosCarnet);
+
+      const fotoRuta = datosCarnet?.foto;
+      const fotoUrl = fotoRuta ? `http://localhost:8000/${fotoRuta}` : null;
+
+      setDataCarnet({
+        ...datosCarnet,
+        foto: fotoUrl,
+      });
 
       reset();
       setVisible(false);
     } catch (error) {
       console.error("Error en onSubmit:", error);
+      toast.error("Error inesperado al registrar entrada");
     }
   };
 
@@ -51,5 +55,5 @@ export default function useHandleValidationRegister({ reset, setVisible }) {
     console.warn("Errores de validación:", errors);
   };
 
-  return { onSubmit, onError, entradaData, dataCarnet };
+  return { onSubmit, onError, dataCarnet };
 }

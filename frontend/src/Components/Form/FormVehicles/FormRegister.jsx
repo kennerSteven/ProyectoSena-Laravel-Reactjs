@@ -25,11 +25,10 @@ export default function FormRegister() {
     formState: { errors, isSubmitting, isValid },
   } = useFormWithYup(SchemaValidationRegister, { mode: "onChange" });
 
-  const { onSubmit, onError, entradaData, dataCarnet } =
-    useHandleValidationRegister({
-      reset,
-      setVisible: stateVisible,
-    });
+  const { onSubmit, onError, dataCarnet } = useHandleValidationRegister({
+    reset,
+    setVisible: stateVisible,
+  });
 
   const documento = watch("documento");
   const tipoIngreso = watch("tipoIngreso");
@@ -62,7 +61,7 @@ export default function FormRegister() {
     stateVisible(false);
   };
 
-  function closeModalCarnet(params) {
+  function closeModalCarnet() {
     setModalCarnet(false);
   }
 
@@ -156,6 +155,7 @@ export default function FormRegister() {
             telefono={dataCarnet.telefono}
             sangre={dataCarnet.tipoSangre}
             tipoPerfil={dataCarnet.perfile?.nombre}
+            foto={dataCarnet.foto} // ✅ ya viene como URL completa
             closeCarnet={closeModalCarnet}
           />
         )}

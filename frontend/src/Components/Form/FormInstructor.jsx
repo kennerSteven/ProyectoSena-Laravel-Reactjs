@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import ButtonSubmit from "../Ui/ButtonSubmit";
 import SelectOptions from "../Ui/SelectOptions";
 import InputField from "../Ui/InputField";
@@ -18,10 +18,14 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
   } = useFormWithYup(SchemaValidationInstructor);
 
   const { perfil } = useTipoPerfilFetch("Instructor");
-
   const opcionesPerfil = perfil
     ? [{ value: perfil.id, label: perfil.nombre }]
     : [];
+
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [showCamera, setShowCamera] = useState(false);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
 
   const { onSubmit, onError } = HandleValidationInstructor({
     reset,
@@ -29,6 +33,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
     closeModal,
     perfil: "Instructor",
     usuarioSeleccionado,
+    capturedImage,
   });
 
   useEffect(() => {
@@ -45,58 +50,62 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
     }
   }, [usuarioSeleccionado, reset, perfil]);
 
-  return (
-    <div className="d-flex justify-content-center">
-      <div className="row">
-        <form
-          className="d-flex gap-4"
-          onSubmit={handleSubmit(onSubmit, onError)}
-        >
-          <div>
-            <div className="gap-3">
-              <div className="col-lg-12 mb-3">
-                <InputField
-                  typeInput="text"
-                  name="nombre"
-                  register={register}
-                  error={errors.nombre}
-                  labelName="Nombre"
-                />
-              </div>
-              <div className="col-lg-12 mb-3">
-                <InputField
-                  typeInput="text"
-                  name="apellido"
-                  register={register}
-                  error={errors.apellido}
-                  labelName="Apellido"
-                />
-              </div>
-            </div>
+  useEffect(() => {
+    if (showCamera && videoRef.current) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          videoRef.current.srcObject = stream;
+        })
+        .catch((err) => {
+          console.error("Error al acceder a la cámara:", err);
+        });
+    }
+  }, [showCamera]);
 
-            <div className="d-flex gap-3">
-              <SelectOptions
-                register={register}
-                name="tipoDocumento"
-                nameSelect="Tipo documento"
-                error={errors.tipoDocumento}
-                values={[
-                  { value: "cc", label: "Cédula de ciudadanía" },
-                  { value: "otro", label: "Otro..." },
-                ]}
-              />
-              <InputField
-                typeInput="text"
-                name="numeroDocumento"
-                register={register}
-                error={errors.numeroDocumento}
-                labelName="Documento"
-              />
-            </div>
+  return (
+    <div className="">
+      <form className="row" onSubmit={handleSubmit(onSubmit, onError)}>
+        {/* Columna izquierda */}
+        <div>
+          <div className="d-flex gap-4">
+            <InputField
+              typeInput="text"
+              name="nombre"
+              register={register}
+              error={errors.nombre}
+              labelName="Nombre"
+            />
+            <InputField
+              typeInput="text"
+              name="apellido"
+              register={register}
+              error={errors.apellido}
+              labelName="Apellido"
+            />
+          </div>
+          <div className="d-flex gap-3">
+            <SelectOptions
+              register={register}
+              name="tipoDocumento"
+              nameSelect="Tipo documento"
+              error={errors.tipoDocumento}
+              values={[
+                { value: "cc", label: "Cédula de ciudadanía" },
+                { value: "otro", label: "Otro..." },
+              ]}
+            />
+            <InputField
+              typeInput="text"
+              name="numeroDocumento"
+              register={register}
+              error={errors.numeroDocumento}
+              labelName="Documento"
+            />
           </div>
 
-          <div>
-            <div className="col-lg-12 mb-3">
+          <div className="row">
+            <div className="col-lg-6 mt-3">
               <InputField
                 typeInput="number"
                 name="telefono"
@@ -104,8 +113,6 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                 error={errors.telefono}
                 labelName="Teléfono"
               />
-            </div>
-            <div className="col-lg-12 mb-3">
               <SelectOptions
                 register={register}
                 name="tipoSangre"
@@ -122,36 +129,101 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                   { value: "O-", label: "O negativo" },
                 ]}
               />
+              <div className="my-2">
+                <SelectOptions
+                  register={register}
+                  name="tipoPerfil"
+                  nameSelect="Tipo de perfil"
+                  error={errors.tipoPerfil}
+                  values={opcionesPerfil}
+                />
+              </div>
             </div>
-            <div className="col-lg-12 mb-3">
-              <SelectOptions
-                register={register}
-                name="tipoPerfil"
-                nameSelect="Tipo de perfil"
-                error={errors.tipoPerfil}
-                values={opcionesPerfil}
-              />
+            <div className="col-lg-6 d-flex align-items-center justify-content-center mt-4 ">
+              <div style={{ maxWidth: "400px", width: "100%" }}>
+                {capturedImage ? (
+                  <div className="text-center">
+                    <img
+                      src={capturedImage}
+                      alt="Captura"
+                      className="img-fluid rounded"
+                      style={{ maxHeight: "200px" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger mt-2"
+                      onClick={() => {
+                        setCapturedImage(null);
+                        setShowCamera(true);
+                      }}
+                    >
+                      Retomar foto
+                    </button>
+                  </div>
+                ) : showCamera ? (
+                  <div className="text-center">
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      className="rounded"
+                      style={{ width: "100%", maxHeight: "200px" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-success mt-2"
+                      onClick={() => {
+                        const context = canvasRef.current.getContext("2d");
+                        context.drawImage(videoRef.current, 0, 0, 300, 200);
+                        const imageData =
+                          canvasRef.current.toDataURL("image/png");
+                        setCapturedImage(imageData);
+                        setShowCamera(false);
+                      }}
+                    >
+                      Tomar foto
+                    </button>
+                    <canvas
+                      ref={canvasRef}
+                      width="300"
+                      height="200"
+                      style={{ display: "none" }}
+                    />
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      className="btn btn-outline-success"
+                      onClick={() => setShowCamera(true)}
+                    >
+                      Activar cámara
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
+          </div>
 
-            <div className="col-12 d-flex justify-content-end mt-4 mb-2">
-              <ButtonSubmit
-                textSend={usuarioSeleccionado ? "Actualizar" : "Guardar"}
-                textSending="Guardando..."
-                isSubmitting={isSubmitting}
-                maxWidth={false}
-                iconButton="bi bi-save"
-              />
-            </div>
-
-            <Toaster
-              position="top-center"
-              toastOptions={{
-                style: { marginTop: "24px" },
-              }}
+          <div className="d-flex justify-content-start mt-4">
+            <ButtonSubmit
+              textSend={usuarioSeleccionado ? "Actualizar" : "Guardar"}
+              textSending="Guardando..."
+              isSubmitting={isSubmitting}
+              maxWidth={false}
+              iconButton="bi bi-save"
             />
           </div>
-        </form>
-      </div>
+        </div>
+
+        {/* Columna derecha: cámara centrada */}
+
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: { marginTop: "24px" },
+          }}
+        />
+      </form>
     </div>
   );
 }

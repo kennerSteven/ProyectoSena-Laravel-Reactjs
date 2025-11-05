@@ -13,6 +13,7 @@ export default function HandleValidationInstructor({
   closeModal,
   perfil: nombrePerfil,
   usuarioSeleccionado,
+  capturedImage, // ✅ se recibe la imagen
 }) {
   const [formData, setFormData] = useState();
 
@@ -36,6 +37,7 @@ export default function HandleValidationInstructor({
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
       idperfil: perfilSeleccionado.id,
+      foto: capturedImage || null, // ✅ se incluye la imagen
     };
 
     console.table(payload);
