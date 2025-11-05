@@ -19,4 +19,15 @@ class fichas extends Model
 
         return $this->hasMany(usuarios::class, 'idficha', 'id');
     }
+
+    protected static function booted()
+{
+    static::deleting(function ($ficha) {
+        
+        $ficha->usuarios()->delete();
+    });
+}
+
+
+
 }
