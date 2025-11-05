@@ -12,7 +12,7 @@ class eys_gymController extends Controller
     
     public function index()
     {
-        $registros = eysgym::with(['usuarios'])->get();
+        $registros = eysgym::with(['usuarios.perfile'])->get();
         return response()->json($registros);
     }
 
