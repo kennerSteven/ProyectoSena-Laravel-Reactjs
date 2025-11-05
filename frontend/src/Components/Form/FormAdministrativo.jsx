@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import ButtonSubmit from "../Ui/ButtonSubmit";
 import SelectOptions from "../Ui/SelectOptions";
 import InputField from "../Ui/InputField";
@@ -21,10 +21,14 @@ export default function FormAdministrativo({
   } = useFormWithYup(SchemaValidationAdministrativo);
 
   const { perfil } = useTipoPerfilFetch("Administrativo");
-
   const opcionesPerfil = perfil
     ? [{ value: perfil.id, label: perfil.nombre }]
     : [];
+
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [showCamera, setShowCamera] = useState(false);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
 
   const { onSubmit, onError } = HandleValidationAdministrativo({
     reset,
@@ -32,6 +36,7 @@ export default function FormAdministrativo({
     closeModal,
     perfil: "Administrativo",
     usuarioSeleccionado,
+    capturedImage, // ✅ se envía al backend
   });
 
   useEffect(() => {
@@ -48,6 +53,19 @@ export default function FormAdministrativo({
     }
   }, [usuarioSeleccionado, reset, perfil]);
 
+  useEffect(() => {
+    if (showCamera && videoRef.current) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          videoRef.current.srcObject = stream;
+        })
+        .catch((err) => {
+          console.error("Error al acceder a la cámara:", err);
+        });
+    }
+  }, [showCamera]);
+
   return (
     <div className="d-flex justify-content-center">
       <div className="row">
@@ -55,6 +73,7 @@ export default function FormAdministrativo({
           className="d-flex gap-4"
           onSubmit={handleSubmit(onSubmit, onError)}
         >
+          {/* Columna izquierda */}
           <div>
             <div className="gap-3">
               <div className="col-lg-12 mb-3">
@@ -93,8 +112,73 @@ export default function FormAdministrativo({
                 labelName="Documento"
               />
             </div>
+
+            <div className="col-lg-12 mb-3 mt-4">
+              <div style={{ maxWidth: "400px", width: "100%" }}>
+                {capturedImage ? (
+                  <div className="text-center">
+                    <img
+                      src={capturedImage}
+                      alt="Captura"
+                      className="img-fluid rounded"
+                      style={{ maxHeight: "200px" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger mt-2"
+                      onClick={() => {
+                        setCapturedImage(null);
+                        setShowCamera(true);
+                      }}
+                    >
+                      Retomar foto
+                    </button>
+                  </div>
+                ) : showCamera ? (
+                  <div className="text-center">
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      className="rounded"
+                      style={{ width: "100%", maxHeight: "200px" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-success mt-2"
+                      onClick={() => {
+                        const context = canvasRef.current.getContext("2d");
+                        context.drawImage(videoRef.current, 0, 0, 300, 200);
+                        const imageData =
+                          canvasRef.current.toDataURL("image/png");
+                        setCapturedImage(imageData);
+                        setShowCamera(false);
+                      }}
+                    >
+                      Tomar foto
+                    </button>
+                    <canvas
+                      ref={canvasRef}
+                      width="300"
+                      height="200"
+                      style={{ display: "none" }}
+                    />
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      className="btn btn-outline-success"
+                      onClick={() => setShowCamera(true)}
+                    >
+                      Activar cámara
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
+          {/* Columna derecha */}
           <div>
             <div className="col-lg-12 mb-3">
               <InputField

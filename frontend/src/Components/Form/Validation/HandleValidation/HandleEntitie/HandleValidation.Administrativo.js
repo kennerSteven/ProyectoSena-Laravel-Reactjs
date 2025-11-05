@@ -1,9 +1,7 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import {
-  onSubmitAdministrativo,
-  updateAdministrativo,
-} from "../../../../Services/FetchServices";
+import { onSubmitAdministrativo } from "../../../../Services/FetchServices";
+import toast from "react-hot-toast";
 import "../../../../../styles/ButtonSubmit.css";
 
 export default function HandleValidationAdministrativo({
@@ -11,35 +9,19 @@ export default function HandleValidationAdministrativo({
   perfiles,
   closeModal,
   perfil: nombrePerfil,
-  usuarioSeleccionado,
+  capturedImage, // ✅ se recibe la imagen
 }) {
   const [formData, setFormData] = useState();
 
   const onSubmit = async (data) => {
+    toast.dismiss();
+
     const perfilSeleccionado = perfiles.find(
       (p) => p.nombre?.toLowerCase() === nombrePerfil?.toLowerCase()
     );
 
     if (!perfilSeleccionado) {
-      await Swal.fire({
-        icon: "error",
-        title: "Perfil no encontrado",
-        text: "No se encontró el perfil solicitado",
-        confirmButtonText: "Aceptar",
-        buttonsStyling: false,
-        customClass: { confirmButton: "btn" },
-        didRender: () => {
-          const confirmBtn = Swal.getConfirmButton();
-          if (confirmBtn) {
-            confirmBtn.style.backgroundColor = "#dc3545";
-            confirmBtn.style.color = "#fff";
-            confirmBtn.style.borderRadius = "10px";
-            confirmBtn.style.border = "none";
-            confirmBtn.style.padding = "0.5rem 1.5rem";
-            confirmBtn.style.cursor = "pointer";
-          }
-        },
-      });
+      toast.error("No se encontró el perfil solicitado");
       return;
     }
 
@@ -51,88 +33,39 @@ export default function HandleValidationAdministrativo({
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
       idperfil: perfilSeleccionado.id,
+      foto: capturedImage || null, // ✅ se incluye la imagen
     };
 
     console.table(payload);
     setFormData(payload);
 
     try {
-      if (usuarioSeleccionado?.id) {
-        await updateAdministrativo(usuarioSeleccionado.id, payload);
-        reset();
-        closeModal(); // ✅ cerrar antes del alert
+      await onSubmitAdministrativo(payload);
 
-        await Swal.fire({
-          icon: "success",
-          title: "Administrativo actualizado",
-          text: "El administrativo fue actualizado exitosamente",
-          confirmButtonText: "Aceptar",
-          buttonsStyling: false,
-          customClass: { confirmButton: "btn" },
-          didRender: () => {
-            const confirmBtn = Swal.getConfirmButton();
-            if (confirmBtn) {
-              confirmBtn.style.backgroundColor = "#00A859";
-              confirmBtn.style.color = "#fff";
-              confirmBtn.style.borderRadius = "10px";
-              confirmBtn.style.border = "none";
-              confirmBtn.style.padding = "0.5rem 1.5rem";
-              confirmBtn.style.cursor = "pointer";
-            }
-          },
-        });
-      } else {
-        await onSubmitAdministrativo(payload);
-        reset();
-        closeModal(); // ✅ cerrar antes del alert
-
-        await Swal.fire({
-          icon: "success",
-          title: "Administrativo creado",
-          text: "El administrativo fue guardado exitosamente",
-          confirmButtonText: "Aceptar",
-          buttonsStyling: false,
-          customClass: { confirmButton: "btn" },
-          didRender: () => {
-            const confirmBtn = Swal.getConfirmButton();
-            if (confirmBtn) {
-              confirmBtn.style.backgroundColor = "#00A859";
-              confirmBtn.style.color = "#fff";
-              confirmBtn.style.borderRadius = "10px";
-              confirmBtn.style.border = "none";
-              confirmBtn.style.padding = "0.5rem 1.5rem";
-              confirmBtn.style.cursor = "pointer";
-            }
-          },
-        });
-      }
-    } catch (error) {
-      console.error("Error en envío:", error);
-
-      await Swal.fire({
-        icon: "error",
-        title: "Error al guardar",
-        text: "No se pudo guardar el administrativo",
+      Swal.fire({
+        icon: "success",
+        title: "Administrativo creado",
+        text: "El administrativo fue guardado exitosamente",
         confirmButtonText: "Aceptar",
-        buttonsStyling: false,
-        customClass: { confirmButton: "btn" },
-        didRender: () => {
-          const confirmBtn = Swal.getConfirmButton();
-          if (confirmBtn) {
-            confirmBtn.style.backgroundColor = "#dc3545";
-            confirmBtn.style.color = "#fff";
-            confirmBtn.style.borderRadius = "10px";
-            confirmBtn.style.border = "none";
-            confirmBtn.style.padding = "0.5rem 1.5rem";
-            confirmBtn.style.cursor = "pointer";
-          }
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "swal-confirm-green",
         },
       });
+
+      reset();
+      closeModal(); // ✅ se cierra el modal
+    } catch (error) {
+      console.error("Error en envío:", error);
+      toast.error("Error al guardar el administrativo");
     }
   };
 
   const onError = (errors) => {
     console.warn("Errores de validación:", errors);
+    toast.dismiss();
   };
 
   return { onSubmit, onError, formData, closeModal };

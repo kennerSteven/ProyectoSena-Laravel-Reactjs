@@ -9,7 +9,7 @@ import "@fontsource/inter/400.css";
 import BasicFilterDemo from "./prueba";
 import "./styles/global.css";
 import { BrowserRouter } from "react-router-dom";
-
+import FormFicha from "./Components/Form/FormFicha";
 import App from "./Components/Routes/Routes";
 
 createRoot(document.getElementById("root")).render(

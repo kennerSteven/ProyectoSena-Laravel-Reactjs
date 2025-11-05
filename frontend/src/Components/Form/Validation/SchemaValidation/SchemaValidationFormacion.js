@@ -1,21 +1,20 @@
 import * as yup from "yup";
 
-const SchemaValidationFormacion = yup.object({
-  numeroFicha: yup.string().required("La ficha es obligatoria"),
-  nombrePrograma: yup
+const SchemaFicha = yup.object({
+  numeroFicha: yup
     .string()
-    .required("El nombre de formación es obligatorio"),
+    .matches(/^\d+$/, "La ficha debe contener solo números")
+    .required("El número de ficha es obligatorio"),
+
+  nombreFormacion: yup
+    .string()
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .required("El nombre de la formación es obligatorio"),
 
   jornada: yup
     .string()
-    .oneOf(["mañana", "tarde", "noche"], "Selecciona una jornada valida")
+    .oneOf(["mañana", "tarde", "noche"], "Selecciona una jornada válida")
     .required("La jornada es obligatoria"),
-
-
-     estado: yup
-    .string()
-    .oneOf(["activo", "inactivo",], "Selecciona un estado ")
-    .required("el estado es obligatorio"),
 });
 
-export default SchemaValidationFormacion;
+export default SchemaFicha;

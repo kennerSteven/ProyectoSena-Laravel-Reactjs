@@ -1,13 +1,15 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { onSubmitAprendiz } from "../../../../Services/FetchServices";
 import toast from "react-hot-toast";
 import "../../../../../styles/ButtonSubmit.css";
-import { onSubmitAprendiz } from "../../../../Services/FetchServices";
+
 export default function HandleValidationAprendiz({
   reset,
   perfiles,
   closeModal,
-  perfil: nombrePerfil, // ✅ renombrado para evitar conflicto
+  perfil: nombrePerfil,
+  capturedImage,
 }) {
   const [formData, setFormData] = useState();
 
@@ -23,6 +25,11 @@ export default function HandleValidationAprendiz({
       return;
     }
 
+    if (!data.ficha_id) {
+      toast.error("Debes seleccionar una ficha de formación");
+      return;
+    }
+
     const payload = {
       nombre: data.nombre,
       apellido: data.apellido,
@@ -31,21 +38,20 @@ export default function HandleValidationAprendiz({
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
       idperfil: perfilSeleccionado.id,
-      fichaSeleccionada : 2
+      idficha: data.ficha_id, // ✅ usa el nombre que espera el backend
+      foto: capturedImage || null,
     };
 
-    console.table(payload);
+    console.table("Aprendiz data", payload);
     setFormData(payload);
 
     try {
       await onSubmitAprendiz(payload);
-      reset();
-      closeModal();
 
-      Swal.fire({
+      await Swal.fire({
         icon: "success",
-        title: "Instructor creado",
-        text: "El instructor fue guardado exitosamente",
+        title: "Aprendiz creado",
+        text: "El aprendiz fue guardado exitosamente",
         confirmButtonText: "Aceptar",
         timer: 2000,
         timerProgressBar: true,
@@ -54,9 +60,12 @@ export default function HandleValidationAprendiz({
           confirmButton: "swal-confirm-green",
         },
       });
+
+      reset();
+      closeModal();
     } catch (error) {
       console.error("Error en envío:", error);
-      toast.error("Error al guardar el instructor");
+      toast.error("Error al guardar el aprendiz");
     }
   };
 

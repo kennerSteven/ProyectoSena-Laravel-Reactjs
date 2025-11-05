@@ -23,7 +23,7 @@ const SchemaValidationUser = yup.object({
 
   tipoDocumento: yup
     .string()
-    .oneOf(["CC", "TI"], "Tipo de documento inválido")
+    .oneOf(["cc", "tihan"], "Tipo de documento inválido")
     .required("Selecciona el tipo de documento"),
 
   tipoSangre: yup
@@ -33,8 +33,6 @@ const SchemaValidationUser = yup.object({
       "Tipo de sangre inválido"
     )
     .required("Selecciona el tipo de sangre"),
-
- 
 });
 
 export default SchemaValidationUser;

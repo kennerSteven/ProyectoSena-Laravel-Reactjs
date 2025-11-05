@@ -5,26 +5,27 @@ import { InputText } from "primereact/inputtext";
 import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
-import "primeicons/primeicons.css";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import "primeicons/primeicons.css";
 
 import { deleteInstructor } from "../Services/FetchServices";
 import SplitButtonComp from "../Ui/SplitButton";
 import FormInstructor from "../Form/FormInstructor";
+import FormFicha from "../Form/FormFicha"; // ✅ nuevo import
 import "../../styles/Table.css";
 
-export default function Table({
+export default function TableAprendiz({
   tableTitle,
   nameValue = [],
   dataTable = [],
   functionModal,
   openCreatePerfil,
-
   reloadTable,
 }) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [openFichaModal, setOpenFichaModal] = useState(false); // ✅ nuevo estado
   const toast = useRef(null);
 
   const globalFilterFields = nameValue.map(({ field }) => field);
@@ -32,6 +33,7 @@ export default function Table({
   const speedDialItems = [
     { icon: "pi pi-user-plus", command: functionModal },
     { icon: "pi pi-id-card", command: openCreatePerfil },
+    { icon: "pi pi-book", command: () => setOpenFichaModal(true) }, // ✅ abre modal ficha
   ];
 
   const handleDeleteUser = (rowData) => {
@@ -225,15 +227,6 @@ export default function Table({
     </div>
   );
 
-  (field) => (rowData) =>
-    rowData[field] !== null &&
-    rowData[field] !== undefined &&
-    rowData[field] !== "" ? (
-      rowData[field]
-    ) : (
-      <span className="text-muted">—</span>
-    );
-
   const actionBodyTemplate = (rowData) => (
     <div style={{ display: "flex", gap: "0.5rem" }}>
       <SplitButtonComp
@@ -245,7 +238,10 @@ export default function Table({
   );
 
   return (
-    <div className="mx-auto mt-2 shadow tableContainer">
+    <div
+      className="mx-auto mt-2 shadow tableContainer tableAprendices"
+    
+    >
       <Toast ref={toast} />
       <DataTable
         value={dataTable}
@@ -260,7 +256,6 @@ export default function Table({
         scrollHeight="420px"
         rowClassName={() => "my-custom-row"}
       >
-        {/* Columnas normales */}
         {nameValue.map(({ field, header }, idx) => (
           <Column
             key={idx}
@@ -278,7 +273,6 @@ export default function Table({
           />
         ))}
 
-        {/* Columna de foto */}
         <Column
           header="Foto"
           body={(rowData) => {
@@ -303,7 +297,6 @@ export default function Table({
           }}
         />
 
-        {/* Columna de acciones */}
         <Column
           header="Acciones"
           className="fw-bold"
@@ -323,6 +316,22 @@ export default function Table({
           closeModal={handleCloseUpdateModal}
         />
       </Dialog>
+
+      <Dialog
+        header="Crear Ficha"
+        visible={openFichaModal}
+        style={{ width: "450px" }}
+        onHide={() => setOpenFichaModal(false)}
+        modal
+      >
+        <FormFicha
+          closeModal={() => {
+            setOpenFichaModal(false);
+            if (reloadTable) reloadTable();
+          }}
+        />
+      </Dialog>
+
       <ConfirmDialog />
     </div>
   );

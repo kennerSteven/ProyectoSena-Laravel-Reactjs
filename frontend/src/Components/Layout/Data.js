@@ -58,10 +58,13 @@ export const nameValueInstructor = [
 export const nameValueAprendiz = [
   { field: "nombre", header: "Nombre" },
   { field: "apellido", header: "Apellido" },
-  { field: "tipoPerfil", header: "Perfil" },
+
   { field: "numeroDocumento", header: "Documento" },
   { field: "telefono", header: "Teléfono" },
-  { field: "tipoSangre", header: "Tipo de Sangre" },
+
+  { field: "nombrePrograma", header: "Formación" },
+  { field: "jornada", header: "Jornada" },
+  { field: "tipoSangre", header: " Sangre" },
   { field: "fechaRegistro", header: "Fecha de Registro" }, // ✅ agregado
 ];
 export const nameValueVisitante = [

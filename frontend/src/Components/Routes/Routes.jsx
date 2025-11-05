@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-
+import { TableAprendizs } from "../Pages/Table/TableInstructor";
 import DashboardCata from "../Pages/Dashboard/DashboardCata";
 import Login from "../Main/Login/Login";
 import FormPerfil from "../Form/FomPerfiles/FormPerfil";
@@ -7,7 +7,7 @@ import FormFormacion from "../Form/FormFormacion/FormFormacion";
 import { TableAdministrativo } from "../Pages/Table/TableInstructor";
 import MainDashboard from "../Pages/MainDash/MainDashboard";
 
-import { TableInstructor, TableAprendiz } from "../Pages/Table/TableInstructor";
+import { TableInstructor } from "../Pages/Table/TableInstructor";
 
 export default function App() {
   return (
@@ -23,7 +23,7 @@ export default function App() {
         <Route path="TipoUsuario" element={<FormPerfil />} />
         <Route path="ListarInstructor" element={<TableInstructor />} />
         <Route path="ListarAdministrativo" element={<TableAdministrativo />} />
-        <Route path="ListarAprendiz" element={<TableAprendiz />} />
+        <Route path="ListarAprendiz" element={<TableAprendizs />} />
       </Route>
     </Routes>
   );

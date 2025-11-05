@@ -13,16 +13,17 @@ export default function InputAutoComplete({
 
   const search = (e) => {
     const q = e.query.toLowerCase();
-    setValorItem(
-      objFormacion.filter((f) =>
-        Object.values(f).some((v) => String(v).toLowerCase().includes(q))
-      )
+    const filtered = objFormacion.filter((f) =>
+      f.label.toLowerCase().includes(q)
     );
+    setValorItem(filtered);
   };
 
   return (
     <div className="input-autocomplete">
-      <label className="form-label"  htmlFor={name}>{label}</label>
+      <label className="form-label" htmlFor={name}>
+        {label}
+      </label>
       <Controller
         name={name}
         control={control}
@@ -32,22 +33,32 @@ export default function InputAutoComplete({
             <AutoComplete
               id={name}
               dropdown
-              value={field.value}
+              value={objFormacion.find((f) => f.value === field.value) || null}
               suggestions={valorItem}
               completeMethod={search}
-              onChange={(e) => field.onChange(e.value)}
-              field="nombreFicha"
+              onChange={(e) => field.onChange(e.value?.value || null)} // ✅ guarda solo el ID
+              field="label"
               placeholder="Buscar ficha"
               className={`w-100 ${fieldState?.error ? "p-invalid" : ""}`}
               itemTemplate={(item) =>
                 item ? (
-                  <span>
-                    {item.nombreFicha} - {item.jornada} - {item.numeroFicha}
-                  </span>
-                ) : null
+                  <div className="d-flex align-items-center gap-2">
+                    <i className={item.icon}></i>
+                    <span>{item.label}</span>
+                  </div>
+                ) : (
+                  <span className="text-muted">—</span>
+                )
               }
               valueTemplate={(item) =>
-                item ? `${item.numeroFicha} - ${item.nombreFicha}` : ""
+                item ? (
+                  <div className="d-flex align-items-center gap-2">
+                    <i className={item.icon}></i>
+                    <span>{item.label}</span>
+                  </div>
+                ) : (
+                  ""
+                )
               }
             />
             {fieldState.error && (

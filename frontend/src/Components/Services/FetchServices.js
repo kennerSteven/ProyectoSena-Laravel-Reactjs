@@ -113,7 +113,6 @@ export async function getIdForCarnet(id) {
   });
 
   if (!response.ok) {
-    console.error("Error del backend:", errorText);
     throw new Error("Error al obtener datos del carnet");
   }
 
@@ -130,6 +129,78 @@ export async function getAllRegisters() {
     return Array.isArray(result) ? result : [];
   } catch (error) {
     console.error("Error en GetDataAprendiz:", error);
+    return [];
+  }
+}
+
+// POST /api/fichas
+export async function onSubmitFicha(payload) {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/ficha/store", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al crear la ficha");
+    }
+
+    const data = await response.json();
+    return data; // ✅ puedes devolver la ficha creada
+  } catch (error) {
+    console.error("Error en onSubmitFicha:", error);
+    throw error;
+  }
+}
+
+// PUT /api/fichas/:id
+export async function updateFicha(id, payload) {
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/ficha/update/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Error al actualizar la ficha");
+    }
+
+    const data = await response.json();
+    return data; // ✅ puedes devolver la ficha actualizada
+  } catch (error) {
+    console.error("Error en updateFicha:", error);
+    throw error;
+  }
+}
+
+export async function getFichas() {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/ficha/index", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("Fichas recibidas:", data);
+    return data;
+  } catch (error) {
+    console.error("Error al obtener fichas:", error);
     return [];
   }
 }

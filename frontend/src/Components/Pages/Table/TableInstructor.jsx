@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Dialog } from "primereact/dialog";
 import FormAprendiz from "../../Form/FormAprendiz";
-import { nameValueInstructor } from "../../Layout/Data";
+import { nameValueInstructor, nameValueAprendiz } from "../../Layout/Data";
 import { GetDataInstructor } from "../../Services/FetchServices";
 import {
   GetDataAprendiz,
@@ -12,6 +12,8 @@ import FormAdministrativo from "../../Form/FormAdministrativo";
 import Table from "../../Layout/Tablet";
 import FormPerfil from "../../Form/FomPerfiles/FormPerfil";
 import { nameValueAdministrativo } from "../../Layout/Data";
+import TableAprendiz from "../../Layout/TableAprendiz";
+
 export function TableInstructor() {
   const [openModal, setModalOpen] = useState(false);
   const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
@@ -82,25 +84,40 @@ export function TableInstructor() {
     </div>
   );
 }
-export function TableAprendiz() {
+export function TableAprendizs() {
   const [openModal, setModalOpen] = useState(false);
   const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
   const [aprendices, setAprendices] = useState([]);
 
   useEffect(() => {
     async function LoadAprendices() {
-      const data = await GetDataAprendiz();
+      try {
+        const data = await GetDataAprendiz();
 
-      const aprendicesFiltrados = data.filter((item) =>
-        item.perfile?.nombre?.toLowerCase().includes("aprendiz")
-      );
+        const aprendicesFiltrados = data.filter((item) =>
+          item.perfile?.nombre?.toLowerCase().includes("aprendiz")
+        );
 
-      const flattened = aprendicesFiltrados.map((item) => ({
-        ...item,
-        tipoPerfil: item.perfile?.nombre || "Sin perfil",
-      }));
-
-      setAprendices(flattened);
+        const flattened = aprendicesFiltrados.map((item) => ({
+          ...item,
+          tipoPerfil: item.perfile?.nombre || "Sin perfil",
+          nombrePrograma:
+            item.ficha?.nombrePrograma || "Analisis y desarrollo de software",
+          jornada: item.ficha?.jornada || "Manana",
+          icon:
+            item.ficha?.jornada === "mañana"
+              ? "pi pi-sun"
+              : item.ficha?.jornada === "tarde"
+              ? "pi pi-cloud"
+              : item.ficha?.jornada === "noche"
+              ? "pi pi-moon"
+              : "pi pi-question",
+        }));
+        setAprendices(flattened);
+      } catch (error) {
+        console.error("Error al cargar aprendices:", error);
+        setAprendices([]);
+      }
     }
 
     LoadAprendices();
@@ -108,12 +125,19 @@ export function TableAprendiz() {
 
   return (
     <div>
-      <Table
+      <TableAprendiz
         tableTitle="Listar Aprendices"
-        nameValue={nameValueInstructor}
+        nameValue={nameValueAprendiz}
         dataTable={aprendices}
         functionModal={() => setModalOpen(true)}
         openCreatePerfil={() => setModalCreatePerfil(true)}
+        reloadTable={() => {
+          setModalOpen(false);
+          setModalCreatePerfil(false);
+          // recarga aprendices
+          setAprendices([]);
+          setTimeout(() => {}, 300);
+        }}
       />
 
       <Dialog
@@ -138,6 +162,7 @@ export function TableAprendiz() {
     </div>
   );
 }
+
 export function TableAdministrativo() {
   const [openModal, setModalOpen] = useState(false);
   const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
