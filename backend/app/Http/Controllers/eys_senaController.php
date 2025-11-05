@@ -11,7 +11,7 @@ class eys_senaController extends Controller
 {
     public function index()
     {
-        $registros = eyssena::with(['usuarios'])->get();
+        $registros = eyssena::with(['usuarios.perfile'])->get();
         return response()->json($registros);
     }
 

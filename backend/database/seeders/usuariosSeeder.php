@@ -5,33 +5,28 @@ namespace Database\Seeders;
 use App\Models\fichas;
 use App\Models\perfile;
 use App\Models\usuarios;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class usuariosSeeder extends Seeder
 {
- public function run(): void
+    public function run(): void
     {
         $faker = Faker::create('es_ES');
 
-        // Obtener los IDs disponibles
+        // Obtener los perfiles existentes
         $perfiles = perfile::pluck('id', 'nombre')->toArray();
-        $fichas = fichas::pluck('id')->toArray();
 
-        // Buscar ID del perfil "Aprendiz"
-        $idAprendiz = $perfiles['Aprendiz'] ?? null;
+        // 🔹 Excluir el perfil de "Aprendiz"
+        $perfilesSinAprendiz = array_filter($perfiles, function ($nombre) {
+            return $nombre !== 'Aprendiz';
+        }, ARRAY_FILTER_USE_KEY);
 
-        // Crear 300 usuarios
-        for ($i = 0; $i < 300; $i++) {
-            // Elegimos un perfil al azar
-            $perfil_id = $faker->randomElement($perfiles);
+        // Crear 200 usuarios que no sean aprendices
+        for ($i = 0; $i < 200; $i++) {
 
-            // Si el usuario es aprendiz, le asignamos una ficha al azar
-            $idficha = null;
-            if ($perfil_id == $idAprendiz && count($fichas) > 0) {
-                $idficha = $faker->randomElement($fichas);
-            }
+            // Seleccionar un perfil que NO sea aprendiz
+            $perfil_id = $faker->randomElement($perfilesSinAprendiz);
 
             usuarios::create([
                 'nombre' => $faker->firstName(),
@@ -43,7 +38,7 @@ class usuariosSeeder extends Seeder
                 'estado' => $faker->randomElement(['activo', 'inactivo']),
                 'fechaRegistro' => $faker->dateTimeBetween('-6 months', 'now'),
                 'idperfil' => $perfil_id,
-                'idficha' => $idficha,
+                'idficha' => null, 
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

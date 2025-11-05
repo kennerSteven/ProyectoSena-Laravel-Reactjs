@@ -1,1 +1,1 @@
-'total_usuarios' =>usuarios::count(),'por_perfil' =>usuarios::with('perfil:id,nombre')->selectRaw('idperfil, COUNT(*) as cantidad')->groupBy('idperfil')->get()
+'totalusuarios' =>usuarios::count(),'porperfil' =>usuarios::with('perfile:id,nombre')->selectRaw('idperfil, COUNT(*) as cantidad')->groupBy('idperfil')->get()

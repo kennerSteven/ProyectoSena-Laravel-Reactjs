@@ -25,10 +25,7 @@ class eys_gymController extends Controller
     ]);
 
     
-    $usuario = usuarios::with('perfile') 
-        ->where('numeroDocumento', $request->numeroDocumento)
-        ->firstOrFail();
-
+   $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
     
     $entrada = eysgym::create([
         'numeroDocumento' => $usuario->numeroDocumento,
@@ -37,9 +34,6 @@ class eys_gymController extends Controller
         'fechaRegistro' => now(),
     ]);
 
-    
-    $entrada = eysgym::with('usuarios.perfile')
-        ->find($entrada->id);
 
     
     return response()->json([
@@ -58,14 +52,10 @@ class eys_gymController extends Controller
     ]);
 
     
-    $usuario = usuarios::with('perfile')
-        ->where('numeroDocumento', $request->numeroDocumento)
-        ->firstOrFail();
+    $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
     
-    $ultimoRegistro = eysgym::where('idusuario', $usuario->id)
-        ->latest()
-        ->first();
+    $ultimoRegistro = eysgym::where('idusuario', $usuario->id)->latest()->first();
 
    
     if (!$ultimoRegistro || $ultimoRegistro->tipo === 'salida') {
@@ -82,8 +72,6 @@ class eys_gymController extends Controller
         'fechaRegistro' => now(),
     ]);
 
-    
-    $salida = eysgym::with('usuarios.perfile')->find($salida->id);
 
    
     return response()->json([

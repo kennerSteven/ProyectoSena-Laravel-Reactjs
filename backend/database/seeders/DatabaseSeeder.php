@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         FichasSeeder::class,
         UsuariosSeeder::class,
         VehiculosSeeder::class,
-        EysGranjaSeeder::class,
+        eys_granjaSeeder::class,
     ]);
 }
 }

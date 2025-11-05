@@ -32,7 +32,7 @@ class usuarios extends Model
 
      public function fichas() {
 
-         return $this->belongsTo(fichas::class,'idficha');
+         return $this->belongsTo(fichas::class,'idficha','id');
     }
 
      public function vehiculo() {

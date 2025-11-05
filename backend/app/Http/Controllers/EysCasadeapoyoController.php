@@ -8,21 +8,22 @@ use Illuminate\Http\Request;
 
 class EysCasadeapoyoController extends Controller
 {
-     public function index()
+    
+    public function index()
     {
-        $registros = eyscasadeapoyo::with(['usuarios'])->get();
+        $registros = eyscasadeapoyo::with(['usuarios.perfile'])->get();
         return response()->json($registros);
     }
 
-   
+    
     public function entradacasadeapoyo(Request $request)
     {
-
-         $request->validate(['numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'], ]);
+        $request->validate([
+            'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
+        ]);
 
         $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
-        
         $entrada = eyscasadeapoyo::create([
             'numeroDocumento' => $usuario->numeroDocumento,
             'tipo' => 'entrada',
@@ -30,6 +31,7 @@ class EysCasadeapoyoController extends Controller
             'fechaRegistro' => now(),
         ]);
 
+        
 
         return response()->json([
             'message' => 'Entrada registrada correctamente',
@@ -37,22 +39,24 @@ class EysCasadeapoyoController extends Controller
         ]);
     }
 
-
-     public function salidacasadeapoyo(Request $request)
+    
+    public function salidacasadeapoyo(Request $request)
     {
-        $request->validate(['numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],]);
+        $request->validate([
+            'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
+        ]);
 
-       $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
+        $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
-       $ultimoRegistro = eyscasadeapoyo::where('idusuario', $usuario->id)->latest()->first();
+        $ultimoRegistro = eyscasadeapoyo::where('idusuario', $usuario->id)
+            ->latest()
+            ->first();
 
-
-    if (!$ultimoRegistro || $ultimoRegistro->tipo === 'salida') {
-    return response()->json([
-        'error' => ' No se puede registrar salida sin una entrada previa.'
-    ], 400);
-    }
-        
+        if (!$ultimoRegistro || $ultimoRegistro->tipo === 'salida') {
+            return response()->json([
+                'error' => 'No se puede registrar salida sin una entrada previa.'
+            ], 400);
+        }
 
         $salida = eyscasadeapoyo::create([
             'numeroDocumento' => $usuario->numeroDocumento,
@@ -63,8 +67,8 @@ class EysCasadeapoyoController extends Controller
 
 
         return response()->json([
-            'message' => 'salida registrada correctamente',
-            'entrada' => $salida
+            'message' => 'Salida registrada correctamente',
+            'salida' => $salida
         ]);
     }
 }

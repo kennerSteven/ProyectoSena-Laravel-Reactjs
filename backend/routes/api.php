@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\dashcontroller;
 use App\Http\Controllers\eys_granjaController;
 use App\Http\Controllers\eys_gymController;
 use App\Http\Controllers\eys_senaController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\FichasController;
 use App\Http\Controllers\PerfileController;
 use App\Http\Controllers\usuariosController;
 use App\Http\Controllers\VehiculoController;
+use App\Services\dashService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +34,9 @@ Route::post("/ficha/store", [FichasController::class, "store"]);
 Route::get("/ficha/show/{id}", [FichasController::class, "show"]);
 Route::put("/ficha/update/{id}", [FichasController::class, "update"]);
 Route::delete("/ficha/destroy/{id}", [FichasController::class, "destroy"]);
+Route::get('/ficha/mostrarFicha/{id}', [FichasController::class, 'mostrarFicha']);
+Route::get('/fichas/masUsuarios', [FichasController::class, 'fichasConMasUsuarios']);
+
 
 Route::get("/usuario/index", [usuariosController::class, "index"]);
 Route::post("/usuario/store", [UsuariosController::class, "store"]); 
@@ -59,6 +64,11 @@ Route::post("/entradaysalidaSENA/salidasena", [eys_senaController::class, "salid
 Route::get("/entradaysalidacasa/index", [EysCasadeapoyoController::class, "index"]);
 Route::post("/entradaysalidacasa/entradacasadeapoyo", [EysCasadeapoyoController::class, "entradacasadeapoyo"]); 
 Route::post("/entradaysalidacasa/salidacasadeapoyo", [EysCasadeapoyoController::class, "salidacasadeapoyo"]); 
+
+/*kpi*/
+
+
+
 
 
 

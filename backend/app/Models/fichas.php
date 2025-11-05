@@ -17,6 +17,6 @@ class fichas extends Model
 
     public function usuarios() {
 
-        return $this->hasMany(usuarios::class);
+        return $this->hasMany(usuarios::class, 'idficha', 'id');
     }
 }
