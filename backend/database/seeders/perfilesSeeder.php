@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\perfile;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class perfilesSeeder extends Seeder
@@ -11,12 +10,30 @@ class perfilesSeeder extends Seeder
     public function run(): void
     {
         $perfiles = [
-            ['nombre' => 'Administrador', 'descripcion' => 'Gestiona todo el sistema, usuarios y configuraciones.'],
-            ['nombre' => 'Instructor', 'descripcion' => 'Encargado de guiar y evaluar a los aprendices.'],
-            ['nombre' => 'Aprendiz', 'descripcion' => 'Usuario en formación dentro del sistema.'],
-            ['nombre' => 'Visitante', 'descripcion' => 'Usuario temporal con acceso restringido.'],
-            ['nombre' => 'Contratista', 'descripcion' => 'Usuario con funciones específicas dentro del centro.'],
-            ['nombre' => 'Seguridad', 'descripcion' => 'Controla accesos, entradas y salidas de usuarios.'],
+            [
+                'nombre' => 'Visitante',
+                'descripcion' => 'Usuario temporal con acceso limitado al sistema.'
+            ],
+            [
+                'nombre' => 'Aprendiz',
+                'descripcion' => 'Usuario en formación dentro del sistema (tiene ficha asignada).'
+            ],
+            [
+                'nombre' => 'Instructor de Contrato',
+                'descripcion' => 'Instructor contratado por un periodo determinado para formación o apoyo académico.'
+            ],
+            [
+                'nombre' => 'Instructor de Planta',
+                'descripcion' => 'Instructor perteneciente a la planta del centro de formación.'
+            ],
+            [
+                'nombre' => 'Administrativo de Planta',
+                'descripcion' => 'Personal administrativo que hace parte de la planta del centro.'
+            ],
+            [
+                'nombre' => 'Administrativo de Contrato',
+                'descripcion' => 'Personal administrativo contratado temporalmente.'
+            ],
         ];
 
         foreach ($perfiles as $perfil) {
