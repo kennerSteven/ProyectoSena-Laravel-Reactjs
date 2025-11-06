@@ -38,15 +38,17 @@ Route::delete("/ficha/destroyMasivo/{id}", [FichasController::class, "destroyMas
 Route::put('/ficha/desactivar/{id}', [FichasController::class, 'desactivarFicha']);
 Route::get("/ficha/listarFichasDesactivadas", [FichasController::class, "listarFichasDesactivadas"]);
 Route::get("/ficha/listarusuariosDeFichadesactivada/{id}", [FichasController::class, "listarusuariosDeFichadesactivada"]);
-Route::get('/ficha/mostrarFicha/{id}', [FichasController::class, 'mostrarFicha']);
-Route::get('/fichas/masUsuarios', [FichasController::class, 'fichasConMasUsuarios']);
-
+Route::get('/ficha/listarusuariosdelaFicha/{id}', [FichasController::class, 'listarusuariosdelaFicha']);
+Route::get('/fichas/fichasConMasAprendices', [FichasController::class, 'fichasConMasAprendices']);
+Route::get('/fichas/listarFichasPorEstado', [FichasController::class, 'listarFichasPorEstado']);
 
 Route::get("/usuario/index", [usuariosController::class, "index"]);
 Route::post("/usuario/store", [UsuariosController::class, "store"]); 
 Route::get("/usuario/show/{id}", [UsuariosController::class, "show"]);
 Route::put("/usuario/update/{id}", [UsuariosController::class, "update"]);
 Route::delete("/usuario/destroy/{id}", [UsuariosController::class, "destroy"]);
+Route::get('/instructores/filtrar/{tipo}', [UsuariosController::class, 'filtrarInstructores']);
+
 
 /*granja*/
 Route::get("/entradaysalidagranja/index", [eys_granjaController::class, "index"]);
@@ -63,6 +65,8 @@ Route::post("/entradaysalidagym/salidagym", [eys_gymController::class, "salidagy
 Route::get("/entradaysalidaSENA/index", [eys_senaController::class, "index"]);
 Route::post("/entradaysalidaSENA/entradasena", [eys_senaController::class, "entradasena"]); 
 Route::post("/entradaysalidaSENA/salidasena", [eys_senaController::class, "salidasena"]); 
+Route::get('/usuario/buscar/{numeroDocumento}', [UsuariosController::class, 'buscarPorDocumento']);
+
 
 /*CASA APOYO*/
 Route::get("/entradaysalidacasa/index", [EysCasadeapoyoController::class, "index"]);

@@ -16,6 +16,22 @@ class FichasController extends Controller
         return response()->json($ficha);
     }
 
+    public function listarusuariosdelaFicha($id)
+{
+    
+    $ficha = fichas::with(['usuarios.perfile'])->find($id);
+
+    if (!$ficha) {
+        return response()->json(['error' => 'Ficha no encontrada'], 404);
+    }
+
+    $totalUsuarios = $ficha->usuarios->count();
+
+    return response()->json([
+        'ficha' => $ficha,
+        'total_usuarios' => $totalUsuarios
+    ]);
+}
 
 
     public function store(fichasRequest $request)
@@ -137,29 +153,14 @@ public function destroyMasivo(Request $request)
 }
 
 
-    public function mostrarFicha($id)
-{
     
-    $ficha = fichas::with(['usuarios.perfile'])->find($id);
-
-    if (!$ficha) {
-        return response()->json(['error' => 'Ficha no encontrada'], 404);
-    }
-
-    $totalUsuarios = $ficha->usuarios->count();
-
-    return response()->json([
-        'ficha' => $ficha,
-        'total_usuarios' => $totalUsuarios
-    ]);
-}
 
 
 public function listarusuariosDeFichadesactivada($id)
 {
     // Trae la ficha junto con los usuarios INACTIVOS
     $ficha = fichas::with(['usuarios' => function($query) {
-    $query->where('estado', 'inactivo') // 🔥 solo los usuarios inactivos
+    $query->where('estado', 'inactivo') //  solo los usuarios inactivos
               ->select('id', 'nombre', 'apellido', 'tipoDocumento', 'numeroDocumento', 'estado', 'telefono', 'idficha');
     }])->where('estado', 'inactivo') ->find($id);
 
@@ -185,19 +186,49 @@ public function listarusuariosDeFichadesactivada($id)
 
 
 /*kpi*/
-    public function fichasConMasUsuarios()
+public function fichasConMasAprendices()
 {
-    $fichas = fichas::select(
+    $fichas = DB::table('fichas')
+        ->join('usuarios', 'usuarios.idficha', '=', 'fichas.id')
+        ->join('perfiles', 'usuarios.idperfil', '=', 'perfiles.id')
+        ->where('perfiles.nombre', 'Aprendiz')
+        ->select(
             'fichas.id',
             'fichas.numeroFicha',
             'fichas.nombrePrograma',
-            DB::raw('COUNT(usuarios.id) as total_usuarios')
+            DB::raw('COUNT(usuarios.id) as total_aprendices')
         )
-        ->leftJoin('usuarios', 'usuarios.idficha', '=', 'fichas.id')
         ->groupBy('fichas.id', 'fichas.numeroFicha', 'fichas.nombrePrograma')
-        ->orderByDesc('total_usuarios')
+        ->orderByDesc('total_aprendices')
         ->get();
 
-    return response()->json($fichas);
+    return response()->json([
+        'message' => 'Fichas con más aprendices',
+        'data' => $fichas
+    ]);
 }
+    
+
+
+public function listarFichasPorEstado()
+{
+    $fichasActivas = fichas::where('estado', 'activo')
+        ->withCount('usuarios')
+        ->get();
+
+    $fichasInactivas = fichas::where('estado', 'inactivo')
+        ->withCount('usuarios')
+        ->get();
+
+    return response()->json([
+        'message' => 'Fichas agrupadas por estado',
+        'activas' => $fichasActivas,
+        'inactivas' => $fichasInactivas
+    ]);
+}
+
+
+
+
+
 }
