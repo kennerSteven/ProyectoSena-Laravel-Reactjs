@@ -37,9 +37,9 @@ public function principal(){
 }
 
 
-public function ventas (){
-    return view('dashboard.dashventas');
-}
+
+
+
 
 
 }

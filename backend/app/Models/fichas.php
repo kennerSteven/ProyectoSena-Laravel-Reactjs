@@ -17,6 +17,17 @@ class fichas extends Model
 
     public function usuarios() {
 
-        return $this->hasMany(usuarios::class);
+        return $this->hasMany(usuarios::class, 'idficha', 'id');
     }
+
+    protected static function booted()
+{
+    static::deleting(function ($ficha) {
+        
+        $ficha->usuarios()->delete();
+    });
+}
+
+
+
 }

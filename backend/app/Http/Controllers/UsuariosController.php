@@ -21,7 +21,7 @@ class UsuariosController extends Controller
 
    public function store(Request $request)
 {
-    // 📸 Guardar la foto si viene en base64
+    
     if ($request->has('foto')) {
         $fotoBase64 = $request->input('foto');
         $foto = preg_replace('/^data:image\/\w+;base64,/', '', $fotoBase64);
@@ -31,56 +31,14 @@ class UsuariosController extends Controller
         $request['foto'] = 'storage/fotos/' . $nombreFoto;
     }
 
-    // 🧍 Crear el usuario
+    
     $usuario = usuarios::create($request->all());
 
-    // 🏋️‍♀️ Registrar la entrada según el tipo
-    $tipoEntrada = $request->input('tipoEntrada');
-    $entrada = null;
-
-    switch ($tipoEntrada) {
-        case 'gym':
-            $entrada = eysgym::create([
-                'numeroDocumento' => $usuario->numeroDocumento,
-                'tipo' => 'entrada',
-                'idusuario' => $usuario->id,
-                'fechaRegistro' => now(),
-            ]);
-            break;
-
-        case 'granja':
-            $entrada = eysgranja::create([
-                'numeroDocumento' => $usuario->numeroDocumento,
-                'tipo' => 'entrada',
-                'idusuario' => $usuario->id,
-                'fechaRegistro' => now(),
-            ]);
-            break;
-
-        case 'casa':
-            $entrada = eyscasadeapoyo::create([
-                'numeroDocumento' => $usuario->numeroDocumento,
-                'tipo' => 'entrada',
-                'idusuario' => $usuario->id,
-                'fechaRegistro' => now(),
-            ]);
-            break;
-
-        case 'sena':
-            $entrada = eyssena::create([
-                'numeroDocumento' => $usuario->numeroDocumento,
-                'tipo' => 'entrada',
-                'idusuario' => $usuario->id,
-                'fechaRegistro' => now(),
-            ]);
-            break;
-    }
-
-    // ✅ Respuesta JSON
+    
     return response()->json([
         'message' => 'Usuario y entrada registrados correctamente',
-        'usuario' => $usuario,
-        'entrada' => $entrada,
+        'usuario' => $usuario
+       
     ], 201);
 }
 

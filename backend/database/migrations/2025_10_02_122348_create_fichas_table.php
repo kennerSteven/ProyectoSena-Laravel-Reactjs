@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('numeroFicha');
             $table->string('nombrePrograma');
             $table->string('jornada');
-            $table->enum('estado',['activo','inactivo']);
+            $table->enum('estado',['activo','inactivo'])->default('activo');
             $table->timestamps();
         });
     }
