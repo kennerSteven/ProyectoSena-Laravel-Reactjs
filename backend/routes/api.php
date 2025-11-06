@@ -60,12 +60,13 @@ Route::post("/entradaysalidagranja/salidagranja", [eys_granjaController::class, 
 Route::get("/entradaysalidagym/index", [eys_gymController::class, "index"]);
 Route::post("/entradaysalidagym/entradagym", [eys_gymController::class, "entradagym"]); 
 Route::post("/entradaysalidagym/salidagym", [eys_gymController::class, "salidagym"]); 
+Route::get('/usuario/buscar/{numeroDocumento}', [eys_gymController::class, 'buscarPorDocumento']);
 
 /*SENA*/
 Route::get("/entradaysalidaSENA/index", [eys_senaController::class, "index"]);
 Route::post("/entradaysalidaSENA/entradasena", [eys_senaController::class, "entradasena"]); 
 Route::post("/entradaysalidaSENA/salidasena", [eys_senaController::class, "salidasena"]); 
-Route::get('/usuario/buscar/{numeroDocumento}', [UsuariosController::class, 'buscarPorDocumento']);
+Route::get('/usuario/buscar/{numeroDocumento}', [eys_senaController::class, 'buscarPorDocumento']);
 
 
 /*CASA APOYO*/
