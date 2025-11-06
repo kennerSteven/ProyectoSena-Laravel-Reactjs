@@ -82,7 +82,21 @@ class eys_gymController extends Controller
 
 
 
+ public function buscarPorDocumento($numeroDocumento)
+{
+    $usuario = usuarios::with('perfile', 'fichas')
+        ->where('numeroDocumento', $numeroDocumento)
+        ->first();
 
+    if (!$usuario) {
+        return response()->json(['error' => 'Usuario no encontrado'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Usuario encontrado',
+        'usuario' => $usuario
+    ]);
+}
 
    
     
