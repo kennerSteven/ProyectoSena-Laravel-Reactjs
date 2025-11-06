@@ -1,4 +1,13 @@
 .tableHistorialContent {
   padding: 20px;
-  width: 900px;
+  width: 1050px;
+}
+/* Oculta el ícono de embudo en los filtros de columna */
+.p-column-filter-menu-button {
+  display: none !important;
+}
+
+/* Opcional: ajusta padding si queda espacio vacío */
+.p-column-header-content {
+  padding-right: 0.5rem !important;
 }

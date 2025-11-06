@@ -1,9 +1,23 @@
 a {
   text-decoration: none;
 }
-.p-button {
+
+.btnActionIconUpdate {
+  color: #dc3545;
+  background-color: transparent;
   border: none;
-  height: 35px;
-  font-size: 13px;
-  color: white;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btnActionIconDelete {
+  color: #007bff;
+  background-color: transparent;
+  border: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btnActionIconUpdate:hover,
+.btnActionIconDelete:hover {
+  transform: scale(1.2) rotate(-5deg);
+  cursor: pointer;
 }

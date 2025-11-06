@@ -1,35 +1,100 @@
+/* Sidebar base */
 .sidebar {
-  width: 260px;
-  height: 120vh;
-
-  background-color: #007832;
-}
-
-.main {
+  background-color: #ffff;
+  height: 100vh;
+  transition: width 0.3s ease;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  margin: 50px;
-  color: #fff;
-
-  text-decoration: none;
-  border-radius: 6px;
-  transition: 0.2s;
-  font-weight: 700;
 }
 
-.NavbarOptions:hover {
-  background: #f5f5f9;
-  color: #007832;
+/* Expandido y colapsado */
+.sidebar.expanded {
+  width: 200px;
+  padding: 1rem;
+}
+
+.sidebar.collapsed {
+  width: 69px;
+  padding: 0.5rem;
 }
 
 /* Logo institucional */
-.imgContainer {
+.sidebar img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  transition: width 0.3s ease;
+}
+
+/* Botón hamburguesa */
+.hamburger-container {
+  width: 100%;
   display: flex;
-  gap: 5px;
+  padding: 0.5rem;
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  color: #007832;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.hamburger-btn:hover {
+  color: #e6f4ec;
+  transform: scale(1.1);
+}
+
+.hamburger-btn.rotated {
+  transform: rotate(180deg);
+}
+
+/* Ítems del sidebar institucional */
+.sidebar-item,
+.NavbarOptions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  margin-top: 20px;
+  font-weight: 500;
+  font-size: 14px;
+
+  color: #007832; /* Verde institucional */
+  text-decoration: none;
+  border-radius: 6px;
+  transition: transform 0.1s ease-in, background 0.1s ease-in;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+/* Íconos más grandes */
+.sidebar-item i,
+.NavbarOptions i {
+  font-size: 1.5rem;
+  color: #007832; /* Verde institucional */
+}
+
+/* Ocultar texto en modo colapsado */
+.sidebar.collapsed .item-label,
+.sidebar.collapsed .NavbarOptions span {
+  display: none;
+}
+
+/* Hover institucional */
+.sidebar-item:hover,
+.NavbarOptions:hover {
+  background-color: #d0e9dc; /* Un poco más oscuro que #e6f4ec */
+  color: #004f22;
+  transform: scale(1.04);
 }
 
 /* Separadores */
-hr {
+.divider {
   width: 90%;
-  border: 1.5px solid rgb(186, 186, 186);
+  border: 1.5px solid #c2c2c2;
+  margin: 1rem auto;
 }

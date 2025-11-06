@@ -1,27 +1,24 @@
-import { SplitButton } from "primereact/splitbutton";
+import "primeicons/primeicons.css";
 import "../../styles/SplitButton.css";
 
-import "primeicons/primeicons.css";
-
 export default function SplitButtonComp({ rowData, onEdit, onDelete }) {
-  const items = [
-    {
-      label: "Editar",
-      icon: "pi pi-pencil",
-      command: () => onEdit(rowData),
-    },
-    {
-      label: "Eliminar",
-      icon: "pi pi-trash",
-      command: () => onDelete(rowData),
-    },
-  ];
-
   return (
-    <SplitButton
-      label="Acciones"
-      model={items}
-      className="p-button-sm p-button-outlined"
-    />
+    <div className="d-flex gap-3">
+      <button
+        className="btnActionIconDelete"
+        title="Editar"
+        onClick={() => onEdit(rowData)}
+      >
+        <i className="pi pi-pencil" style={{ fontSize: "1.2rem" }} />
+      </button>
+
+      <button
+        className=" btnActionIconUpdate"
+        title="Eliminar"
+        onClick={() => onDelete(rowData)}
+      >
+        <i className="pi pi-trash" />
+      </button>
+    </div>
   );
 }

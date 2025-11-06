@@ -106,11 +106,11 @@ export function TableAprendizs() {
             nombrePrograma: ficha.nombrePrograma || "Sin programa",
             jornada: ficha.jornada || "Sin jornada",
             icon:
-              ficha.jornada === "mañana"
+              ficha.jornada === "Mañana"
                 ? "pi pi-sun"
-                : ficha.jornada === "tarde"
+                : ficha.jornada === "Tarde"
                 ? "pi pi-cloud"
-                : ficha.jornada === "noche"
+                : ficha.jornada === "Noche"
                 ? "pi pi-moon"
                 : "pi pi-question",
           };
@@ -190,10 +190,6 @@ export function TableAprendizs() {
     </div>
   );
 }
-
-
-
-
 
 export function TableAdministrativo() {
   const [openModal, setModalOpen] = useState(false);

@@ -1,23 +1,41 @@
-a {
-  font-weight: 500;
-  font-size: 14px;
-  margin-top: 20px;
-}
-
+/* Ítems del sidebar */
 .NavbarOptions {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
 
-  color: #ffffff;
+  font-weight: 500;
+  font-size: 14px;
 
   text-decoration: none;
   border-radius: 6px;
-  transition: 0.2s;
 
   transition: transform 0.1s ease-in, background 0.1s ease-in;
 }
+
+/* Íconos más grandes */
+.NavbarOptions i {
+  font-size: 1.4rem;
+}
+
+/* Hover institucional */
 .NavbarOptions:hover {
   background: #f5f5f9;
   color: rgb(68, 68, 68);
   transform: scale(1.04);
+}
+
+/* Ocultar texto en modo colapsado */
+.sidebar.collapsed .NavbarOptions span {
+  display: none;
+}
+
+/* Separadores */
+.divider {
+  width: 90%;
+  border: 1.5px solid rgb(186, 186, 186);
+}
+.sidebar.collapsed .NavbarOptions {
+  justify-content: center;
 }

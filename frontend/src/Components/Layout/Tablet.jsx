@@ -245,7 +245,7 @@ export default function Table({
   );
 
   return (
-    <div className="mx-auto mt-2 shadow tableContainer">
+    <div className="mx-auto mt-4 shadow tableContainer">
       <Toast ref={toast} />
       <DataTable
         value={dataTable}

@@ -1,6 +1,7 @@
 /* Encabezado de la tabla */
 .p-datatable-thead th {
-  background-color: #ffffff;
+  background-color: #f8f8f8;
+
   /* Fondo blanco */
   color: #007832;
   /* Verde institucional para texto */
@@ -11,18 +12,18 @@
 }
 
 /* Filas alternas para legibilidad */
-.p-datatable .p-datatable-tbody>tr:nth-child(even) {
+.p-datatable .p-datatable-tbody > tr:nth-child(even) {
   background-color: #f8f9fa;
   /* Gris claro para alternancia */
 }
 
-.p-datatable .p-datatable-tbody>tr:nth-child(odd) {
+.p-datatable .p-datatable-tbody > tr:nth-child(odd) {
   background-color: #ffffff;
   /* Fondo blanco */
 }
 
 /* Hover sobre filas */
-.p-datatable .p-datatable-tbody>tr:hover {
+.p-datatable .p-datatable-tbody > tr:hover {
   background-color: #e6f4ea;
   /* Verde suave al pasar el mouse */
   cursor: pointer;
@@ -93,7 +94,6 @@ ul {
 }
 
 .tableAprendices {
-
   padding: 2px 10px;
   width: 1100px;
   overflow-x: auto;
@@ -128,4 +128,24 @@ ul {
   background: linear-gradient(to right, #007832, #66b98a);
 
   color: #ffffff;
+}
+
+.btnActions {
+  background-color: #ffffff;
+  border: none;
+  color: #3b3b3b;
+  border-radius: 10px;
+  padding: 10px 15px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btnActions:hover {
+  transform: scale(1.1) rotate(-3deg);
+  color: #1f1f1f; /* gris más oscuro */
+  cursor: pointer;
+}
+.containerButtonActions {
+  padding: 4px 13px;
+  border-radius: 5px;
+  background-color: #ffffff;
 }
