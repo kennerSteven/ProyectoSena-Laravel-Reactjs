@@ -54,7 +54,7 @@ Route::get('/instructores/filtrar/{tipo}', [UsuariosController::class, 'filtrarI
 Route::get("/entradaysalidagranja/index", [eys_granjaController::class, "index"]);
 Route::post("/entradaysalidagranja/entradagranja", [eys_granjaController::class, "entradagranja"]);
 Route::post("/entradaysalidagranja/salidagranja", [eys_granjaController::class, "salidagranja"]); 
-
+Route::get('/usuario/buscar/{numeroDocumento}', [eys_granjaController::class, 'buscarPorDocumento']);
 
 /*gym*/
 Route::get("/entradaysalidagym/index", [eys_gymController::class, "index"]);
@@ -73,6 +73,7 @@ Route::get('/usuario/buscar/{numeroDocumento}', [eys_senaController::class, 'bus
 Route::get("/entradaysalidacasa/index", [EysCasadeapoyoController::class, "index"]);
 Route::post("/entradaysalidacasa/entradacasadeapoyo", [EysCasadeapoyoController::class, "entradacasadeapoyo"]); 
 Route::post("/entradaysalidacasa/salidacasadeapoyo", [EysCasadeapoyoController::class, "salidacasadeapoyo"]); 
+Route::get('/usuario/buscar/{numeroDocumento}', [EysCasadeapoyoController::class, 'buscarPorDocumento']);
 
 /*kpi*/
 
