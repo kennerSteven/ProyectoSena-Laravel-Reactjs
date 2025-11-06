@@ -1,17 +1,17 @@
-import SchemaValidationRegister from "../Validation/SchemaValidation/SchemaValidationRegister";
-import ButtonSubmit from "../../Ui/ButtonSubmit";
-import SelectOptions from "../../Ui/SelectOptions";
-import InputField from "../../Ui/InputField";
+import SchemaValidationRegister from "./Validation/SchemaValidation/SchemaValidationRegister";
+import ButtonSubmit from "../Ui/ButtonSubmit";
+import SelectOptions from "../Ui/SelectOptions";
+import InputField from "../Ui/InputField";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import useFormWithYup from "../Validation/connectYupRhf";
+import useFormWithYup from "./Validation/connectYupRhf";
 import { Dialog } from "primereact/dialog";
-import "../../../styles/FormRegisterVehicles.css";
-import useHandleValidationRegister from "../Validation/HandleValidation/HandleValidationRegister";
-import FormRegisterVehicles from "./FormRegisterVehicles";
-import Carnet from "../../Carnet";
+import "../../styles/FormRegisterVehicles.css"
+import useHandleValidationRegister from "./Validation/HandleValidation/HandleValidationRegister";
+import FormRegisterVehicles from "./FormVehicles/FormRegisterVehicles";
+import HandleValidationSalida from "./Validation/HandleValidation/HandleValidationSalida";
 
-export default function FormRegister() {
+export default function FormSalida() {
   const [visible, stateVisible] = useState(false);
   const [vehiculoData, setVehiculoData] = useState(null);
   const [modalCarnet, setModalCarnet] = useState(false);
@@ -25,7 +25,7 @@ export default function FormRegister() {
     formState: { errors, isSubmitting, isValid },
   } = useFormWithYup(SchemaValidationRegister, { mode: "onChange" });
 
-  const { onSubmit, onError, dataCarnet } = useHandleValidationRegister({
+  const { onSubmit, onError, dataCarnet } = HandleValidationSalida({
     reset,
     setVisible: stateVisible,
   });
@@ -61,9 +61,6 @@ export default function FormRegister() {
     stateVisible(false);
   };
 
-  function closeModalCarnet() {
-    setModalCarnet(false);
-  }
 
   const handleFinalSubmit = (formData) => {
     const payload = {
@@ -118,8 +115,8 @@ export default function FormRegister() {
         </div>
 
         <ButtonSubmit
-          textSend="Registrar entrada"
-          textSending="Registrando entrada..."
+          textSend="Registrar salida"
+          textSending="Registrando salida..."
           isSubmitting={isSubmitting}
           disabled={isBlocked || isSubmitting || !isValid}
         />
@@ -140,26 +137,7 @@ export default function FormRegister() {
         <Toaster />
       </form>
 
-      <Dialog
-        header="Entrada registrada exitosamente"
-        visible={modalCarnet}
-        style={{ width: "420px" }}
-        onHide={() => setModalCarnet(false)}
-      >
-        {dataCarnet && (
-          <Carnet
-            nombre={dataCarnet.nombre}
-            apellido={dataCarnet.apellido}
-            tipoDoc={dataCarnet.tipoDocumento}
-            numeroDoc={dataCarnet.numeroDocumento}
-            telefono={dataCarnet.telefono}
-            sangre={dataCarnet.tipoSangre}
-            tipoPerfil={dataCarnet.perfile?.nombre}
-            foto={dataCarnet.foto} // ✅ ya viene como URL completa
-            closeCarnet={closeModalCarnet}
-          />
-        )}
-      </Dialog>
+  
     </div>
   );
 }

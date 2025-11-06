@@ -6,14 +6,16 @@ import { Dialog } from "primereact/dialog";
 import FormRegister from "../Form/FormVehicles/FormRegister";
 import ClockDisplay from "../ClockDisplay";
 import TablaHistorial from "../TableHistorial";
+import FormSalida from "../Form/FormSalida";
 
 export default function TopBar({ nameTopBar, nameAdmin }) {
-  const [visible, stateVisible] = useState(false);
+  const [visibleEntrada, setVisibleEntrada] = useState(false); // ✅ entrada
+  const [visibleSalida, setVisibleSalida] = useState(false);   // ✅ salida
   const [visibleTableHistorial, setVisibleTableHistorial] = useState(false);
 
   return (
     <div className="d-flex justify-content-end align-items-center topbar">
-      <div className="d-flex shadow-sm  containerCard">
+      <div className="d-flex shadow-sm containerCard">
         <div className="d-flex justify-content-between px-3 py-1 w-100">
           {/* Left section */}
           <div className="d-flex align-items-center gap-4">
@@ -57,7 +59,7 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
 
               {/* Botón Entrada */}
               <button
-                onClick={() => stateVisible(true)}
+                onClick={() => setVisibleEntrada(true)} // ✅ abre entrada
                 className="d-flex gap-2 py-2 px-3 rounded align-items-center btnSalidaEntrada"
               >
                 <span className="d-flex align-items-center gap-2">
@@ -67,7 +69,7 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
 
               {/* Botón Salida */}
               <button
-                onClick={() => stateVisible(true)}
+                onClick={() => setVisibleSalida(true)} // ✅ abre salida
                 className="d-flex gap-2 py-3 px-3 rounded align-items-center btnSalidaEntrada bg-danger"
               >
                 <span className="d-flex align-items-center gap-2">
@@ -79,11 +81,21 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
             {/* Modal Entrada */}
             <Dialog
               header="Registrar Entrada"
-              visible={visible}
-              onHide={() => stateVisible(false)}
+              visible={visibleEntrada}
+              onHide={() => setVisibleEntrada(false)}
               style={{ width: "370px", maxHeight: "660px" }}
             >
               <FormRegister />
+            </Dialog>
+
+            {/* Modal Salida */}
+            <Dialog
+              header="Registrar Salida"
+              visible={visibleSalida}
+              onHide={() => setVisibleSalida(false)}
+              style={{ width: "370px", maxHeight: "660px" }}
+            >
+              <FormSalida />
             </Dialog>
 
             {/* Modal Historial */}

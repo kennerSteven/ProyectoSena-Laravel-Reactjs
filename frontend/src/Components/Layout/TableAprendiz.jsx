@@ -213,7 +213,7 @@ export default function TableAprendiz({
           style={{
             width: "350px",
             position: "absolute",
-            left: "350px",
+            left: "500px",
             top: "33px",
           }}
         />
@@ -239,7 +239,7 @@ export default function TableAprendiz({
 
   return (
     <div
-      className="mx-auto mt-2 shadow tableContainer tableAprendices"
+      className="mx-auto mt-2 shadow  tableAprendices"
     
     >
       <Toast ref={toast} />
@@ -273,29 +273,33 @@ export default function TableAprendiz({
           />
         ))}
 
-        <Column
-          header="Foto"
-          body={(rowData) => {
-            const ruta = rowData.foto;
-            const url = ruta ? `http://localhost:8000/${ruta}` : null;
+     <Column
+  header="Foto"
+  body={(rowData) => {
+    const ruta = rowData.foto;
+    const url = ruta?.startsWith("storage/")
+      ? `http://localhost:8000/${ruta}`
+      : ruta?.startsWith("http")
+      ? ruta
+      : null;
 
-            return url ? (
-              <img
-                src={url}
-                alt="Foto"
-                className="img-thumbnail"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                }}
-              />
-            ) : (
-              <span className="text-muted">—</span>
-            );
-          }}
-        />
+    return url ? (
+      <img
+        src={url}
+        alt="Foto"
+        className="img-thumbnail"
+        style={{
+          width: "60px",
+          height: "60px",
+          objectFit: "cover",
+          borderRadius: "8px",
+        }}
+      />
+    ) : (
+      <span className="text-muted">—</span>
+    );
+  }}
+/>
 
         <Column
           header="Acciones"

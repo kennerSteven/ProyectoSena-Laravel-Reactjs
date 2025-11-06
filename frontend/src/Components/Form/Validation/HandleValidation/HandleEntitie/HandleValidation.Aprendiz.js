@@ -38,7 +38,7 @@ export default function HandleValidationAprendiz({
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
       idperfil: perfilSeleccionado.id,
-      idficha: data.ficha_id, // ✅ usa el nombre que espera el backend
+      idficha: data.ficha_id,
       foto: capturedImage || null,
     };
 
@@ -47,7 +47,7 @@ export default function HandleValidationAprendiz({
 
     try {
       await onSubmitAprendiz(payload);
-
+      closeModal();
       await Swal.fire({
         icon: "success",
         title: "Aprendiz creado",
@@ -58,11 +58,11 @@ export default function HandleValidationAprendiz({
         showConfirmButton: true,
         customClass: {
           confirmButton: "swal-confirm-green",
+
         },
       });
 
       reset();
-      closeModal();
     } catch (error) {
       console.error("Error en envío:", error);
       toast.error("Error al guardar el aprendiz");

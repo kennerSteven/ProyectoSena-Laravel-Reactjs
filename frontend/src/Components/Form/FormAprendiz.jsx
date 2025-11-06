@@ -34,7 +34,7 @@ export default function FormAprendiz({ closeModal }) {
   const { onSubmit, onError } = HandleValidationAprendiz({
     reset,
     perfiles: perfil ? [perfil] : [],
-    closeModal,
+    closeModal, 
     perfil: "Aprendiz",
     capturedImage,
   });
@@ -56,9 +56,8 @@ export default function FormAprendiz({ closeModal }) {
     <div className="container">
       <form
         className="row mt-4 formUsers mx-auto"
-        onSubmit={handleSubmit(onSubmit, onError)}
+        onSubmit={handleSubmit(onSubmit, onError)} // ✅ conecta correctamente
       >
-        {/* Columna izquierda */}
         <div className="col-12">
           <div className="d-flex gap-4">
             <InputField
@@ -139,7 +138,6 @@ export default function FormAprendiz({ closeModal }) {
               />
             </div>
 
-            {/* Columna derecha: cámara */}
             <div className="col-lg-6 d-flex align-items-center justify-content-center mt-4">
               <div style={{ maxWidth: "400px", width: "100%" }}>
                 {capturedImage ? (
@@ -205,7 +203,6 @@ export default function FormAprendiz({ closeModal }) {
             </div>
           </div>
 
-          {/* Botón Guardar */}
           <div className="d-flex justify-content-start mt-4">
             <ButtonSubmit
               textSend="Guardar"

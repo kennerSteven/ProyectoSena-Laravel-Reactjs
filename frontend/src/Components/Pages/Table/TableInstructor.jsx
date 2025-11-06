@@ -98,21 +98,24 @@ export function TableAprendizs() {
           item.perfile?.nombre?.toLowerCase().includes("aprendiz")
         );
 
-        const flattened = aprendicesFiltrados.map((item) => ({
-          ...item,
-          tipoPerfil: item.perfile?.nombre || "Sin perfil",
-          nombrePrograma:
-            item.ficha?.nombrePrograma || "Analisis y desarrollo de software",
-          jornada: item.ficha?.jornada || "Manana",
-          icon:
-            item.ficha?.jornada === "mañana"
-              ? "pi pi-sun"
-              : item.ficha?.jornada === "tarde"
-              ? "pi pi-cloud"
-              : item.ficha?.jornada === "noche"
-              ? "pi pi-moon"
-              : "pi pi-question",
-        }));
+        const flattened = aprendicesFiltrados.map((item) => {
+          const ficha = item.fichas || {};
+          return {
+            ...item,
+            tipoPerfil: item.perfile?.nombre || "Sin perfil",
+            nombrePrograma: ficha.nombrePrograma || "Sin programa",
+            jornada: ficha.jornada || "Sin jornada",
+            icon:
+              ficha.jornada === "mañana"
+                ? "pi pi-sun"
+                : ficha.jornada === "tarde"
+                ? "pi pi-cloud"
+                : ficha.jornada === "noche"
+                ? "pi pi-moon"
+                : "pi pi-question",
+          };
+        });
+
         setAprendices(flattened);
       } catch (error) {
         console.error("Error al cargar aprendices:", error);
@@ -123,6 +126,37 @@ export function TableAprendizs() {
     LoadAprendices();
   }, []);
 
+  const reloadAprendices = async () => {
+    setModalOpen(false);
+    setModalCreatePerfil(false);
+    setAprendices([]);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const data = await GetDataAprendiz();
+    const aprendicesFiltrados = data.filter((item) =>
+      item.perfile?.nombre?.toLowerCase().includes("aprendiz")
+    );
+
+    const flattened = aprendicesFiltrados.map((item) => {
+      const ficha = item.fichas || {};
+      return {
+        ...item,
+        tipoPerfil: item.perfile?.nombre || "Sin perfil",
+        nombrePrograma: ficha.nombrePrograma || "Sin programa",
+        jornada: ficha.jornada || "Sin jornada",
+        icon:
+          ficha.jornada === "mañana"
+            ? "pi pi-sun"
+            : ficha.jornada === "tarde"
+            ? "pi pi-cloud"
+            : ficha.jornada === "noche"
+            ? "pi pi-moon"
+            : "pi pi-question",
+      };
+    });
+
+    setAprendices(flattened);
+  };
+
   return (
     <div>
       <TableAprendiz
@@ -131,13 +165,7 @@ export function TableAprendizs() {
         dataTable={aprendices}
         functionModal={() => setModalOpen(true)}
         openCreatePerfil={() => setModalCreatePerfil(true)}
-        reloadTable={() => {
-          setModalOpen(false);
-          setModalCreatePerfil(false);
-          // recarga aprendices
-          setAprendices([]);
-          setTimeout(() => {}, 300);
-        }}
+        reloadTable={reloadAprendices}
       />
 
       <Dialog
@@ -162,6 +190,10 @@ export function TableAprendizs() {
     </div>
   );
 }
+
+
+
+
 
 export function TableAdministrativo() {
   const [openModal, setModalOpen] = useState(false);

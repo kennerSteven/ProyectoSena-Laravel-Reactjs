@@ -4,7 +4,7 @@ import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { getAllRegisters } from "./Services/FetchServices";
 import "../styles/TablaHistorial.css";
-import KPI from "./Pages/MainDash/Kpi";
+
 
 export default function TablaHistorial() {
   const [globalFilter, setGlobalFilter] = useState("");
@@ -45,6 +45,7 @@ export default function TablaHistorial() {
               <Column field="usuarios.nombre" header="Nombre" />
               <Column field="usuarios.telefono" header="Teléfono" />
               <Column field="usuarios.perfile.nombre" header="Tipo de perfil" />
+              <Column field="tipo" header="Tipo" />
               <Column field="fechaRegistro" header="Fecha de Registro" />
             </DataTable>
           </div>
