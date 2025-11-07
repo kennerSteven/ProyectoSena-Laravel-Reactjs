@@ -184,7 +184,7 @@ export async function updateFicha(id, payload) {
 
 export async function getFichas() {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/ficha/index", {
+    const response = await fetch("http://127.0.0.1:8000/api/ficha/activas", {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -198,7 +198,9 @@ export async function getFichas() {
 
     const data = await response.json();
     console.log("Fichas recibidas:", data);
-    return data;
+
+    // ✅ blindaje: extrae el array si viene dentro de un objeto
+    return Array.isArray(data) ? data : data.fichas || [];
   } catch (error) {
     console.error("Error al obtener fichas:", error);
     return [];
@@ -216,5 +218,103 @@ export async function getUsuariosDeFicha(id) {
   } catch (error) {
     console.error("Error en getUsuariosDeFicha:", error);
     return [];
+  }
+}
+
+
+
+
+export const desactivarFicha = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/ficha/desactivar/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+   
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error al desactivar la ficha: ${errorText}`);
+    }
+
+    return await response.json(); // opcional: Laravel puede devolver mensaje
+  } catch (error) {
+    console.error("Error en desactivarFicha:", error);
+    throw error;
+  }
+};
+
+
+
+
+
+
+export const deleteFicha = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/ficha/destroy/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al eliminar la ficha");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en deleteFicha:", error);
+    throw error;
+  }
+};
+
+
+export async function getFichasDesactivadas() {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/ficha/listarFichasDesactivadas", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data; // contiene { message, fichas }
+  } catch (error) {
+    console.error("Error al obtener fichas desactivadas:", error);
+    return { fichas: [] };
+  }
+}
+
+
+export async function deleteFichasMasivo(ids = []) {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/ficha/destroyMasivo", {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ids }), // Enviamos array de IDs
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `Error ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data; // { message, eliminadas, noEliminadas }
+  } catch (error) {
+    console.error("Error al eliminar fichas masivamente:", error);
+    throw error;
   }
 }

@@ -46,3 +46,20 @@
 .p-dialog .p-dialog-content {
   border-top: 1px solid #dee2e6;
 }
+
+
+.btnActionsFicha {
+  background-color: #007832;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Hover institucional */
+.btnActionsFicha:hover {
+  background-color: #00a04e; /* verde más brillante */
+  transform: scale(1.05) rotate(-2deg);
+  cursor: pointer;
+}

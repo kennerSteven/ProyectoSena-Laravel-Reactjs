@@ -9,15 +9,14 @@ import TablaHistorial from "../TableHistorial";
 import FormSalida from "../Form/FormSalida";
 
 export default function TopBar({ nameTopBar, nameAdmin }) {
-  const [visibleEntrada, setVisibleEntrada] = useState(false); // ✅ entrada
-  const [visibleSalida, setVisibleSalida] = useState(false);   // ✅ salida
+  const [visibleEntrada, setVisibleEntrada] = useState(false); 
+  const [visibleSalida, setVisibleSalida] = useState(false); 
   const [visibleTableHistorial, setVisibleTableHistorial] = useState(false);
 
   return (
     <div className="d-flex justify-content-end align-items-center topbar">
       <div className="d-flex shadow-sm containerCard">
         <div className="d-flex justify-content-between px-3 py-1 w-100">
-          {/* Left section */}
           <div className="d-flex align-items-center gap-4">
             <div className="d-flex gap-2 pt-2">
               <i className="bi bi-clock-history hourIcon"></i>
@@ -30,7 +29,6 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
             </div>
           </div>
 
-          {/* Right section */}
           <div className="d-flex align-items-center gap-3 bg-light px-2 rounded">
             <div>
               <h6 className="mb-0 fw-bold nameAdmin">{nameAdmin}</h6>
@@ -46,7 +44,6 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
             </div>
 
             <div className="d-flex gap-2">
-              {/* Botón Ver registros */}
               <button
                 onClick={() => setVisibleTableHistorial(true)}
                 className="btnRegistros"
@@ -57,19 +54,16 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
                 </span>
               </button>
 
-              {/* Botón Entrada */}
               <button
-                onClick={() => setVisibleEntrada(true)} // ✅ abre entrada
+                onClick={() => setVisibleEntrada(true)}
                 className="d-flex gap-2 py-2 px-3 rounded align-items-center btnSalidaEntrada"
               >
                 <span className="d-flex align-items-center gap-2">
                   <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
                 </span>
               </button>
-
-              {/* Botón Salida */}
               <button
-                onClick={() => setVisibleSalida(true)} // ✅ abre salida
+                onClick={() => setVisibleSalida(true)}
                 className="d-flex gap-2 py-3 px-3 rounded align-items-center btnSalidaEntrada bg-danger"
               >
                 <span className="d-flex align-items-center gap-2">
@@ -78,7 +72,6 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               </button>
             </div>
 
-            {/* Modal Entrada */}
             <Dialog
               header="Registrar Entrada"
               visible={visibleEntrada}
@@ -88,7 +81,6 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               <FormRegister />
             </Dialog>
 
-            {/* Modal Salida */}
             <Dialog
               header="Registrar Salida"
               visible={visibleSalida}
@@ -98,7 +90,6 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               <FormSalida />
             </Dialog>
 
-            {/* Modal Historial */}
             <Dialog
               header="Historial de registros"
               visible={visibleTableHistorial}
