@@ -36,6 +36,7 @@ Route::put("/ficha/update/{id}", [FichasController::class, "update"]);
 Route::delete("/ficha/destroy/{id}", [FichasController::class, "destroy"]);
 Route::delete("/ficha/destroyMasivo/{id}", [FichasController::class, "destroyMasivo"]);
 Route::put('/ficha/desactivar/{id}', [FichasController::class, 'desactivarFicha']);
+Route::get('/ficha/activas', [FichasController::class, 'listarFichasActivas']);
 Route::get("/ficha/listarFichasDesactivadas", [FichasController::class, "listarFichasDesactivadas"]);
 Route::get("/ficha/listarusuariosDeFichadesactivada/{id}", [FichasController::class, "listarusuariosDeFichadesactivada"]);
 Route::get('/ficha/listarusuariosdelaFicha/{id}', [FichasController::class, 'listarusuariosdelaFicha']);
@@ -47,7 +48,7 @@ Route::post("/usuario/store", [UsuariosController::class, "store"]);
 Route::get("/usuario/show/{id}", [UsuariosController::class, "show"]);
 Route::put("/usuario/update/{id}", [UsuariosController::class, "update"]);
 Route::delete("/usuario/destroy/{id}", [UsuariosController::class, "destroy"]);
-Route::get('/instructores/filtrar/{tipo}', [UsuariosController::class, 'filtrarInstructores']);
+
 
 
 /*granja*/
