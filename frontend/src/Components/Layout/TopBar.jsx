@@ -10,12 +10,12 @@ import FormSalida from "../Form/FormSalida";
 
 export default function TopBar({ nameTopBar, nameAdmin }) {
   const [visibleEntrada, setVisibleEntrada] = useState(false); // ✅ entrada
-  const [visibleSalida, setVisibleSalida] = useState(false); // ✅ salida
+  const [visibleSalida, setVisibleSalida] = useState(false);   // ✅ salida
   const [visibleTableHistorial, setVisibleTableHistorial] = useState(false);
 
   return (
-    <div className="d-flex justify-content-end align-items-center topbar mt-3">
-      <div className="d-flex shadow containerCard">
+    <div className="d-flex justify-content-end align-items-center topbar">
+      <div className="d-flex shadow-sm containerCard">
         <div className="d-flex justify-content-between px-3 py-1 w-100">
           {/* Left section */}
           <div className="d-flex align-items-center gap-4">

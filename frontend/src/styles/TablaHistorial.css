@@ -11,3 +11,38 @@
 .p-column-header-content {
   padding-right: 0.5rem !important;
 }
+/* Estilo base para la tabla */
+.custom-table .p-datatable-table {
+  border-collapse: collapse;
+  border: 1px solid #dee2e6;
+}
+
+/* Bordes entre celdas */
+.custom-table .p-datatable-tbody > tr > td,
+.custom-table .p-datatable-thead > tr > th {
+  border: 1px solid #dee2e6;
+  padding: 0.75rem;
+}
+
+/* Encabezado institucional */
+.custom-table .p-datatable-thead > tr > th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #343a40;
+}
+
+/* Hover institucional */
+.custom-table .p-datatable-tbody > tr:hover {
+  background-color: #f1f3f5;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Fila seleccionada */
+.custom-table .p-datatable-tbody > tr.p-highlight {
+  background-color: #d1e7dd;
+}
+
+/* Bordes del modal */
+.p-dialog .p-dialog-content {
+  border-top: 1px solid #dee2e6;
+}

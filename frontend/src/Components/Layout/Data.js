@@ -1,45 +1,48 @@
 export const ItemsConfig = [
   {
-    iconClass: "pi pi-home",
+    iconClass: "pi pi-home", // Inicio institucional
     nameItem: "Inicio",
     link: "/Dashboard/inicio",
   },
-
   {
+    iconClass: "pi pi-users", // Grupo de personas
     nameItem: "Aprendices",
-    iconClass: "pi pi-user",
     link: "/Dashboard/ListarAprendiz",
   },
   {
+    iconClass: "pi pi-book", // Contenido académico
+    nameItem: "Formaciones",
+    link: "/Dashboard/Formaciones",
+  },
+  {
+    iconClass: "pi pi-user-edit", // Rol activo de enseñanza
     nameItem: "Instructor",
-    iconClass: "pi pi-id-card",
     link: "/Dashboard/ListarInstructor",
   },
   {
+    iconClass: "pi pi-user-plus", // Usuario externo
     nameItem: "Visitante",
-    iconClass: "pi pi-user",
     link: "/Dashboard/ListarVisitante",
   },
   {
+    iconClass: "pi pi-briefcase", // Gestión administrativa
     nameItem: "Administrativo",
-    iconClass: "pi pi-briefcase",
     link: "/Dashboard/ListarAdministrativo",
   },
 
   { type: "divider" },
 
   {
-    iconClass: "pi pi-shield",
+    iconClass: "pi pi-shield", // Seguridad institucional
     nameItem: "Vigilantes",
     link: "/Dashboard/Vigilantes",
   },
   {
-    iconClass: "pi pi-sign-out",
+    iconClass: "pi pi-sign-out", // Cierre de sesión
     nameItem: "Cerrar sesión",
     link: "/logout",
   },
 ];
-
 export const TipoPerfil = [
   { value: "Aprendiz", label: "Aprendiz" },
   { value: "Instructor", label: "Instructor" },
@@ -52,7 +55,7 @@ export const nameValueInstructor = [
   { field: "tipoPerfil", header: "Perfil" },
   { field: "numeroDocumento", header: "Documento" },
   { field: "telefono", header: "Teléfono" },
-  { field: "fechaRegistro", header: "Fecha de Registro" }, // ✅ agregado
+  { field: "fechaRegistro", header: "Fecha registro" }, // ✅ agregado
 ];
 
 export const nameValueAprendiz = [

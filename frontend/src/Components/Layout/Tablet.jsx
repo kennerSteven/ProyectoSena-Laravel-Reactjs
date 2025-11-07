@@ -29,11 +29,6 @@ export default function Table({
 
   const globalFilterFields = nameValue.map(({ field }) => field);
 
-  const speedDialItems = [
-    { icon: "pi pi-user-plus", command: functionModal },
-    { icon: "pi pi-id-card", command: openCreatePerfil },
-  ];
-
   const handleDeleteUser = (rowData) => {
     confirmDialog({
       message: (
@@ -191,40 +186,85 @@ export default function Table({
   };
 
   const header = (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingBottom: "0.5rem",
-      }}
-    >
-      <h2>{tableTitle}</h2>
-      <div className="d-flex">
-        <SpeedDial
-          model={speedDialItems}
-          direction="left"
-          buttonClassName="p-button-rounded p-button-success"
-          showIcon="pi pi-bars"
-          hideIcon="pi pi-times"
-          radius={0}
+    <div>
+      <div className="mb-3">
+        <h2 className="fw-bold d-flex gap-2">{tableTitle}</h2>
+      </div>
+
+      <div className="d-flex justify-content-between headerContainer align-items-center">
+        <div>
+          <button
+            className="p-button p-button-sm p-button-success rounded shadow-sm"
+            onClick={functionModal}
+          >
+            <i className="pi pi-user-plus" style={{ marginRight: "0.5rem" }} />
+          </button>
+        </div>
+
+        <div
           style={{
-            width: "350px",
-            position: "absolute",
-            left: "350px",
-            top: "33px",
+            position: "relative",
+            display: "inline-block",
+            marginLeft: "1rem",
           }}
-        />
-        <InputText
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Buscar..."
-          style={{ width: "250px", position: "relative" }}
-        />
+        >
+          <i
+            className="pi pi-search"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "10px",
+              transform: "translateY(-50%)",
+              color: "#6c757d",
+              fontSize: "1rem",
+              pointerEvents: "none",
+            }}
+          />
+          <InputText
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Buscar..."
+            style={{
+              paddingLeft: "2rem",
+              width: "250px",
+            }}
+          />
+        </div>
+
+        <div className="d-flex gap-2 containerButtonActions shadow-sm">
+          <button
+            className="btnActions d-flex align-items-center gap-2"
+            onClick={functionModal}
+          >
+            <i
+              className="pi pi-user-plus"
+              style={{ color: "#28a745", fontSize: "1.4rem" }}
+            />
+            {/* Crear aprendiz */}
+          </button>
+
+          <button
+            className="btnActions d-flex align-items-center gap-2"
+            onClick={openCreatePerfil}
+          >
+            <i
+              className="pi pi-id-card"
+              style={{ color: "#28a745", fontSize: "1.4rem" }}
+            />
+            {/* Crear perfil */}
+          </button>
+
+          <button className="btnActions d-flex align-items-center gap-2">
+            <i
+              className="pi pi-book"
+              style={{ color: "#28a745", fontSize: "1.4rem" }}
+            />
+            {/* Crear ficha */}
+          </button>
+        </div>
       </div>
     </div>
   );
-
   (field) => (rowData) =>
     rowData[field] !== null &&
     rowData[field] !== undefined &&
@@ -245,7 +285,7 @@ export default function Table({
   );
 
   return (
-    <div className="mx-auto mt-4 shadow tableContainer">
+    <div className="mx-auto mt-2 shadow tableContainer">
       <Toast ref={toast} />
       <DataTable
         value={dataTable}
@@ -263,6 +303,7 @@ export default function Table({
         {/* Columnas normales */}
         {nameValue.map(({ field, header }, idx) => (
           <Column
+            filter
             key={idx}
             field={field}
             header={header}

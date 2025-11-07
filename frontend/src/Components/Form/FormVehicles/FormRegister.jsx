@@ -155,7 +155,13 @@ export default function FormRegister() {
             telefono={dataCarnet.telefono}
             sangre={dataCarnet.tipoSangre}
             tipoPerfil={dataCarnet.perfile?.nombre}
-            foto={dataCarnet.foto} // ✅ ya viene como URL completa
+            Formacion={dataCarnet.perfile?.nombre}
+            ficha={
+              dataCarnet.perfile?.nombre?.toLowerCase() === "aprendiz"
+                ? dataCarnet.fichas?.nombrePrograma
+                : null
+            }
+            foto={dataCarnet.foto}
             closeCarnet={closeModalCarnet}
           />
         )}

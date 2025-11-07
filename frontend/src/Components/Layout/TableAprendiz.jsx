@@ -239,7 +239,7 @@ export default function TableAprendizs({
           >
             <i
               className="pi pi-user-plus"
-              style={{ color: "#28a745", fontSize: "1.2rem" }}
+              style={{ color: "#28a745", fontSize: "1.4rem" }}
             />
             {/* Crear aprendiz */}
           </button>
@@ -250,7 +250,7 @@ export default function TableAprendizs({
           >
             <i
               className="pi pi-id-card"
-              style={{ color: "#28a745", fontSize: "1.2rem" }}
+              style={{ color: "#28a745", fontSize: "1.4rem" }}
             />
             {/* Crear perfil */}
           </button>
@@ -261,7 +261,7 @@ export default function TableAprendizs({
           >
             <i
               className="pi pi-book"
-              style={{ color: "#28a745", fontSize: "1.2rem" }}
+              style={{ color: "#28a745", fontSize: "1.4rem" }}
             />
             {/* Crear ficha */}
           </button>

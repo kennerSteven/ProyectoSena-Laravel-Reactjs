@@ -204,3 +204,17 @@ export async function getFichas() {
     return [];
   }
 }
+
+export async function getUsuariosDeFicha(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8000/api/ficha/listarusuariosdelaFicha/${id}`
+    );
+    if (!response.ok) throw new Error("Error al obtener usuarios de la ficha");
+    const data = await response.json();
+    return Array.isArray(data.ficha?.usuarios) ? data.ficha.usuarios : [];
+  } catch (error) {
+    console.error("Error en getUsuariosDeFicha:", error);
+    return [];
+  }
+}

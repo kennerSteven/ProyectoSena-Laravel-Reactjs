@@ -145,9 +145,9 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                   <div className="text-center">
                     <img
                       src={capturedImage}
-                      alt="Captura"
+                      alt="Foto del instructor"
                       className="img-fluid rounded"
-                      style={{ maxHeight: "200px" }}
+                      style={{ maxHeight: "200px", objectFit: "cover" }}
                     />
                     <button
                       type="button"

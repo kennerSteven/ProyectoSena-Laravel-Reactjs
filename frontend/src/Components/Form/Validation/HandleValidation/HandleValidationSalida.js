@@ -1,11 +1,14 @@
 import toast from "react-hot-toast";
 
-export default function HandleValidationSalida({ reset, setVisible }) {
+export default function HandleValidationSalida({
+  reset,
+  setVisible,
+  onSuccess,
+}) {
   const onSubmit = async (formValues) => {
     let loadingToast;
 
     try {
-      // Paso 1: Buscar usuario por número de documento
       loadingToast = toast.loading("Buscando usuario...");
       const buscarResponse = await fetch(
         `http://127.0.0.1:8000/api/usuario/buscar/${formValues.numeroDocumento}`
@@ -23,7 +26,6 @@ export default function HandleValidationSalida({ reset, setVisible }) {
       const usuario = data.usuario;
       console.log("ID del usuario:", usuario.id);
 
-      // Paso 2: Registrar salida
       toast.dismiss(loadingToast);
       loadingToast = toast.loading("Registrando salida...");
 
@@ -54,14 +56,15 @@ export default function HandleValidationSalida({ reset, setVisible }) {
         return;
       }
 
-      const perfilSalida =
-        result?.data?.usuarios?.perfile?.nombre || "Perfil no disponible";
-      console.log("Perfil que dio salida:", perfilSalida);
 
-      toast.success("Salida registrada correctamente");
 
       reset();
       setVisible(false);
+
+      // ✅ Activar modal con datos del usuario
+      if (onSuccess && typeof onSuccess === "function") {
+        onSuccess(usuario);
+      }
     } catch (error) {
       console.error("Error en onSubmit:", error);
       toast.dismiss(loadingToast);
