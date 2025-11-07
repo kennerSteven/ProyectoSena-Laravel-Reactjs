@@ -60,22 +60,23 @@ class FichasController extends Controller
 
    public function destroy($id)
 {
-    // Buscar ficha
-    $ficha = fichas::find($id);
+    // Buscar la ficha con sus usuarios
+    $ficha = fichas::with('usuarios')->find($id);
 
     if (!$ficha) {
         return response()->json(['error' => 'Ficha no encontrada'], 404);
     }
 
-    // Aquí puedes validar si quieres que solo se eliminen fichas inactivas
-    // Si no quieres esta restricción, puedes eliminarlo
     if ($ficha->estado === 'activo') {
         return response()->json([
             'error' => 'No se puede eliminar una ficha activa. Cambia su estado si quieres borrarla.'
         ], 400);
     }
 
-    // Eliminar ficha + usuarios automáticamente
+    // Eliminar primero los usuarios asociados
+    $ficha->usuarios()->delete();
+
+    // Luego eliminar la ficha
     $ficha->delete();
 
     return response()->json([
@@ -153,7 +154,19 @@ public function destroyMasivo(Request $request)
 }
 
 
-    
+
+public function listarFichasActivas()
+{
+    $fichas = fichas::where('estado', 'activo')
+        ->select('id', 'numeroFicha', 'nombrePrograma', 'jornada', 'estado')
+        ->get();
+
+    return response()->json([
+        'message' => 'Listado de fichas activas',
+        'fichas' => $fichas
+    ]);
+}
+
 
 
 public function listarusuariosDeFichadesactivada($id)
@@ -174,12 +187,6 @@ public function listarusuariosDeFichadesactivada($id)
         'usuarios' => $ficha->usuarios
     ]);
 }
-
-
-
-
-
-
 
 
 
