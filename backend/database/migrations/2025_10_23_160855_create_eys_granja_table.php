@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamp('fechaRegistro')->useCurrent();
             $table->enum('tipo', ['entrada', 'salida']);
             $table->unsignedBigInteger('idusuario');
-            $table->foreign('idusuario')->references('id')->on('usuarios');
+            $table->foreign('idusuario')->references('id')->on('usuarios')->onDelete('cascade');
             $table->unsignedBigInteger('idvehiculo')->nullable();
             $table->foreign('idvehiculo')->references('id')->on('vehiculos');
             $table->timestamps();

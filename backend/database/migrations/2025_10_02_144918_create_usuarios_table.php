@@ -30,7 +30,7 @@ return new class extends Migration
 
             // Clave foránea opcional: ficha
             $table->unsignedBigInteger('idficha')->nullable();
-            $table->foreign('idficha')->references('id')->on('fichas');
+            $table->foreign('idficha')->references('id')->on('fichas')->onDelete('cascade');
 
             $table->timestamps();
         });

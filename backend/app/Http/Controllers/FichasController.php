@@ -58,25 +58,28 @@ class FichasController extends Controller
     }
 
 
+  
    public function destroy($id)
 {
-    // Buscar la ficha con sus usuarios
+    
     $ficha = fichas::with('usuarios')->find($id);
 
     if (!$ficha) {
         return response()->json(['error' => 'Ficha no encontrada'], 404);
     }
 
+    
     if ($ficha->estado === 'activo') {
         return response()->json([
             'error' => 'No se puede eliminar una ficha activa. Cambia su estado si quieres borrarla.'
         ], 400);
     }
 
-    // Eliminar primero los usuarios asociados
-    $ficha->usuarios()->delete();
+    foreach ($ficha->usuarios as $usuario) {
+        $usuario->delete();
+    }
 
-    // Luego eliminar la ficha
+  
     $ficha->delete();
 
     return response()->json([
@@ -85,16 +88,17 @@ class FichasController extends Controller
 }
 
 
+
 public function destroyMasivo(Request $request)
 {
-    // Recibimos un array de IDs de fichas a eliminar
-    $ids = $request->input('ids'); // ejemplo: [15,16,17]
+    // Recibimos un array de IDs
+    $ids = $request->input('ids'); // ejemplo: [7,8,11]
 
     if (!$ids || !is_array($ids)) {
         return response()->json(['error' => 'Debes enviar un array de IDs'], 400);
     }
 
-    // Traer las fichas
+    // Buscar fichas
     $fichas = fichas::whereIn('id', $ids)->get();
 
     if ($fichas->isEmpty()) {
@@ -105,14 +109,18 @@ public function destroyMasivo(Request $request)
     $noEliminadas = [];
 
     foreach ($fichas as $ficha) {
-        // Validar si la ficha está activa
+        // Verificar si está activa
         if ($ficha->estado === 'activo') {
             $noEliminadas[] = $ficha->id;
             continue;
         }
 
-        // Eliminar ficha + usuarios (booted() en el modelo se encarga de los usuarios)
+        // Eliminar usuarios asociados
+        \App\Models\usuarios::where('idficha', $ficha->id)->delete();
+
+        // Eliminar ficha
         $ficha->delete();
+
         $eliminadas[] = $ficha->id;
     }
 
@@ -122,6 +130,7 @@ public function destroyMasivo(Request $request)
         'noEliminadas' => $noEliminadas
     ]);
 }
+
 
 
 
@@ -167,6 +176,19 @@ public function listarFichasActivas()
     ]);
 }
 
+public function listarFichasDesactivadas()
+{
+    $fichas = fichas::where('estado', 'inactivo')->get();
+
+    if ($fichas->isEmpty()) {
+        return response()->json(['message' => 'No hay fichas desactivadas.']);
+    }
+
+    return response()->json([
+        'message' => 'Listado de fichas desactivadas',
+        'fichas' => $fichas
+    ]);
+}
 
 
 public function listarusuariosDeFichadesactivada($id)
@@ -217,22 +239,8 @@ public function fichasConMasAprendices()
     
 
 
-public function listarFichasPorEstado()
-{
-    $fichasActivas = fichas::where('estado', 'activo')
-        ->withCount('usuarios')
-        ->get();
 
-    $fichasInactivas = fichas::where('estado', 'inactivo')
-        ->withCount('usuarios')
-        ->get();
 
-    return response()->json([
-        'message' => 'Fichas agrupadas por estado',
-        'activas' => $fichasActivas,
-        'inactivas' => $fichasInactivas
-    ]);
-}
 
 
 

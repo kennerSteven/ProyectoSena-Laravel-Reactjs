@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('placa');
             $table->timestamp('fechaRegistro')->useCurrent();
             $table->unsignedBigInteger('idusuario');
-            $table->foreign('idusuario')->references('id')->on('usuarios');
+            $table->foreign('idusuario')->references('id')->on('usuarios')->onDelete('cascade');
             $table->timestamps();
         });
     }
