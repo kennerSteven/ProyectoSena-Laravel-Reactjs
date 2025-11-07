@@ -34,7 +34,7 @@ Route::post("/ficha/store", [FichasController::class, "store"]);
 Route::get("/ficha/show/{id}", [FichasController::class, "show"]);
 Route::put("/ficha/update/{id}", [FichasController::class, "update"]);
 Route::delete("/ficha/destroy/{id}", [FichasController::class, "destroy"]);
-Route::delete("/ficha/destroyMasivo/{id}", [FichasController::class, "destroyMasivo"]);
+Route::delete("/ficha/destroyMasivo", [FichasController::class, "destroyMasivo"]);
 Route::put('/ficha/desactivar/{id}', [FichasController::class, 'desactivarFicha']);
 Route::get('/ficha/activas', [FichasController::class, 'listarFichasActivas']);
 Route::get("/ficha/listarFichasDesactivadas", [FichasController::class, "listarFichasDesactivadas"]);
