@@ -6,6 +6,7 @@ use App\Models\eyscasadeapoyo;
 use App\Models\eysgranja;
 use App\Models\eysgym;
 use App\Models\eyssena;
+use App\Models\perfile;
 use App\Models\usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -76,33 +77,8 @@ class UsuariosController extends Controller
    }
 
 
-   public function filtrarInstructores($tipo)
-{
    
-    $tiposValidos = ['planta', 'contrato'];
 
-    if (!in_array(strtolower($tipo), $tiposValidos)) {
-        return response()->json(['error' => 'Tipo no válido. Usa planta o contrato.'], 400);
-    }
-
-    // Mapeamos el tipo al nombre del perfil
-    $nombrePerfil = $tipo === 'planta'
-        ? 'Instructor de Planta'
-        : 'Instructor de Contrato';
-
-    
-    $instructores = usuarios::whereIn('idperfil', function ($query) use ($nombrePerfil) {$query->select('id')
-    ->from('perfiles')->where('nombre', $nombrePerfil); })->select('id', 'nombre', 'apellido', 'telefono', 'estado')->get();
-
-    if ($instructores->isEmpty()) {
-        return response()->json(['message' => 'No se encontraron instructores para este tipo.']);
-    }
-
-    return response()->json([
-        'message' => "Listado de instructores de {$tipo}",
-        'instructores' => $instructores
-    ]);
-}
 
 
 

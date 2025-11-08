@@ -62,13 +62,21 @@ class eys_senaController extends Controller
             'idusuario' => $usuario->id,
             'fechaRegistro' => now(),
         ]);
+    
 
-
-        return response()->json([
-            'message' => 'salida registrada correctamente',
-            'entrada' => $salida
-        ]);
+    if ($usuario->perfile->nombre === 'Visitante') {
+        $usuario->fechaExpiracion = now()->addHours(12);
+        $usuario->save();
     }
+
+    return response()->json([
+        'message' => 'Salida registrada correctamente',
+        'salida' => $salida
+    ]);
+
+      
+    }
+
 
     public function buscarPorDocumento($numeroDocumento)
 {
