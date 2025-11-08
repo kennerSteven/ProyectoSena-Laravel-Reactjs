@@ -11,9 +11,22 @@ class PerfileController extends Controller
 {
 
 
-    public function index()
+   public function index(Request $request)
     {
-        $perfil = perfile::all();
+        // Capturamos el parámetro que llega desde el frontend (por ejemplo, ?tipo=instructor)
+        $tipo = $request->query('tipo');
+
+        if ($tipo === 'instructor') {
+            $perfil = perfile::where('nombre', 'like', '%instructor%')->get();
+        } elseif ($tipo === 'administrativo') {
+            $perfil = perfile::where('nombre', 'like', '%administrativo%')
+                             ->orWhere('nombre', 'like', '%administracion%')
+                             ->get();
+        } else {
+            // Si no se envía tipo, se devuelven todos
+            $perfil = perfile::all();
+        }
+
         return response()->json($perfil);
     }
 

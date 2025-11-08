@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\fichasRequest;
 use App\Models\fichas;
+use App\Models\usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -91,14 +92,14 @@ class FichasController extends Controller
 
 public function destroyMasivo(Request $request)
 {
-    // Recibimos un array de IDs
-    $ids = $request->input('ids'); // ejemplo: [7,8,11]
+    
+    $ids = $request->input('ids'); 
 
     if (!$ids || !is_array($ids)) {
         return response()->json(['error' => 'Debes enviar un array de IDs'], 400);
     }
 
-    // Buscar fichas
+
     $fichas = fichas::whereIn('id', $ids)->get();
 
     if ($fichas->isEmpty()) {
@@ -111,17 +112,20 @@ public function destroyMasivo(Request $request)
     foreach ($fichas as $ficha) {
         // Verificar si está activa
         if ($ficha->estado === 'activo') {
-            $noEliminadas[] = $ficha->id;
+            $noEliminadas[] = $ficha->nombrePrograma;
             continue;
         }
 
         // Eliminar usuarios asociados
-        \App\Models\usuarios::where('idficha', $ficha->id)->delete();
+        usuarios::where('idficha', $ficha->id)->delete();
+
+        // Guardar nombre antes de eliminar la ficha
+        $nombre = $ficha->nombrePrograma;
 
         // Eliminar ficha
         $ficha->delete();
 
-        $eliminadas[] = $ficha->id;
+        $eliminadas[] = $nombre;
     }
 
     return response()->json([
@@ -130,6 +134,7 @@ public function destroyMasivo(Request $request)
         'noEliminadas' => $noEliminadas
     ]);
 }
+
 
 
 
