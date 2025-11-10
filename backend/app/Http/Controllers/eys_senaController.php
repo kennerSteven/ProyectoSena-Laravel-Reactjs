@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\eys_sena;
 use App\Models\eyssena;
 use App\Models\usuarios;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class eys_senaController extends Controller
@@ -23,6 +24,12 @@ class eys_senaController extends Controller
 
         $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
+        if ($usuario && $usuario->perfile->nombre === 'Visitante' && $usuario->estado === 'inactivo') {
+        $usuario->estado = 'activo';
+        $usuario->fechaExpiracion = null; 
+        $usuario->save();
+    }
+
         
         $entrada = eyssena::create([
             'numeroDocumento' => $usuario->numeroDocumento,
@@ -30,6 +37,10 @@ class eys_senaController extends Controller
             'idusuario' => $usuario->id,
             'fechaRegistro' => now(),
         ]);
+
+        $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
 
 
         return response()->json([
@@ -68,6 +79,10 @@ class eys_senaController extends Controller
         $usuario->fechaExpiracion = now()->addHours(12);
         $usuario->save();
     }
+
+    $salida->fechaRegistro = Carbon::parse($salida->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
 
     return response()->json([
         'message' => 'Salida registrada correctamente',
