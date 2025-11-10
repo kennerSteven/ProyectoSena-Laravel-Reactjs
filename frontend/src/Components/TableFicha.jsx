@@ -13,7 +13,6 @@ import {
 } from "./Services/FetchServices";
 import "../styles/TablaHistorial.css";
 import TablaFichasDesactivadas from "./Ui/TableFichasDesactivadas";
-import FormFormacion from "./Form/FormFormacion/FormFormacion";
 import CrearFicha from "./Form/FormFicha";
 
 export default function TablaFicha() {
@@ -32,13 +31,15 @@ export default function TablaFicha() {
   const [editarModalVisible, setEditarModalVisible] = useState(false);
   const [fichaParaEditar, setFichaParaEditar] = useState(null);
 
+  // 🔁 Cargar fichas al iniciar
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getFichas();
-      setFichas(data);
-    };
-    fetchData();
+    cargarFichas();
   }, []);
+
+  const cargarFichas = async () => {
+    const data = await getFichas();
+    setFichas(data);
+  };
 
   const jornadas = [...new Set(fichas.map((f) => f.jornada))].filter(Boolean);
 
@@ -124,6 +125,8 @@ export default function TablaFicha() {
           <div className="card shadow-sm border-light">
             <div className="d-flex align-items-center justify-content-between px-4">
               <h2 className="fw-bold">Formaciones</h2>
+
+          
               <div
                 style={{
                   position: "relative",
@@ -146,13 +149,14 @@ export default function TablaFicha() {
                 <InputText
                   value={globalFilter}
                   onChange={(e) => setGlobalFilter(e.target.value)}
-                  placeholder="Buscar..."
+                  placeholder="Buscar ficha..."
                   style={{
                     paddingLeft: "2rem",
                     width: "250px",
                   }}
                 />
               </div>
+
               <div>
                 <div className="d-flex gap-2 containerButtonActions shadow-sm">
                   <button
@@ -178,6 +182,7 @@ export default function TablaFicha() {
               </div>
             </div>
 
+            {/* 🧾 Tabla principal */}
             <DataTable
               value={fichas}
               paginator
@@ -227,7 +232,7 @@ export default function TablaFicha() {
         </div>
       </div>
 
-      {/* Modal de usuarios */}
+      {/* 👥 Modal usuarios */}
       <Dialog
         header={`Aprendices vinculados a ficha ${
           fichaSeleccionada?.numeroFicha || ""
@@ -268,6 +273,7 @@ export default function TablaFicha() {
         </DataTable>
       </Dialog>
 
+      {/* ⚠️ Modal desactivar ficha */}
       <Dialog
         header={`Desactivar ficha ${fichaParaAccion?.numeroFicha || ""}`}
         visible={accionModalVisible}
@@ -289,8 +295,7 @@ export default function TablaFicha() {
                 await desactivarFicha(fichaParaAccion.id);
                 console.log("Ficha desactivada correctamente");
                 setAccionModalVisible(false);
-                const data = await getFichas(); // recarga tabla
-                setFichas(data);
+                await cargarFichas();
               } catch (error) {
                 console.error("Error al desactivar ficha:", error);
               }
@@ -301,6 +306,7 @@ export default function TablaFicha() {
         </div>
       </Dialog>
 
+      {/* ✏️ Modal editar ficha */}
       <Dialog
         header={`Editar ficha ${fichaParaEditar?.numeroFicha || ""}`}
         visible={editarModalVisible}
@@ -366,9 +372,7 @@ export default function TablaFicha() {
                 await updateFicha(fichaParaEditar.id, fichaParaEditar);
                 console.log("Ficha actualizada correctamente");
                 setEditarModalVisible(false);
-                // Recargar fichas
-                const data = await getFichas();
-                setFichas(data);
+                await cargarFichas();
               } catch (error) {
                 console.error("Error al guardar cambios:", error);
               }
@@ -379,26 +383,33 @@ export default function TablaFicha() {
         </div>
       </Dialog>
 
+      {/* 💤 Modal fichas desactivadas */}
       <Dialog
         header="Fichas desactivadas"
         visible={showModalFichasDesactivadas}
         style={{ width: "700px" }}
         modal
-        className="modal-fichas-desactivadas"
         onHide={() => setShowModalFichasDesactivadas(false)}
       >
         {showModalFichasDesactivadas && <TablaFichasDesactivadas />}
       </Dialog>
 
+      {/* 🏗️ Modal crear ficha */}
       <Dialog
         header="Crear formación"
         visible={showFormacion}
         style={{ width: "400px" }}
         modal
-        className="modal-fichas-desactivadas"
         onHide={() => setShowFormacion(false)}
       >
-        {showFormacion && <CrearFicha />}
+        {showFormacion && (
+          <CrearFicha
+            onAceptar={async () => {
+              setShowFormacion(false);
+              await cargarFichas(); // 🔁 refresca tabla al aceptar
+            }}
+          />
+        )}
       </Dialog>
     </div>
   );

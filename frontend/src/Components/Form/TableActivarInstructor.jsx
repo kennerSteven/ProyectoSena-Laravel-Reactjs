@@ -3,7 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { ConfirmDialog } from "primereact/confirmdialog";
 import "../../styles/ActivarInstructor.css";
 
 export default function TablaActivarUsuarios({
@@ -13,45 +13,43 @@ export default function TablaActivarUsuarios({
 }) {
   const [usuarios, setUsuarios] = useState([]);
   const [seleccionados, setSeleccionados] = useState([]);
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [confirmTargetId, setConfirmTargetId] = useState(null);
+
+  const cargarUsuarios = async () => {
+    const data = await fetchUsuariosDesactivados();
+    setUsuarios(data);
+  };
 
   useEffect(() => {
-    const cargarUsuarios = async () => {
-      const data = await fetchUsuariosDesactivados();
-      setUsuarios(data);
-    };
     cargarUsuarios();
   }, [fetchUsuariosDesactivados]);
 
   const activarUsuario = async (id) => {
     await activarUsuarioPorId(id);
-    setUsuarios((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, estado: "activo" } : u))
-    );
+    await cargarUsuarios(); // ✅ recarga tabla
   };
 
   const activarSeleccionados = async () => {
     const ids = seleccionados.map((u) => u.id);
-    await activarUsuariosPorLote(ids); 
-    setUsuarios((prev) =>
-      prev.map((u) =>
-        ids.includes(u.id) ? { ...u, estado: "activo" } : u
-      )
-    );
+    await activarUsuariosPorLote(ids);
+    await cargarUsuarios(); // ✅ recarga tabla
     setSeleccionados([]);
   };
 
   const confirmarActivacion = (id = null) => {
-    confirmDialog({
-      message: `¿Activar ${id ? "este usuario" : "los usuarios seleccionados"}?`,
-      header: "Confirmar activación",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "buttnAceptar",
-      acceptLabel: "Sí, activar",
-      rejectLabel: "Cancelar",
-      accept: () => {
-        id ? activarUsuario(id) : activarSeleccionados();
-      },
-    });
+    setConfirmTargetId(id);
+    setConfirmVisible(true);
+  };
+
+  const aceptarActivacion = async () => {
+    if (confirmTargetId) {
+      await activarUsuario(confirmTargetId);
+    } else {
+      await activarSeleccionados();
+    }
+    setConfirmVisible(false); // ✅ cerrar modal
+    setConfirmTargetId(null);
   };
 
   const estadoTemplate = (rowData) => (
@@ -72,11 +70,22 @@ export default function TablaActivarUsuarios({
 
   return (
     <div className="card">
-      <ConfirmDialog />
+      <ConfirmDialog
+        visible={confirmVisible}
+        onHide={() => setConfirmVisible(false)}
+        message={`¿Activar ${confirmTargetId ? "este usuario" : "los usuarios seleccionados"}?`}
+        header="Confirmar activación"
+        icon="pi pi-exclamation-triangle"
+        acceptClassName="buttnAceptar"
+        acceptLabel="Sí, activar"
+        rejectLabel="Cancelar"
+        accept={aceptarActivacion}
+        reject={() => setConfirmVisible(false)}
+      />
 
       <div className="d-flex justify-content-end align-items-center px-3 pt-3 mb-3">
         <Button
-          label="Activar seleccionados"
+          label="Activar Todos"
           icon="pi pi-check"
           className="btnActivarTodos"
           disabled={seleccionados.length === 0}

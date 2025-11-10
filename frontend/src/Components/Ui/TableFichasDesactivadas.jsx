@@ -4,52 +4,52 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import { getFichasDesactivadas, deleteFicha,deleteFichasMasivo } from "../Services/FetchServices";
-import "../../styles/TableFichasDesactivadas.css"
+import { InputText } from "primereact/inputtext";
+import {
+  getFichasDesactivadas,
+  deleteFicha,
+  deleteFichasMasivo,
+} from "../Services/FetchServices";
+import "../../styles/TableFichasDesactivadas.css";
+
 export default function TablaFichasDesactivadas() {
   const [fichas, setFichas] = useState([]);
+  const [filteredFichas, setFilteredFichas] = useState([]);
   const [selectedFichas, setSelectedFichas] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+
+  const cargarFichas = async () => {
+    const response = await getFichasDesactivadas();
+    const data = Array.isArray(response.fichas) ? response.fichas : [];
+    setFichas(data);
+    setFilteredFichas(data);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await getFichasDesactivadas();
-      const data = Array.isArray(response.fichas) ? response.fichas : [];
-      setFichas(data);
-    };
-    fetchData();
+    cargarFichas();
   }, []);
-
-
-
-
-
-
 
   const eliminarFicha = async (id) => {
     try {
       await deleteFicha(id);
-      setFichas((prev) => prev.filter((f) => f.id !== id));
+      await cargarFichas(); 
     } catch (error) {
       console.error("Error al eliminar ficha:", error);
     }
   };
 
-const eliminarSeleccionadas = async () => {
-  try {
-    const ids = selectedFichas.map((f) => f.id);
-    const result = await deleteFichasMasivo(ids);
-
-    // Filtrar eliminadas
-    setFichas((prev) => prev.filter((f) => !result.eliminadas.includes(f.id)));
-    setSelectedFichas([]);
-
-    // Opcional: mostrar feedback
-    console.log("Eliminadas:", result.eliminadas);
-    console.log("No eliminadas:", result.noEliminadas);
-  } catch (error) {
-    console.error("Error al eliminar fichas seleccionadas:", error);
-  }
-};
+  const eliminarSeleccionadas = async () => {
+    try {
+      const ids = selectedFichas.map((f) => f.id);
+      const result = await deleteFichasMasivo(ids);
+      await cargarFichas(); 
+      setSelectedFichas([]);
+      console.log("Eliminadas:", result.eliminadas);
+      console.log("No eliminadas:", result.noEliminadas);
+    } catch (error) {
+      console.error("Error al eliminar fichas seleccionadas:", error);
+    }
+  };
 
   const confirmarEliminarFicha = (id) => {
     confirmDialog({
@@ -84,15 +84,35 @@ const eliminarSeleccionadas = async () => {
       icon="pi pi-trash"
       className="ButtonDelete"
       onClick={() => confirmarEliminarFicha(rowData.id)}
- 
     />
   );
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    setGlobalFilter(value);
+
+    const filtered = fichas.filter((f) =>
+      [f.numeroFicha, f.nombrePrograma, f.jornada]
+        .join(" ")
+        .toLowerCase()
+        .includes(value.toLowerCase())
+    );
+    setFilteredFichas(filtered);
+  };
 
   return (
     <div className="card">
       <ConfirmDialog />
 
-      <div className="d-flex justify-content-end align-items-center px-3 pt-3 mb-3">
+      <div className="d-flex justify-content-between align-items-center px-3 pt-3 mb-3">
+    <div>
+          <InputText
+          value={globalFilter}
+          onChange={onGlobalFilterChange}
+          placeholder="Buscar ficha..."
+          className="p-inputtext-sm"
+        />
+    </div>
 
         <Button
           label="Eliminar seleccionadas"
@@ -104,7 +124,7 @@ const eliminarSeleccionadas = async () => {
       </div>
 
       <DataTable
-        value={fichas}
+        value={filteredFichas}
         selection={selectedFichas}
         onSelectionChange={(e) => setSelectedFichas(e.value)}
         dataKey="id"
@@ -112,14 +132,17 @@ const eliminarSeleccionadas = async () => {
         rows={5}
         rowsPerPageOptions={[5, 10, 20]}
         emptyMessage="No hay fichas desactivadas."
-
       >
         <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
         <Column field="numeroFicha" header="Código" />
         <Column field="nombrePrograma" header="Programa" />
         <Column field="jornada" header="Jornada" />
         <Column field="estado" header="Estado" body={estadoTemplate} />
-        <Column header="Acciones" body={accionesTemplate} style={{ width: "6rem" }} />
+        <Column
+          header="Acciones"
+          body={accionesTemplate}
+          style={{ width: "6rem" }}
+        />
       </DataTable>
     </div>
   );

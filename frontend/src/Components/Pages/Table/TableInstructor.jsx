@@ -6,16 +6,15 @@ import FormAdministrativo from "../../Form/FormAdministrativo";
 import FormPerfil from "../../Form/FomPerfiles/FormPerfil";
 import Table from "../../Layout/Tablet";
 import TableAprendiz from "../../Layout/TableAprendiz";
-import {
-  activarInstructorPorId,
-  activarInstructoresPorLote,
-} from "../../Services/FetchServices";
+
 import {
   GetDataInstructor,
   GetDataAprendiz,
   GetDataAdministrativo,
-  getInstructoresContratoDesactivados,
   getAdministrativosContratoDesactivados,
+  activarUsuariosPorTipo,
+  activarInstructorPorId,
+  activarUsuarioPorId,
 } from "../../Services/FetchServices";
 
 import {
@@ -65,7 +64,6 @@ export function TableInstructor() {
         openCreatePerfil={() => setModalCreatePerfil(true)}
         reloadTable={LoadInstructor}
         onEdit={handleEditInstructor}
-        fetchUsuariosDesactivados={getInstructoresContratoDesactivados}
       />
 
       <Dialog
@@ -222,14 +220,18 @@ export function TableAdministrativo() {
       <Table
         tableTitle="Listar Administrativos"
         labelUserDisabled="Administrativos desactivados"
-        activarUsuarioPorId={activarInstructorPorId}
-        activarUsuariosPorLote={activarInstructoresPorLote}
         nameValue={nameValueAdministrativo}
         dataTable={administrativos}
         functionModal={() => setModalOpen(true)}
         openCreatePerfil={() => setModalCreatePerfil(true)}
         reloadTable={() => {}}
-        fetchUsuariosDesactivados={getAdministrativosContratoDesactivados}
+        fetchUsuariosDesactivados={() =>
+          getAdministrativosContratoDesactivados()
+        } // ✅ ejecutable
+        activarUsuariosPorLote={() =>
+          activarUsuariosPorTipo("Administrativo contrato")
+        } // ✅ tipo correcto
+        activarUsuarioPorId={(id) => activarUsuarioPorId(id)} // ✅ función correcta
       />
 
       <Dialog

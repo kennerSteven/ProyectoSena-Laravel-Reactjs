@@ -322,6 +322,27 @@ export async function deleteFichasMasivo(ids = []) {
 
 
 
+export async function getAdministrativosContratoDesactivados() {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/administrativos-contrato/desactivados", {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json(); 
+    console.log(data)
+    return Array.isArray(data.usuarios) ? data.usuarios : [];
+  } catch (error) {
+    console.error("Error al obtener instructores desactivados:", error);
+    return [];
+  }
+}
+
+
 export async function getInstructoresContratoDesactivados() {
   try {
     const response = await fetch("http://127.0.0.1:8000/api/instructores-contrato/desactivados", {
@@ -344,24 +365,27 @@ export async function getInstructoresContratoDesactivados() {
 
 
 
-
-export async function getAdministrativosContratoDesactivados() {
+export async function activarUsuariosPorTipo(tipo) {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/administrativos-contrato/desactivados", {
-      method: "GET",
-      headers: { Accept: "application/json" },
+    const response = await fetch("http://localhost:8000/api/usuarios/activar-masivo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tipo }),
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      console.error("Respuesta del backend:", data);
+      throw new Error(data.message || "Error en la activación masiva");
     }
 
-    const data = await response.json(); 
-    console.log(data)
-    return Array.isArray(data.usuarios) ? data.usuarios : [];
+    return data;
   } catch (error) {
-    console.error("Error al obtener instructores desactivados:", error);
-    return [];
+    console.error("Error al activar usuarios:", error);
+    throw error;
   }
 }
 
@@ -377,4 +401,28 @@ export async function activarInstructoresPorLote(ids) {
     body: JSON.stringify({ ids }),
     headers: { "Content-Type": "application/json" },
   });
+}
+
+
+
+export async function activarUsuarioPorId(id) {
+  try {
+    const response = await fetch(`http://localhost:8000/api/usuarios/${id}/activar`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Error al activar el usuario");
+    }
+
+    return data; 
+  } catch (error) {
+    console.error("Error al activar usuario:", error);
+    throw error;
+  }
 }
