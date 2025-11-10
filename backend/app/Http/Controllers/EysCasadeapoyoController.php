@@ -24,6 +24,13 @@ class EysCasadeapoyoController extends Controller
 
         $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
+         if ($usuario && $usuario->perfile->nombre === 'Visitante' && $usuario->estado === 'inactivo') {
+        $usuario->estado = 'activo';
+        $usuario->fechaExpiracion = null; 
+        $usuario->save();
+    }
+
+
         $entrada = eyscasadeapoyo::create([
             'numeroDocumento' => $usuario->numeroDocumento,
             'tipo' => 'entrada',
@@ -64,6 +71,11 @@ class EysCasadeapoyoController extends Controller
             'idusuario' => $usuario->id,
             'fechaRegistro' => now(),
         ]);
+
+        if ($usuario->perfile->nombre === 'Visitante') {
+        $usuario->fechaExpiracion = now()->addHours(12);
+        $usuario->save();
+    }
 
 
         return response()->json([

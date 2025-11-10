@@ -33,6 +33,12 @@ class eys_granjaController extends Controller
     
     $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
+     if ($usuario && $usuario->perfile->nombre === 'Visitante' && $usuario->estado === 'inactivo') {
+        $usuario->estado = 'activo';
+        $usuario->fechaExpiracion = null; 
+        $usuario->save();
+    }
+
     if (!$usuario) {
         return response()->json(['error' => 'Usuario no encontrado'], 404);
     }
@@ -137,6 +143,11 @@ public function salidagranja(Request $request)
             'idusuario' => $usuario->id,
             'fechaRegistro' => now(),
         ]);
+
+        if ($usuario->perfile->nombre === 'Visitante') {
+        $usuario->fechaExpiracion = now()->addHours(12);
+        $usuario->save();
+    }
 
 
         return response()->json([

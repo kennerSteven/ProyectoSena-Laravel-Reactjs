@@ -23,6 +23,12 @@ class eys_senaController extends Controller
 
         $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
+        if ($usuario && $usuario->perfile->nombre === 'Visitante' && $usuario->estado === 'inactivo') {
+        $usuario->estado = 'activo';
+        $usuario->fechaExpiracion = null; 
+        $usuario->save();
+    }
+
         
         $entrada = eyssena::create([
             'numeroDocumento' => $usuario->numeroDocumento,

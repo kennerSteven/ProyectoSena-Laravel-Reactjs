@@ -26,6 +26,13 @@ class eys_gymController extends Controller
 
     
    $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
+
+    if ($usuario && $usuario->perfile->nombre === 'Visitante' && $usuario->estado === 'inactivo') {
+        $usuario->estado = 'activo';
+        $usuario->fechaExpiracion = null; 
+        $usuario->save();
+    }
+
     
     $entrada = eysgym::create([
         'numeroDocumento' => $usuario->numeroDocumento,
@@ -72,6 +79,10 @@ class eys_gymController extends Controller
         'fechaRegistro' => now(),
     ]);
 
+    if ($usuario->perfile->nombre === 'Visitante') {
+        $usuario->fechaExpiracion = now()->addHours(12);
+        $usuario->save();
+    }
 
    
     return response()->json([
