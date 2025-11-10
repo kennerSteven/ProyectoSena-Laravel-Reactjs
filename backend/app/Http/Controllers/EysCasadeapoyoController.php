@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\eyscasadeapoyo;
 use App\Models\usuarios;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class EysCasadeapoyoController extends Controller
@@ -24,12 +25,23 @@ class EysCasadeapoyoController extends Controller
 
         $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
+         if ($usuario && $usuario->perfile->nombre === 'Visitante' && $usuario->estado === 'inactivo') {
+        $usuario->estado = 'activo';
+        $usuario->fechaExpiracion = null; 
+        $usuario->save();
+    }
+
+
         $entrada = eyscasadeapoyo::create([
             'numeroDocumento' => $usuario->numeroDocumento,
             'tipo' => 'entrada',
             'idusuario' => $usuario->id,
             'fechaRegistro' => now(),
         ]);
+
+        $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
 
         
 
@@ -64,6 +76,15 @@ class EysCasadeapoyoController extends Controller
             'idusuario' => $usuario->id,
             'fechaRegistro' => now(),
         ]);
+
+        if ($usuario->perfile->nombre === 'Visitante') {
+        $usuario->fechaExpiracion = now()->addHours(12);
+        $usuario->save();
+    }
+
+    $salida->fechaRegistro = Carbon::parse($salida->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
 
 
         return response()->json([

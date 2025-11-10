@@ -19,19 +19,19 @@ class perfilesSeeder extends Seeder
                 'descripcion' => 'Usuario en formación dentro del sistema (tiene ficha asignada).'
             ],
             [
-                'nombre' => 'Instructor de Contrato',
+                'nombre' => 'Instructor contrato',
                 'descripcion' => 'Instructor contratado por un periodo determinado para formación o apoyo académico.'
             ],
             [
-                'nombre' => 'Instructor de Planta',
+                'nombre' => 'Instructor Planta',
                 'descripcion' => 'Instructor perteneciente a la planta del centro de formación.'
             ],
             [
-                'nombre' => 'Administrativo de Planta',
+                'nombre' => 'Administrativo Planta',
                 'descripcion' => 'Personal administrativo que hace parte de la planta del centro.'
             ],
             [
-                'nombre' => 'Administrativo de Contrato',
+                'nombre' => 'Administrativo contrato',
                 'descripcion' => 'Personal administrativo contratado temporalmente.'
             ],
         ];
