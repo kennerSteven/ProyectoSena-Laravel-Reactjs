@@ -6,6 +6,7 @@ use App\Models\eys_granja;
 use App\Models\eysgranja;
 use App\Models\usuarios;
 use App\Models\vehiculo;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class eys_granjaController extends Controller
@@ -76,6 +77,9 @@ class eys_granjaController extends Controller
             'fechaRegistro' => now(),
         ]);
 
+        $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
         
         
 
@@ -148,6 +152,10 @@ public function salidagranja(Request $request)
         $usuario->fechaExpiracion = now()->addHours(12);
         $usuario->save();
     }
+
+     $salida->fechaRegistro = Carbon::parse($salida->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
 
 
         return response()->json([

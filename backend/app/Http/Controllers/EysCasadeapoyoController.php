@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\eyscasadeapoyo;
 use App\Models\usuarios;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class EysCasadeapoyoController extends Controller
@@ -37,6 +38,10 @@ class EysCasadeapoyoController extends Controller
             'idusuario' => $usuario->id,
             'fechaRegistro' => now(),
         ]);
+
+        $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
 
         
 
@@ -76,6 +81,10 @@ class EysCasadeapoyoController extends Controller
         $usuario->fechaExpiracion = now()->addHours(12);
         $usuario->save();
     }
+
+    $salida->fechaRegistro = Carbon::parse($salida->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
 
 
         return response()->json([
