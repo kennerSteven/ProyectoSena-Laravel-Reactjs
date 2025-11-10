@@ -77,21 +77,18 @@ Route::put('/usuarios/{id}/activar', [UsuariosController::class, 'activarUsuario
 Route::get("/entradaysalidagranja/index", [eys_granjaController::class, "index"]);
 Route::post("/entradaysalidagranja/entradagranja", [eys_granjaController::class, "entradagranja"]);
 Route::post("/entradaysalidagranja/salidagranja", [eys_granjaController::class, "salidagranja"]); 
-Route::post('/salidagranja/masiva', [eys_granjaController::class, 'salidaMasivaGranja']);
 Route::get('/usuario/buscar/{numeroDocumento}', [eys_granjaController::class, 'buscarPorDocumento']);
 
 /*gym*/
 Route::get("/entradaysalidagym/index", [eys_gymController::class, "index"]);
 Route::post("/entradaysalidagym/entradagym", [eys_gymController::class, "entradagym"]); 
 Route::post("/entradaysalidagym/salidagym", [eys_gymController::class, "salidagym"]); 
-Route::post('/gym/salidamasiva', [eys_gymController::class, 'salidaMasivaGym']);
 Route::get('/usuario/buscar/{numeroDocumento}', [eys_gymController::class, 'buscarPorDocumento']);
 
 /*SENA*/
 Route::get("/entradaysalidaSENA/index", [eys_senaController::class, "index"]);
 Route::post("/entradaysalidaSENA/entradasena", [eys_senaController::class, "entradasena"]); 
 Route::post("/entradaysalidaSENA/salidasena", [eys_senaController::class, "salidasena"]); 
-Route::post('/sena/salidamasiva', [eys_senaController::class, 'salidaMasivaSena']);
 Route::get('/usuario/buscar/{numeroDocumento}', [eys_senaController::class, 'buscarPorDocumento']);
 
 
@@ -99,10 +96,7 @@ Route::get('/usuario/buscar/{numeroDocumento}', [eys_senaController::class, 'bus
 Route::get("/entradaysalidacasa/index", [EysCasadeapoyoController::class, "index"]);
 Route::post("/entradaysalidacasa/entradacasadeapoyo", [EysCasadeapoyoController::class, "entradacasadeapoyo"]); 
 Route::post("/entradaysalidacasa/salidacasadeapoyo", [EysCasadeapoyoController::class, "salidacasadeapoyo"]); 
-Route::post('/casadeapoyo/salidamasiva', [EysCasadeapoyoController::class, 'salidaMasivaCasaDeApoyo']);
 Route::get('/usuario/buscar/{numeroDocumento}', [EysCasadeapoyoController::class, 'buscarPorDocumento']);
-
-
 
 /*kpi*/
 
