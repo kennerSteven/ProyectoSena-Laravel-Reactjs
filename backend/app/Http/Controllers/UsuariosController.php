@@ -35,6 +35,10 @@ class UsuariosController extends Controller
     
     $usuario = usuarios::create($request->all());
 
+
+
+    
+
     
     return response()->json([
         'message' => 'Usuario y entrada registrados correctamente',
@@ -75,6 +79,62 @@ class UsuariosController extends Controller
     
 
    }
+
+   public function listarVisitantesDesactivados()
+{
+    $visitantes = usuarios::where('estado', 'inactivo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Visitante');
+        })
+        ->get();
+
+    if ($visitantes->isEmpty()) {
+        return response()->json(['message' => 'No hay visitantes desactivados.']);
+    }
+
+    return response()->json([
+        'message' => 'Listado de visitantes desactivados',
+        'usuarios' => $visitantes
+    ]);
+}
+
+public function listarInstructoresContratoDesactivados()
+{
+    $instructores = usuarios::where('estado', 'inactivo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Instructor contrato');
+        })
+        ->get();
+
+    if ($instructores->isEmpty()) {
+        return response()->json(['message' => 'No hay instructores contrato desactivados.']);
+    }
+
+    return response()->json([
+        'message' => 'Listado de instructores contrato desactivados',
+        'usuarios' => $instructores
+    ]);
+}
+
+
+public function listarAdministrativosContratoDesactivados()
+{
+    $administrativos = usuarios::where('estado', 'inactivo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Administrativo contrato');
+        })
+        ->get();
+
+    if ($administrativos->isEmpty()) {
+        return response()->json(['message' => 'No hay administrativos contrato desactivados.']);
+    }
+
+    return response()->json([
+        'message' => 'Listado de administrativos contrato desactivados',
+        'usuarios' => $administrativos
+    ]);
+}
+
 
 
    
