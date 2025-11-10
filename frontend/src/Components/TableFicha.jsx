@@ -9,7 +9,6 @@ import {
   getFichas,
   getUsuariosDeFicha,
   updateFicha,
-  deleteFicha,
   desactivarFicha,
 } from "./Services/FetchServices";
 import "../styles/TablaHistorial.css";
@@ -21,7 +20,7 @@ export default function TablaFicha() {
   const [showModalFichasDesactivadas, setShowModalFichasDesactivadas] =
     useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
-   const [showFormacion, setShowFormacion] = useState(false);
+  const [showFormacion, setShowFormacion] = useState(false);
   const [fichas, setFichas] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [usuariosFicha, setUsuariosFicha] = useState([]);
@@ -119,7 +118,7 @@ export default function TablaFicha() {
   );
 
   return (
-    <div className="tableHistorialContent mx-auto">
+    <div className="tableHistorialContent mx-auto shadow mt-2">
       <div className="row">
         <div className="">
           <div className="card shadow-sm border-light">
@@ -166,7 +165,10 @@ export default function TablaFicha() {
                     />
                   </button>
 
-                  <button    onClick={() => setShowFormacion(true)}   className="btnActionsFicha d-flex align-items-center gap-2">
+                  <button
+                    onClick={() => setShowFormacion(true)}
+                    className="btnActionsFicha d-flex align-items-center gap-2"
+                  >
                     <i
                       className="pi pi-building"
                       style={{ color: "#ffffffff", fontSize: "1.2rem" }}
@@ -382,19 +384,17 @@ export default function TablaFicha() {
         visible={showModalFichasDesactivadas}
         style={{ width: "700px" }}
         modal
-            
         className="modal-fichas-desactivadas"
         onHide={() => setShowModalFichasDesactivadas(false)}
       >
         {showModalFichasDesactivadas && <TablaFichasDesactivadas />}
       </Dialog>
 
-        <Dialog
+      <Dialog
         header="Crear formación"
         visible={showFormacion}
         style={{ width: "400px" }}
         modal
-            
         className="modal-fichas-desactivadas"
         onHide={() => setShowFormacion(false)}
       >

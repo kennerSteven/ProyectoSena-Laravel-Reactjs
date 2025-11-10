@@ -18,7 +18,7 @@ export default function useTipoPerfilFetch(nombreFiltro = "") {
 
         const data = await res.json();
         const perfilesArray = Array.isArray(data) ? data : Object.values(data);
-
+        console.log("perfiles", data);
         const perfilesFiltrados = nombreFiltro
           ? perfilesArray.filter((p) =>
               p.nombre?.toLowerCase().includes(nombreFiltro.toLowerCase())
@@ -36,7 +36,7 @@ export default function useTipoPerfilFetch(nombreFiltro = "") {
   }, [nombreFiltro]);
 
   return {
-    perfiles, // ✅ array completo filtrado
-    perfil: perfiles.length > 0 ? perfiles[0] : null, // ✅ primero como fallback
+    perfiles,
+    perfil: perfiles.length > 0 ? perfiles[0] : null,
   };
 }

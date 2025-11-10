@@ -1,17 +1,15 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
+import { Toast } from "primereact/toast";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
-import { SpeedDial } from "primereact/speeddial";
-import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
-import "primeicons/primeicons.css";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-
-import { deleteInstructor } from "../Services/FetchServices";
 import SplitButtonComp from "../Ui/SplitButton";
 import FormInstructor from "../Form/FormInstructor";
-import "../../styles/Table.css";
+import { deleteInstructor } from "../Services/FetchServices";
+import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
 
 export default function Table({
   tableTitle,
@@ -19,15 +17,23 @@ export default function Table({
   dataTable = [],
   functionModal,
   openCreatePerfil,
-
   reloadTable,
 }) {
   const [globalFilter, setGlobalFilter] = useState("");
+  const [perfilSeleccionado, setPerfilSeleccionado] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const toast = useRef(null);
 
   const globalFilterFields = nameValue.map(({ field }) => field);
+
+  // ✅ Obtener todos los perfiles disponibles desde el backend
+  const { perfiles } = useTipoPerfilFetch("Instructor");
+
+  const opcionesPerfil = perfiles.map((p) => ({
+    label: p.nombre,
+    value: p.id,
+  }));
 
   const handleDeleteUser = (rowData) => {
     confirmDialog({
@@ -90,46 +96,10 @@ export default function Table({
           if (reloadTable) reloadTable();
         } catch (error) {
           console.error("Error al eliminar:", error);
-          confirmDialog({
-            message: (
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "1rem" }}
-              >
-                <i
-                  className="pi pi-times-circle"
-                  style={{ fontSize: "2rem", color: "#dc3545" }}
-                />
-                <span>No se pudo eliminar el usuario.</span>
-              </div>
-            ),
-            header: "Error al eliminar",
-            className: "custom-confirm-dialog",
-            style: { borderRadius: "10px" },
-            acceptLabel: "Aceptar",
-            rejectVisible: false,
-            footer: (props) => (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "1rem",
-                }}
-              >
-                <button
-                  onClick={props.accept}
-                  style={{
-                    padding: "0.5rem 1.5rem",
-                    backgroundColor: "#00A859",
-                    border: "none",
-                    borderRadius: "10px",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Aceptar
-                </button>
-              </div>
-            ),
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "No se pudo eliminar el usuario",
           });
         }
       },
@@ -185,6 +155,16 @@ export default function Table({
     if (reloadTable) reloadTable();
   };
 
+  const actionBodyTemplate = (rowData) => (
+    <div style={{ display: "flex", gap: "0.5rem" }}>
+      <SplitButtonComp
+        rowData={rowData}
+        onDelete={handleDeleteUser}
+        onEdit={handleEditUser}
+      />
+    </div>
+  );
+
   const header = (
     <div>
       <div className="mb-3">
@@ -192,42 +172,22 @@ export default function Table({
       </div>
 
       <div className="d-flex justify-content-between headerContainer align-items-center">
-        <div>
-          <button
-            className="p-button p-button-sm p-button-success rounded shadow-sm"
-            onClick={functionModal}
-          >
-            <i className="pi pi-user-plus" style={{ marginRight: "0.5rem" }} />
-          </button>
-        </div>
-
-        <div
-          style={{
-            position: "relative",
-            display: "inline-block",
-            marginLeft: "1rem",
-          }}
-        >
-          <i
-            className="pi pi-search"
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "10px",
-              transform: "translateY(-50%)",
-              color: "#6c757d",
-              fontSize: "1rem",
-              pointerEvents: "none",
-            }}
-          />
+        <div className="d-flex gap-3 align-items-center">
           <InputText
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Buscar..."
-            style={{
-              paddingLeft: "2rem",
-              width: "250px",
-            }}
+            style={{ paddingLeft: "2rem", width: "250px" }}
+          />
+
+          <Dropdown
+            value={perfilSeleccionado}
+            options={opcionesPerfil}
+            onChange={(e) => setPerfilSeleccionado(e.value)}
+            placeholder="Filtrar por perfil"
+            className="w-100"
+            style={{ width: "250px" }}
+            showClear
           />
         </div>
 
@@ -240,7 +200,6 @@ export default function Table({
               className="pi pi-user-plus"
               style={{ color: "#28a745", fontSize: "1.4rem" }}
             />
-            {/* Crear aprendiz */}
           </button>
 
           <button
@@ -251,7 +210,6 @@ export default function Table({
               className="pi pi-id-card"
               style={{ color: "#28a745", fontSize: "1.4rem" }}
             />
-            {/* Crear perfil */}
           </button>
 
           <button className="btnActions d-flex align-items-center gap-2">
@@ -259,52 +217,40 @@ export default function Table({
               className="pi pi-book"
               style={{ color: "#28a745", fontSize: "1.4rem" }}
             />
-            {/* Crear ficha */}
           </button>
         </div>
       </div>
-    </div>
-  );
-  (field) => (rowData) =>
-    rowData[field] !== null &&
-    rowData[field] !== undefined &&
-    rowData[field] !== "" ? (
-      rowData[field]
-    ) : (
-      <span className="text-muted">—</span>
-    );
-
-  const actionBodyTemplate = (rowData) => (
-    <div style={{ display: "flex", gap: "0.5rem" }}>
-      <SplitButtonComp
-        rowData={rowData}
-        onDelete={handleDeleteUser}
-        onEdit={handleEditUser}
-      />
     </div>
   );
 
   return (
     <div className="mx-auto mt-2 shadow tableContainer">
       <Toast ref={toast} />
+
       <DataTable
-        value={dataTable}
+        value={dataTable.filter((item) => {
+          const coincidePerfil = perfilSeleccionado
+            ? item.tipoPerfil?.id === perfilSeleccionado
+            : true;
+
+          const coincideGlobal = globalFilterFields.some((field) =>
+            item[field]?.toLowerCase?.().includes(globalFilter.toLowerCase())
+          );
+
+          return coincidePerfil && coincideGlobal;
+        })}
         paginator
-        rows={5}
-        rowsPerPageOptions={[5, 10, 25, 50]}
+        rows={10}
         header={header}
-        globalFilter={globalFilter}
         globalFilterFields={globalFilterFields}
-        emptyMessage="No se encontraron resultados."
+        emptyMessage="No se encontraron resultados"
         scrollable
         scrollHeight="420px"
         rowClassName={() => "my-custom-row"}
       >
-        {/* Columnas normales */}
-        {nameValue.map(({ field, header }, idx) => (
+        {nameValue.map(({ field, header }) => (
           <Column
-            filter
-            key={idx}
+            key={field}
             field={field}
             header={header}
             body={(rowData) =>
@@ -319,32 +265,6 @@ export default function Table({
           />
         ))}
 
-        {/* Columna de foto */}
-        <Column
-          header="Foto"
-          body={(rowData) => {
-            const ruta = rowData.foto;
-            const url = ruta ? `http://localhost:8000/${ruta}` : null;
-
-            return url ? (
-              <img
-                src={url}
-                alt="Foto"
-                className="img-thumbnail"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                }}
-              />
-            ) : (
-              <span className="text-muted">—</span>
-            );
-          }}
-        />
-
-        {/* Columna de acciones */}
         <Column
           header="Acciones"
           className="fw-bold"
@@ -364,6 +284,7 @@ export default function Table({
           closeModal={handleCloseUpdateModal}
         />
       </Dialog>
+
       <ConfirmDialog />
     </div>
   );

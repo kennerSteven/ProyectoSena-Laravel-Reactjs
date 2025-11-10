@@ -1,5 +1,4 @@
 .tableHistorialContent {
-  padding: 20px;
   width: 1050px;
 }
 /* Oculta el ícono de embudo en los filtros de columna */
@@ -46,7 +45,6 @@
 .p-dialog .p-dialog-content {
   border-top: 1px solid #dee2e6;
 }
-
 
 .btnActionsFicha {
   background-color: #007832;

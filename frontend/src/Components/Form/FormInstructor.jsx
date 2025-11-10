@@ -17,10 +17,12 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidationInstructor);
 
-  const { perfil } = useTipoPerfilFetch("Instructor");
-  const opcionesPerfil = perfil
-    ? [{ value: perfil.id, label: perfil.nombre }]
-    : [];
+  const { perfiles } = useTipoPerfilFetch("Instructor");
+
+  const opcionesPerfil = perfiles.map((p) => ({
+    value: p.id,
+    label: p.nombre,
+  }));
 
   const [capturedImage, setCapturedImage] = useState(null);
   const [showCamera, setShowCamera] = useState(false);
@@ -29,7 +31,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
 
   const { onSubmit, onError } = HandleValidationInstructor({
     reset,
-    perfiles: perfil ? [perfil] : [],
+    perfiles,
     closeModal,
     perfil: "Instructor",
     usuarioSeleccionado,
@@ -37,18 +39,18 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
   });
 
   useEffect(() => {
-    if (usuarioSeleccionado && perfil) {
+    if (usuarioSeleccionado && perfiles.length > 0) {
       reset({
         nombre: usuarioSeleccionado.nombre || "",
-        apellido: usuarioSeleccionado.apellido,
-        tipoDocumento: usuarioSeleccionado.tipoDocumento,
+        apellido: usuarioSeleccionado.apellido || "",
+        tipoDocumento: usuarioSeleccionado.tipoDocumento || "",
         numeroDocumento: usuarioSeleccionado.numeroDocumento || "",
         telefono: usuarioSeleccionado.telefono || "",
         tipoSangre: usuarioSeleccionado.tipoSangre || "",
-        tipoPerfil: usuarioSeleccionado.perfile?.id || perfil.id || "",
+        tipoPerfil: usuarioSeleccionado.perfile?.id || perfiles[0]?.id || "",
       });
     }
-  }, [usuarioSeleccionado, reset, perfil]);
+  }, [usuarioSeleccionado, reset, perfiles]);
 
   useEffect(() => {
     if (showCamera && videoRef.current) {
@@ -64,9 +66,8 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
   }, [showCamera]);
 
   return (
-    <div className="">
+    <div>
       <form className="row" onSubmit={handleSubmit(onSubmit, onError)}>
-        {/* Columna izquierda */}
         <div>
           <div className="d-flex gap-4">
             <InputField
@@ -84,6 +85,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
               labelName="Apellido"
             />
           </div>
+
           <div className="d-flex gap-3">
             <SelectOptions
               register={register}
@@ -139,7 +141,8 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                 />
               </div>
             </div>
-            <div className="col-lg-6 d-flex align-items-center justify-content-center mt-4 ">
+
+            <div className="col-lg-6 d-flex align-items-center justify-content-center mt-4">
               <div style={{ maxWidth: "400px", width: "100%" }}>
                 {capturedImage ? (
                   <div className="text-center">
@@ -214,8 +217,6 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
             />
           </div>
         </div>
-
-        {/* Columna derecha: cámara centrada */}
 
         <Toaster
           position="top-center"

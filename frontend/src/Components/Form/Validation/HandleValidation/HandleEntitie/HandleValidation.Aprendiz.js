@@ -12,7 +12,7 @@ export default function HandleValidationAprendiz({
   capturedImage,
 }) {
   const [formData, setFormData] = useState();
-
+  const [docEntrada, setDocEntrada] = useState();
   const onSubmit = async (data) => {
     toast.dismiss();
 
@@ -42,6 +42,9 @@ export default function HandleValidationAprendiz({
       foto: capturedImage || null,
     };
 
+    const numeroDocEntrada = payload.numeroDocumento;
+    setDocEntrada(numeroDocEntrada);
+
     console.table("Aprendiz data", payload);
     setFormData(payload);
 
@@ -58,7 +61,6 @@ export default function HandleValidationAprendiz({
         showConfirmButton: true,
         customClass: {
           confirmButton: "swal-confirm-green",
-
         },
       });
 
@@ -74,5 +76,5 @@ export default function HandleValidationAprendiz({
     toast.dismiss();
   };
 
-  return { onSubmit, onError, formData, closeModal };
+  return { onSubmit, onError, formData, closeModal, docEntrada };
 }

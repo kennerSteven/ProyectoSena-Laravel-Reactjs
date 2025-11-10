@@ -2,24 +2,31 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { getIdForCarnet } from "../../../Services/FetchServices";
 
-export default function useHandleValidationRegister({ reset, setVisible }) {
+export default function useHandleValidationRegister({ reset, setVisible, documentoEntrada }) {
   const [dataCarnet, setDataCarnet] = useState([]);
 
   const onSubmit = async (payload) => {
     try {
       const loadingToast = toast.loading("Validando...");
 
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/entradaysalidagym/entradagym",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      // ✅ Determinar documento desde argumento o payload
+      const numeroDocumento = documentoEntrada || payload?.numeroDocumento;
+
+      if (!numeroDocumento) {
+        toast.dismiss(loadingToast);
+        toast.error("No se proporcionó número de documento");
+        console.warn("Número de documento faltante en payload o argumento");
+        return;
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/api/entradaysalidagym/entradagym", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ numeroDocumento }), // ✅ solo se envía el documento
+      });
 
       toast.dismiss(loadingToast);
 
@@ -31,10 +38,15 @@ export default function useHandleValidationRegister({ reset, setVisible }) {
       }
 
       const result = await response.json();
-      const idUserCarnet = result.entrada.idusuario;
+      const idUserCarnet = result.entrada?.idusuario;
+
+      if (!idUserCarnet) {
+        toast.error("No se pudo obtener el ID del usuario");
+        console.warn("Respuesta sin idusuario:", result);
+        return;
+      }
 
       const datosCarnet = await getIdForCarnet(idUserCarnet);
-
       const fotoRuta = datosCarnet?.foto;
       const fotoUrl = fotoRuta ? `http://localhost:8000/${fotoRuta}` : null;
 
@@ -43,8 +55,8 @@ export default function useHandleValidationRegister({ reset, setVisible }) {
         foto: fotoUrl,
       });
 
-      reset();
-      setVisible(false);
+      reset?.();
+      setVisible?.(false);
     } catch (error) {
       console.error("Error en onSubmit:", error);
       toast.error("Error inesperado al registrar entrada");
