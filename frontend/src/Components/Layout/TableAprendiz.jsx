@@ -188,7 +188,7 @@ export default function TableAprendizs({
 
   const header = (
     <div>
-      <div className="mb-3">
+      <div className="mb-1">
         <h2 className="fw-bold d-flex gap-2">{tableTitle}</h2>
       </div>
 
@@ -292,7 +292,7 @@ export default function TableAprendizs({
         globalFilterFields={globalFilterFields}
         emptyMessage="No se encontraron resultados."
         scrollable
-        scrollHeight="420px"
+        scrollHeight="290px"
         rowClassName={() => "my-custom-row"}
       >
         {nameValue.map(({ field, header }, idx) => (

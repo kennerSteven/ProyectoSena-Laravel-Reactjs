@@ -16,19 +16,24 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
+/*perfiles*/
 Route::get("/perfiles/index", [PerfileController::class, "index"]);
 Route::post("/perfiles/store", [PerfileController::class, "store"]);
 Route::get("/perfiles/show/{id}", [PerfileController::class, "show"]);
 Route::put("/perfiles/update/{id}", [PerfileController::class, "update"]);
 Route::delete("/perfiles/destroy/{id}", [PerfileController::class, "destroy"]);
 
+
+/*vehiculo*/
 Route::get("/vehiculo/index", [VehiculoController::class, "index"]);
 Route::post("/vehiculo/store", [VehiculoController::class, "store"]); 
 Route::get("/vehiculo/show/{id}", [VehiculoController::class, "show"]);
 Route::put("/vehiculo/update/{id}", [VehiculoController::class, "update"]);
 Route::delete("/vehiculo/destroy/{id}", [VehiculoController::class, "destroy"]);
 
+
+
+/*ficha*/
 Route::get("/ficha/index", [FichasController::class, "index"]);
 Route::post("/ficha/store", [FichasController::class, "store"]); 
 Route::get("/ficha/show/{id}", [FichasController::class, "show"]);
@@ -47,11 +52,14 @@ Route::get('/ficha/listarusuariosdelaFicha/{id}', [FichasController::class, 'lis
 Route::get('/fichas/fichasConMasAprendices', [FichasController::class, 'fichasConMasAprendices']);
 Route::get('/fichas/listarFichasPorEstado', [FichasController::class, 'listarFichasPorEstado']);
 
+
+/*usuario*/
 Route::get("/usuario/index", [usuariosController::class, "index"]);
 Route::post("/usuario/store", [UsuariosController::class, "store"]); 
 Route::get("/usuario/show/{id}", [UsuariosController::class, "show"]);
 Route::put("/usuario/update/{id}", [UsuariosController::class, "update"]);
 Route::delete("/usuario/destroy/{id}", [UsuariosController::class, "destroy"]);
+Route::delete("/usuario/eliminarVisitantesInactivos", [UsuariosController::class, "eliminarVisitantesInactivos"]);
 Route::get('/visitantes/desactivados', [UsuariosController::class, 'listarVisitantesDesactivados']);
 
 
@@ -60,6 +68,8 @@ Route::get('/visitantes/desactivados', [UsuariosController::class, 'listarVisita
 Route::get('/instructores-contrato/desactivados', [UsuariosController::class, 'listarInstructoresContratoDesactivados']);
 
 Route::get('/administrativos-contrato/desactivados', [UsuariosController::class, 'listarAdministrativosContratoDesactivados']);
+Route::post('/usuarios/activar-masivo', [UsuariosController::class, 'activarMasivamente']);
+Route::put('/usuarios/{id}/activar', [UsuariosController::class, 'activarUsuario']);
 
 
 

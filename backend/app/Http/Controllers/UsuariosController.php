@@ -33,20 +33,20 @@ class UsuariosController extends Controller
             $request['foto'] = 'storage/fotos/' . $nombreFoto;
         }
 
-
-        $usuario = usuarios::create($request->all());
-
-
+    
+    $usuario = usuarios::create($request->all());
 
 
 
+    
 
-        return response()->json([
-            'message' => 'Usuario y entrada registrados correctamente',
-            'usuario' => $usuario
-
-        ], 201);
-    }
+    
+    return response()->json([
+        'message' => 'Usuario y entrada registrados correctamente',
+        'usuario' => $usuario
+       
+    ], 201);
+}
 
 
 
@@ -86,17 +86,17 @@ class UsuariosController extends Controller
 
     }
 
-    public function listarVisitantesDesactivados()
-    {
-        $visitantes = usuarios::where('estado', 'inactivo')
-            ->whereHas('perfile', function ($q) {
-                $q->where('nombre', 'Visitante');
-            })
-            ->get();
+   public function listarVisitantesDesactivados()
+{
+    $visitantes = usuarios::where('estado', 'inactivo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Visitante');
+        })
+        ->get();
 
-        if ($visitantes->isEmpty()) {
-            return response()->json(['message' => 'No hay visitantes desactivados.']);
-        }
+    if ($visitantes->isEmpty()) {
+        return response()->json(['message' => 'No hay visitantes desactivados.']);
+    }
 
         return response()->json([
             'message' => 'Listado de visitantes desactivados',
@@ -104,42 +104,42 @@ class UsuariosController extends Controller
         ]);
     }
 
-    public function listarInstructoresContratoDesactivados()
-    {
-        $instructores = usuarios::where('estado', 'inactivo')
-            ->whereHas('perfile', function ($q) {
-                $q->where('nombre', 'Instructor contrato');
-            })
-            ->get();
+public function listarInstructoresContratoDesactivados()
+{
+    $instructores = usuarios::where('estado', 'inactivo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Instructor contrato');
+        })
+        ->get();
 
         if ($instructores->isEmpty()) {
             return response()->json(['message' => 'No hay instructores contrato desactivados.']);
         }
 
-        return response()->json([
-            'message' => 'Listado de instructores contrato desactivados',
-            'usuarios' => $instructores
-        ]);
-    }
+    return response()->json([
+        'message' => 'Listado de instructores contrato desactivados',
+        'usuarios' => $instructores
+    ]);
+}
 
 
-    public function listarAdministrativosContratoDesactivados()
-    {
-        $administrativos = usuarios::where('estado', 'inactivo')
-            ->whereHas('perfile', function ($q) {
-                $q->where('nombre', 'Administrativo contrato');
-            })
-            ->get();
+public function listarAdministrativosContratoDesactivados()
+{
+    $administrativos = usuarios::where('estado', 'inactivo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Administrativo contrato');
+        })
+        ->get();
 
         if ($administrativos->isEmpty()) {
             return response()->json(['message' => 'No hay administrativos contrato desactivados.']);
         }
 
-        return response()->json([
-            'message' => 'Listado de administrativos contrato desactivados',
-            'usuarios' => $administrativos
-        ]);
-    }
+    return response()->json([
+        'message' => 'Listado de administrativos contrato desactivados',
+        'usuarios' => $administrativos
+    ]);
+}
 
 
 

@@ -118,7 +118,7 @@ export default function TablaFicha() {
   );
 
   return (
-    <div className="tableHistorialContent mx-auto shadow mt-2">
+    <div className="tableHistorialContent mx-auto shadow mt-4">
       <div className="row">
         <div className="">
           <div className="card shadow-sm border-light">

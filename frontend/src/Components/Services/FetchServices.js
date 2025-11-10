@@ -318,3 +318,63 @@ export async function deleteFichasMasivo(ids = []) {
     throw error;
   }
 }
+
+
+
+
+export async function getInstructoresContratoDesactivados() {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/instructores-contrato/desactivados", {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json(); 
+    console.log(data)
+    return Array.isArray(data.usuarios) ? data.usuarios : [];
+  } catch (error) {
+    console.error("Error al obtener instructores desactivados:", error);
+    return [];
+  }
+}
+
+
+
+
+export async function getAdministrativosContratoDesactivados() {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/administrativos-contrato/desactivados", {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json(); 
+    console.log(data)
+    return Array.isArray(data.usuarios) ? data.usuarios : [];
+  } catch (error) {
+    console.error("Error al obtener instructores desactivados:", error);
+    return [];
+  }
+}
+
+
+
+export async function activarInstructorPorId(id) {
+  return await fetch(`/api/instructores/${id}/activar`, { method: "POST" });
+}
+
+export async function activarInstructoresPorLote(ids) {
+  return await fetch(`/api/instructores/activar-lote`, {
+    method: "POST",
+    body: JSON.stringify({ ids }),
+    headers: { "Content-Type": "application/json" },
+  });
+}
