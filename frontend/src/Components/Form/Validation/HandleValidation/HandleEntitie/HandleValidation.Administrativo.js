@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Swal from "sweetalert2";
 import { onSubmitAdministrativo } from "../../../../Services/FetchServices";
 import toast from "react-hot-toast";
@@ -8,20 +7,15 @@ export default function HandleValidationAdministrativo({
   reset,
   perfiles,
   closeModal,
-  perfil: nombrePerfil,
-  capturedImage, // ✅ se recibe la imagen
+  capturedImage,
 }) {
-  const [formData, setFormData] = useState();
-
   const onSubmit = async (data) => {
     toast.dismiss();
 
-    const perfilSeleccionado = perfiles.find(
-      (p) => p.nombre?.toLowerCase() === nombrePerfil?.toLowerCase()
-    );
+    const perfilSeleccionado = perfiles.find((p) => p.id === data.tipoPerfil);
 
     if (!perfilSeleccionado) {
-      toast.error("No se encontró el perfil solicitado");
+      toast.error("No se encontró el perfil seleccionado");
       return;
     }
 
@@ -32,12 +26,12 @@ export default function HandleValidationAdministrativo({
       numeroDocumento: data.numeroDocumento,
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
-      idperfil: perfilSeleccionado.id,
-      foto: capturedImage || null, // ✅ se incluye la imagen
+      idperfil: perfilSeleccionado.id, // ✅ requerido por el backend
+      tipoPerfil: perfilSeleccionado, // ✅ útil para frontend si lo necesitas
+      foto: capturedImage || null,
     };
 
     console.table(payload);
-    setFormData(payload);
 
     try {
       await onSubmitAdministrativo(payload);
@@ -56,7 +50,7 @@ export default function HandleValidationAdministrativo({
       });
 
       reset();
-      closeModal(); // ✅ se cierra el modal
+      closeModal();
     } catch (error) {
       console.error("Error en envío:", error);
       toast.error("Error al guardar el administrativo");
@@ -68,5 +62,5 @@ export default function HandleValidationAdministrativo({
     toast.dismiss();
   };
 
-  return { onSubmit, onError, formData, closeModal };
+  return { onSubmit, onError };
 }

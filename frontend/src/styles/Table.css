@@ -1,6 +1,7 @@
 /* Encabezado de la tabla */
 .p-datatable-thead th {
-  background-color: #ffffff;
+  background-color: #f7f7f7;
+  box-shadow: 02 22px 32px black;
   /* Fondo blanco */
   color: #007832;
   /* Verde institucional para texto */
@@ -33,7 +34,6 @@
   color: #343a40;
   /* Texto gris oscuro */
   font-size: 13px;
-  padding: 0.75rem;
 }
 
 .btnGeneral {
@@ -82,17 +82,20 @@ ul {
 }
 
 .tableContainer {
-  padding: 2px 10px;
+  width: 1000px;
 
-  overflow-x: auto;
   background-color: #ffffff;
-  border: 4px solid #ffffff; /* Gris Bootstrap */
+
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
 
 .tableAprendices {
-  max-width: 1050px;
+  width: 1040px;
+  overflow-x: auto;
+  background-color: #ffffff;
+
+  border-radius: 8px;
 }
 
 /* Botón principal del SpeedDial */
@@ -119,4 +122,100 @@ ul {
   background: linear-gradient(to right, #007832, #66b98a);
 
   color: #ffffff;
+}
+
+.btnActions {
+  background-color: #ffffff;
+  border: none;
+  color: #3b3b3b;
+  border-radius: 10px;
+  padding: 10px 15px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btnActions:hover {
+  transform: scale(1.1) rotate(-3deg);
+  color: #1f1f1f; /* gris más oscuro */
+  cursor: pointer;
+}
+.containerButtonActions {
+  padding: 4px 13px;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+
+.p-datatable .p-datatable-table {
+  border-collapse: collapse;
+  border: 1px solid #dee2e6;
+}
+
+/* Encabezado institucional */
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #343a40;
+  border: 1px solid #dee2e6;
+  padding: 0.75rem;
+}
+
+/* Celdas con bordes */
+.p-datatable .p-datatable-tbody > tr > td {
+  border: 1px solid #dee2e6;
+  padding: 0.75rem;
+}
+
+/* Hover institucional */
+.p-datatable .p-datatable-tbody > tr:hover {
+  background-color: #f1f3f5;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Fila seleccionada */
+.p-datatable .p-datatable-tbody > tr.p-highlight {
+  background-color: #d1e7dd;
+}
+
+/* Imagen institucional */
+.img-thumbnail {
+  border: 1px solid #dee2e6;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón de acciones */
+.fw-bold {
+  font-weight: 600;
+}
+
+/* Fila personalizada si se usa rowClassName */
+.my-custom-row {
+  transition: background-color 0.2s ease-in-out;
+}
+
+
+.seeTableDisabledInstructors{
+  background-color:#007832;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  padding: 0 10px;
+}
+
+
+
+/* Contenedor del tooltip */
+.p-tooltip {
+
+  border-radius: 6px;
+  padding: 6px 10px;
+
+}
+
+/* Texto dentro del tooltip */
+.p-tooltip .p-tooltip-text {
+  color: #007832 !important;
+  font-size: 0.85rem;
+  background-color: transparent !important;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }

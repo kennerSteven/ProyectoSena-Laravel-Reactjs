@@ -12,16 +12,21 @@ export default function Carnet({
   apellido,
   foto,
   closeCarnet,
+  Formacion,
+  ficha,
 }) {
-  // ✅ Construir URL si es ruta relativa
   const urlFoto = foto?.startsWith("http")
     ? foto
-    : `http://localhost:8000/${foto}`;
+    : foto
+    ? `http://localhost:8000/${foto}`
+    : defaultUser;
+
+  const mostrarFicha =
+    Formacion?.toLowerCase() === "aprendiz" && ficha ? ` ${ficha}` : null;
 
   return (
     <div className="containerC">
       <div className="containerCarnet">
-
         <div className="d-flex justify-content-between px-3 py-2">
           <div className="mt-2">
             <img src={logoSena} alt="Logo SENA" style={{ width: "60px" }} />
@@ -30,7 +35,7 @@ export default function Carnet({
           <div className="d-flex align-items-end gap-2 mt-2">
             <small className="fw-bold">{tipoPerfil}</small>
             <img
-              src={urlFoto || defaultUser}
+              src={urlFoto}
               alt="Foto"
               style={{
                 width: "90px",
@@ -45,7 +50,6 @@ export default function Carnet({
 
         <hr className="SeparatorCarnet" />
 
-        {/* Información personal */}
         <div className="infoCarnet px-3 py-4">
           <strong className="strong1 mb-4">
             {nombre} {apellido}
@@ -59,14 +63,13 @@ export default function Carnet({
             <p className="normalText">Teléfono: {telefono}</p>
           </div>
 
-          {/* Información institucional */}
           <div className="d-flex flex-column mt-3">
             <hr />
             <div className="d-flex flex-column gap-1">
               <small>Regional Santander</small>
-              <strong className="strong2">
-                Tg. Análisis y Desarrollo de Software
-              </strong>
+              {mostrarFicha && (
+                <strong className="strong2">{mostrarFicha}</strong>
+              )}
               <strong className="strong2">
                 Centro Agroempresarial y Turístico de los Andes
               </strong>
@@ -75,7 +78,6 @@ export default function Carnet({
         </div>
       </div>
 
-      {/* Botón de cierre */}
       <div className="d-flex justify-content-end mt-4">
         <button className="btnCloseCarnet" onClick={closeCarnet}>
           Cerrar

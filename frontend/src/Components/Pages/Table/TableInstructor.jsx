@@ -1,18 +1,27 @@
 import { useState, useEffect } from "react";
 import { Dialog } from "primereact/dialog";
 import FormAprendiz from "../../Form/FormAprendiz";
-import { nameValueInstructor, nameValueAprendiz } from "../../Layout/Data";
-import { GetDataInstructor } from "../../Services/FetchServices";
-import {
-  GetDataAprendiz,
-  GetDataAdministrativo,
-} from "../../Services/FetchServices";
 import FormInstructor from "../../Form/FormInstructor";
 import FormAdministrativo from "../../Form/FormAdministrativo";
-import Table from "../../Layout/Tablet";
 import FormPerfil from "../../Form/FomPerfiles/FormPerfil";
-import { nameValueAdministrativo } from "../../Layout/Data";
+import Table from "../../Layout/Tablet";
 import TableAprendiz from "../../Layout/TableAprendiz";
+
+import {
+  GetDataInstructor,
+  GetDataAprendiz,
+  GetDataAdministrativo,
+  getAdministrativosContratoDesactivados,
+  activarUsuariosPorTipo,
+  activarInstructorPorId,
+  activarUsuarioPorId,
+} from "../../Services/FetchServices";
+
+import {
+  nameValueInstructor,
+  nameValueAprendiz,
+  nameValueAdministrativo,
+} from "../../Layout/Data";
 
 export function TableInstructor() {
   const [openModal, setModalOpen] = useState(false);
@@ -22,16 +31,13 @@ export function TableInstructor() {
 
   async function LoadInstructor() {
     const data = await GetDataInstructor();
-
     const instructoresFiltrados = data.filter((item) =>
       item.perfile?.nombre?.toLowerCase().includes("instructor")
     );
-
     const flattened = instructoresFiltrados.map((item) => ({
       ...item,
       tipoPerfil: item.perfile?.nombre || "Sin perfil",
     }));
-
     setInstructor(flattened);
   }
 
@@ -49,8 +55,8 @@ export function TableInstructor() {
       <Table
         tableTitle="Listar Instructores"
         nameValue={nameValueInstructor}
+        labelUserDisabled="Instructores desactivados"
         dataTable={instructor}
-        nameButton="Crear Instructor"
         functionModal={() => {
           setSelectedInstructor(null);
           setModalOpen(true);
@@ -59,6 +65,7 @@ export function TableInstructor() {
         reloadTable={LoadInstructor}
         onEdit={handleEditInstructor}
       />
+
       <Dialog
         header={selectedInstructor ? "Editar Instructor" : "Nuevo Instructor"}
         visible={openModal}
@@ -84,6 +91,7 @@ export function TableInstructor() {
     </div>
   );
 }
+
 export function TableAprendizs() {
   const [openModal, setModalOpen] = useState(false);
   const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
@@ -93,26 +101,26 @@ export function TableAprendizs() {
     async function LoadAprendices() {
       try {
         const data = await GetDataAprendiz();
-
         const aprendicesFiltrados = data.filter((item) =>
           item.perfile?.nombre?.toLowerCase().includes("aprendiz")
         );
-
-        const flattened = aprendicesFiltrados.map((item) => ({
-          ...item,
-          tipoPerfil: item.perfile?.nombre || "Sin perfil",
-          nombrePrograma:
-            item.ficha?.nombrePrograma || "Analisis y desarrollo de software",
-          jornada: item.ficha?.jornada || "Manana",
-          icon:
-            item.ficha?.jornada === "mañana"
-              ? "pi pi-sun"
-              : item.ficha?.jornada === "tarde"
-              ? "pi pi-cloud"
-              : item.ficha?.jornada === "noche"
-              ? "pi pi-moon"
-              : "pi pi-question",
-        }));
+        const flattened = aprendicesFiltrados.map((item) => {
+          const ficha = item.fichas || {};
+          return {
+            ...item,
+            tipoPerfil: item.perfile?.nombre || "Sin perfil",
+            nombrePrograma: ficha.nombrePrograma || "Sin programa",
+            jornada: ficha.jornada || "Sin jornada",
+            icon:
+              ficha.jornada === "Mañana"
+                ? "pi pi-sun"
+                : ficha.jornada === "Tarde"
+                ? "pi pi-cloud"
+                : ficha.jornada === "Noche"
+                ? "pi pi-moon"
+                : "pi pi-question",
+          };
+        });
         setAprendices(flattened);
       } catch (error) {
         console.error("Error al cargar aprendices:", error);
@@ -123,6 +131,35 @@ export function TableAprendizs() {
     LoadAprendices();
   }, []);
 
+  const reloadAprendices = async () => {
+    setModalOpen(false);
+    setModalCreatePerfil(false);
+    setAprendices([]);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const data = await GetDataAprendiz();
+    const aprendicesFiltrados = data.filter((item) =>
+      item.perfile?.nombre?.toLowerCase().includes("aprendiz")
+    );
+    const flattened = aprendicesFiltrados.map((item) => {
+      const ficha = item.fichas || {};
+      return {
+        ...item,
+        tipoPerfil: item.perfile?.nombre || "Sin perfil",
+        nombrePrograma: ficha.nombrePrograma || "Sin programa",
+        jornada: ficha.jornada || "Sin jornada",
+        icon:
+          ficha.jornada === "mañana"
+            ? "pi pi-sun"
+            : ficha.jornada === "tarde"
+            ? "pi pi-cloud"
+            : ficha.jornada === "noche"
+            ? "pi pi-moon"
+            : "pi pi-question",
+      };
+    });
+    setAprendices(flattened);
+  };
+
   return (
     <div>
       <TableAprendiz
@@ -131,13 +168,7 @@ export function TableAprendizs() {
         dataTable={aprendices}
         functionModal={() => setModalOpen(true)}
         openCreatePerfil={() => setModalCreatePerfil(true)}
-        reloadTable={() => {
-          setModalOpen(false);
-          setModalCreatePerfil(false);
-          // recarga aprendices
-          setAprendices([]);
-          setTimeout(() => {}, 300);
-        }}
+        reloadTable={reloadAprendices}
       />
 
       <Dialog
@@ -171,16 +202,13 @@ export function TableAdministrativo() {
   useEffect(() => {
     async function LoadAdministrativos() {
       const data = await GetDataAdministrativo();
-
       const administrativosFiltrados = data.filter((item) =>
         item.perfile?.nombre?.toLowerCase().includes("administrativo")
       );
-
       const flattened = administrativosFiltrados.map((item) => ({
         ...item,
         tipoPerfil: item.perfile?.nombre || "Sin perfil",
       }));
-
       setAdministrativos(flattened);
     }
 
@@ -191,10 +219,19 @@ export function TableAdministrativo() {
     <div>
       <Table
         tableTitle="Listar Administrativos"
+        labelUserDisabled="Administrativos desactivados"
         nameValue={nameValueAdministrativo}
         dataTable={administrativos}
         functionModal={() => setModalOpen(true)}
         openCreatePerfil={() => setModalCreatePerfil(true)}
+        reloadTable={() => {}}
+        fetchUsuariosDesactivados={() =>
+          getAdministrativosContratoDesactivados()
+        } // ✅ ejecutable
+        activarUsuariosPorLote={() =>
+          activarUsuariosPorTipo("Administrativo contrato")
+        } // ✅ tipo correcto
+        activarUsuarioPorId={(id) => activarUsuarioPorId(id)} // ✅ función correcta
       />
 
       <Dialog

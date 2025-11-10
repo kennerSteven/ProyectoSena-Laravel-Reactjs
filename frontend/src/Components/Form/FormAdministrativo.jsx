@@ -20,10 +20,12 @@ export default function FormAdministrativo({
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidationAdministrativo);
 
-  const { perfil } = useTipoPerfilFetch("Administrativo");
-  const opcionesPerfil = perfil
-    ? [{ value: perfil.id, label: perfil.nombre }]
-    : [];
+  const { perfiles } = useTipoPerfilFetch("Administrativo");
+
+  const opcionesPerfil = perfiles.map((p) => ({
+    value: p.id,
+    label: p.nombre,
+  }));
 
   const [capturedImage, setCapturedImage] = useState(null);
   const [showCamera, setShowCamera] = useState(false);
@@ -32,15 +34,15 @@ export default function FormAdministrativo({
 
   const { onSubmit, onError } = HandleValidationAdministrativo({
     reset,
-    perfiles: perfil ? [perfil] : [],
+    perfiles,
     closeModal,
     perfil: "Administrativo",
     usuarioSeleccionado,
-    capturedImage, // ✅ se envía al backend
+    capturedImage,
   });
 
   useEffect(() => {
-    if (usuarioSeleccionado && perfil) {
+    if (usuarioSeleccionado) {
       reset({
         nombre: usuarioSeleccionado.nombre || "",
         apellido: usuarioSeleccionado.apellido || "",
@@ -48,10 +50,16 @@ export default function FormAdministrativo({
         numeroDocumento: usuarioSeleccionado.numeroDocumento || "",
         telefono: usuarioSeleccionado.telefono || "",
         tipoSangre: usuarioSeleccionado.tipoSangre || "",
-        tipoPerfil: usuarioSeleccionado.perfile?.id || perfil.id || "",
+        tipoPerfil:
+          usuarioSeleccionado.perfile?.id ||
+          (perfiles.length > 0 ? perfiles[0].id : ""),
+      });
+    } else if (perfiles.length > 0) {
+      reset({
+        tipoPerfil: perfiles[0].id,
       });
     }
-  }, [usuarioSeleccionado, reset, perfil]);
+  }, [usuarioSeleccionado, reset, perfiles]);
 
   useEffect(() => {
     if (showCamera && videoRef.current) {

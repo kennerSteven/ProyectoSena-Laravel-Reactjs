@@ -12,7 +12,7 @@ export default function HandleValidationAprendiz({
   capturedImage,
 }) {
   const [formData, setFormData] = useState();
-
+  const [docEntrada, setDocEntrada] = useState();
   const onSubmit = async (data) => {
     toast.dismiss();
 
@@ -38,16 +38,19 @@ export default function HandleValidationAprendiz({
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
       idperfil: perfilSeleccionado.id,
-      idficha: data.ficha_id, // ✅ usa el nombre que espera el backend
+      idficha: data.ficha_id,
       foto: capturedImage || null,
     };
+
+    const numeroDocEntrada = payload.numeroDocumento;
+    setDocEntrada(numeroDocEntrada);
 
     console.table("Aprendiz data", payload);
     setFormData(payload);
 
     try {
       await onSubmitAprendiz(payload);
-
+      closeModal();
       await Swal.fire({
         icon: "success",
         title: "Aprendiz creado",
@@ -62,7 +65,6 @@ export default function HandleValidationAprendiz({
       });
 
       reset();
-      closeModal();
     } catch (error) {
       console.error("Error en envío:", error);
       toast.error("Error al guardar el aprendiz");
@@ -74,5 +76,5 @@ export default function HandleValidationAprendiz({
     toast.dismiss();
   };
 
-  return { onSubmit, onError, formData, closeModal };
+  return { onSubmit, onError, formData, closeModal, docEntrada };
 }

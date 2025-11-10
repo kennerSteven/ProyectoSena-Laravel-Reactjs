@@ -1,17 +1,18 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
+import { Toast } from "primereact/toast";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
-import { SpeedDial } from "primereact/speeddial";
-import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
-import "primeicons/primeicons.css";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-
-import { deleteInstructor } from "../Services/FetchServices";
+import { Tooltip } from "primereact/tooltip";
 import SplitButtonComp from "../Ui/SplitButton";
 import FormInstructor from "../Form/FormInstructor";
-import "../../styles/Table.css";
+import TablaActivarUsuarios from "../Form/TableActivarInstructor";
+import { deleteInstructor } from "../Services/FetchServices";
+import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
+import "../../styles/ActivarInstructor.css";
 
 export default function Table({
   tableTitle,
@@ -19,20 +20,26 @@ export default function Table({
   dataTable = [],
   functionModal,
   openCreatePerfil,
-
   reloadTable,
+  fetchUsuariosDesactivados,
+  labelUserDisabled,
+  activarUsuariosPorLote,
+  activarUsuarioPorId
 }) {
   const [globalFilter, setGlobalFilter] = useState("");
+  const [perfilSeleccionado, setPerfilSeleccionado] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [showEnabledInstructors, setShowEnabledInstructors] = useState(false);
   const toast = useRef(null);
 
   const globalFilterFields = nameValue.map(({ field }) => field);
+  const { perfiles } = useTipoPerfilFetch("Instructor");
 
-  const speedDialItems = [
-    { icon: "pi pi-user-plus", command: functionModal },
-    { icon: "pi pi-id-card", command: openCreatePerfil },
-  ];
+  const opcionesPerfil = perfiles.map((p) => ({
+    label: p.nombre,
+    value: p.id,
+  }));
 
   const handleDeleteUser = (rowData) => {
     confirmDialog({
@@ -95,46 +102,10 @@ export default function Table({
           if (reloadTable) reloadTable();
         } catch (error) {
           console.error("Error al eliminar:", error);
-          confirmDialog({
-            message: (
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "1rem" }}
-              >
-                <i
-                  className="pi pi-times-circle"
-                  style={{ fontSize: "2rem", color: "#dc3545" }}
-                />
-                <span>No se pudo eliminar el usuario.</span>
-              </div>
-            ),
-            header: "Error al eliminar",
-            className: "custom-confirm-dialog",
-            style: { borderRadius: "10px" },
-            acceptLabel: "Aceptar",
-            rejectVisible: false,
-            footer: (props) => (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "1rem",
-                }}
-              >
-                <button
-                  onClick={props.accept}
-                  style={{
-                    padding: "0.5rem 1.5rem",
-                    backgroundColor: "#00A859",
-                    border: "none",
-                    borderRadius: "10px",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Aceptar
-                </button>
-              </div>
-            ),
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "No se pudo eliminar el usuario",
           });
         }
       },
@@ -190,50 +161,6 @@ export default function Table({
     if (reloadTable) reloadTable();
   };
 
-  const header = (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingBottom: "0.5rem",
-      }}
-    >
-      <h2>{tableTitle}</h2>
-      <div className="d-flex">
-        <SpeedDial
-          model={speedDialItems}
-          direction="left"
-          buttonClassName="p-button-rounded p-button-success"
-          showIcon="pi pi-bars"
-          hideIcon="pi pi-times"
-          radius={0}
-          style={{
-            width: "350px",
-            position: "absolute",
-            left: "350px",
-            top: "33px",
-          }}
-        />
-        <InputText
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Buscar..."
-          style={{ width: "250px", position: "relative" }}
-        />
-      </div>
-    </div>
-  );
-
-  (field) => (rowData) =>
-    rowData[field] !== null &&
-    rowData[field] !== undefined &&
-    rowData[field] !== "" ? (
-      rowData[field]
-    ) : (
-      <span className="text-muted">—</span>
-    );
-
   const actionBodyTemplate = (rowData) => (
     <div style={{ display: "flex", gap: "0.5rem" }}>
       <SplitButtonComp
@@ -244,26 +171,133 @@ export default function Table({
     </div>
   );
 
+  const header = (
+    <div>
+      <div className="mb-3">
+        <h2 className="fw-bold d-flex gap-2">{tableTitle}</h2>
+      </div>
+
+      <div className="d-flex justify-content-between headerContainer align-items-center">
+        <div className="d-flex gap-3 align-items-center">
+          <div
+            style={{
+              position: "relative",
+              display: "inline-block",
+              marginLeft: "1rem",
+            }}
+          >
+            <i
+              className="pi pi-search"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "10px",
+                transform: "translateY(-50%)",
+                color: "#6c757d",
+                fontSize: "1rem",
+                pointerEvents: "none",
+              }}
+            />
+            <InputText
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              placeholder="Buscar..."
+              style={{ paddingLeft: "2rem", width: "250px" }}
+            />
+          </div>
+
+          <Dropdown
+            value={perfilSeleccionado}
+            options={opcionesPerfil}
+            onChange={(e) => setPerfilSeleccionado(e.value)}
+            placeholder="Filtrar por perfil"
+            className="w-100"
+            style={{ width: "250px" }}
+            showClear
+          />
+        </div>
+
+        <>
+          <Tooltip
+            target=".btn-crear-instructor"
+            content="Crear instructor"
+            position="top"
+          />
+          <Tooltip
+            target=".btn-crear-perfil"
+            content="Crear perfil"
+            position="top"
+          />
+          <Tooltip
+            target=".btn-ver-inactivos"
+            content="Usuarios desactivados"
+            position="top"
+          />
+
+          <div className="d-flex gap-2 containerButtonActions shadow-sm">
+            <button
+              className="btnActions btn-crear-instructor d-flex align-items-center gap-2"
+              onClick={functionModal}
+            >
+              <i
+                className="pi pi-user-plus"
+                style={{ color: "#28a745", fontSize: "1.4rem" }}
+              />
+            </button>
+
+            <button
+              className="btnActions btn-crear-perfil d-flex align-items-center gap-2"
+              onClick={openCreatePerfil}
+            >
+              <i
+                className="pi pi-id-card"
+                style={{ color: "#28a745", fontSize: "1.4rem" }}
+              />
+            </button>
+
+            <button
+              onClick={() => setShowEnabledInstructors(true)}
+              className="btn-ver-inactivos seeTableDisabledInstructors d-flex align-items-center gap-2"
+            >
+              <i
+                className="pi pi-id-card"
+                style={{ color: "#ffffff", fontSize: "1.4rem" }}
+              />
+            </button>
+          </div>
+        </>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="mx-auto mt-2 shadow tableContainer">
+    <div className="mx-auto mt-4 shadow tableContainer">
       <Toast ref={toast} />
+
       <DataTable
-        value={dataTable}
+        value={dataTable.filter((item) => {
+          const coincidePerfil = perfilSeleccionado
+            ? item.tipoPerfil?.id === perfilSeleccionado
+            : true;
+
+          const coincideGlobal = globalFilterFields.some((field) =>
+            item[field]?.toLowerCase?.().includes(globalFilter.toLowerCase())
+          );
+
+          return coincidePerfil && coincideGlobal;
+        })}
         paginator
-        rows={5}
-        rowsPerPageOptions={[5, 10, 25, 50]}
+        rows={10}
         header={header}
-        globalFilter={globalFilter}
         globalFilterFields={globalFilterFields}
-        emptyMessage="No se encontraron resultados."
+        emptyMessage="No se encontraron resultados"
         scrollable
-        scrollHeight="420px"
+        scrollHeight="280px"
         rowClassName={() => "my-custom-row"}
       >
-        {/* Columnas normales */}
-        {nameValue.map(({ field, header }, idx) => (
+        {nameValue.map(({ field, header }) => (
           <Column
-            key={idx}
+            key={field}
             field={field}
             header={header}
             body={(rowData) =>
@@ -278,32 +312,6 @@ export default function Table({
           />
         ))}
 
-        {/* Columna de foto */}
-        <Column
-          header="Foto"
-          body={(rowData) => {
-            const ruta = rowData.foto;
-            const url = ruta ? `http://localhost:8000/${ruta}` : null;
-
-            return url ? (
-              <img
-                src={url}
-                alt="Foto"
-                className="img-thumbnail"
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                }}
-              />
-            ) : (
-              <span className="text-muted">—</span>
-            );
-          }}
-        />
-
-        {/* Columna de acciones */}
         <Column
           header="Acciones"
           className="fw-bold"
@@ -323,6 +331,22 @@ export default function Table({
           closeModal={handleCloseUpdateModal}
         />
       </Dialog>
+
+      <Dialog
+        header={labelUserDisabled}
+        visible={showEnabledInstructors}
+        style={{ width: "800px" }}
+        onHide={() => setShowEnabledInstructors(false)}
+        modal
+      >
+        <TablaActivarUsuarios
+        activarUsuarioPorId={activarUsuarioPorId}
+        activarUsuariosPorLote={activarUsuariosPorLote}
+          fetchUsuariosDesactivados={fetchUsuariosDesactivados}
+          closeModal={() => setShowEnabledInstructors(false)}
+        />
+      </Dialog>
+
       <ConfirmDialog />
     </div>
   );

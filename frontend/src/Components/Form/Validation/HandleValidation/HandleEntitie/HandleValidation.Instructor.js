@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Swal from "sweetalert2";
 import {
   onSubmitInstructor,
@@ -11,21 +10,16 @@ export default function HandleValidationInstructor({
   reset,
   perfiles,
   closeModal,
-  perfil: nombrePerfil,
   usuarioSeleccionado,
-  capturedImage, // ✅ se recibe la imagen
+  capturedImage,
 }) {
-  const [formData, setFormData] = useState();
-
   const onSubmit = async (data) => {
     toast.dismiss();
 
-    const perfilSeleccionado = perfiles.find(
-      (p) => p.nombre?.toLowerCase() === nombrePerfil?.toLowerCase()
-    );
+    const perfilSeleccionado = perfiles.find((p) => p.id === data.tipoPerfil);
 
     if (!perfilSeleccionado) {
-      toast.error("No se encontró el perfil solicitado");
+      toast.error("No se encontró el perfil seleccionado");
       return;
     }
 
@@ -36,12 +30,9 @@ export default function HandleValidationInstructor({
       numeroDocumento: data.numeroDocumento,
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
-      idperfil: perfilSeleccionado.id,
-      foto: capturedImage || null, // ✅ se incluye la imagen
+      tipoPerfil: perfilSeleccionado, // 👈 se envía el objeto completo
+      foto: capturedImage || null,
     };
-
-    console.table(payload);
-    setFormData(payload);
 
     try {
       if (usuarioSeleccionado?.id) {
@@ -87,5 +78,5 @@ export default function HandleValidationInstructor({
     toast.dismiss();
   };
 
-  return { onSubmit, onError, formData, closeModal };
+  return { onSubmit, onError };
 }

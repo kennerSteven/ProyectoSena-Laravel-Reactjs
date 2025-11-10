@@ -14,7 +14,7 @@ import FormInstructor from "../Form/FormInstructor";
 import FormFicha from "../Form/FormFicha"; // ✅ nuevo import
 import "../../styles/Table.css";
 
-export default function TableAprendiz({
+export default function TableAprendizs({
   tableTitle,
   nameValue = [],
   dataTable = [],
@@ -29,12 +29,6 @@ export default function TableAprendiz({
   const toast = useRef(null);
 
   const globalFilterFields = nameValue.map(({ field }) => field);
-
-  const speedDialItems = [
-    { icon: "pi pi-user-plus", command: functionModal },
-    { icon: "pi pi-id-card", command: openCreatePerfil },
-    { icon: "pi pi-book", command: () => setOpenFichaModal(true) }, // ✅ abre modal ficha
-  ];
 
   const handleDeleteUser = (rowData) => {
     confirmDialog({
@@ -82,7 +76,7 @@ export default function TableAprendiz({
                   onClick={props.accept}
                   style={{
                     padding: "0.5rem 1.5rem",
-                    backgroundColor: "#00A859",
+                    backgroundColor: "#0fe581ff",
                     border: "none",
                     borderRadius: "10px",
                     color: "white",
@@ -151,19 +145,6 @@ export default function TableAprendiz({
           }}
         >
           <button
-            onClick={props.reject}
-            style={{
-              padding: "0.5rem 1.5rem",
-              border: "2px solid #00A859",
-              borderRadius: "10px",
-              backgroundColor: "white",
-              color: "#00A859",
-              cursor: "pointer",
-            }}
-          >
-            Cancelar
-          </button>
-          <button
             onClick={props.accept}
             style={{
               padding: "0.5rem 1.5rem",
@@ -175,6 +156,19 @@ export default function TableAprendiz({
             }}
           >
             Sí, eliminar
+          </button>
+          <button
+            onClick={props.reject}
+            style={{
+              padding: "0.5rem 1.5rem",
+              border: "none",
+              borderRadius: "10px",
+              backgroundColor: "white",
+              color: "#424242ff",
+              cursor: "pointer",
+            }}
+          >
+            Cancelar
           </button>
         </div>
       ),
@@ -193,40 +187,88 @@ export default function TableAprendiz({
   };
 
   const header = (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingBottom: "0.5rem",
-      }}
-    >
-      <h2>{tableTitle}</h2>
-      <div className="d-flex">
-        <SpeedDial
-          model={speedDialItems}
-          direction="left"
-          buttonClassName="p-button-rounded p-button-success"
-          showIcon="pi pi-bars"
-          hideIcon="pi pi-times"
-          radius={0}
+    <div>
+      <div className="mb-1">
+        <h2 className="fw-bold d-flex gap-2">{tableTitle}</h2>
+      </div>
+
+      <div className="d-flex justify-content-between headerContainer align-items-center">
+        <div>
+          <button
+            className="p-button p-button-sm p-button-success rounded shadow-sm"
+            onClick={functionModal}
+          >
+            <i className="pi pi-user-plus" style={{ marginRight: "0.5rem" }} />
+          </button>
+        </div>
+
+        <div
           style={{
-            width: "350px",
-            position: "absolute",
-            left: "350px",
-            top: "33px",
+            position: "relative",
+            display: "inline-block",
+            marginLeft: "1rem",
           }}
-        />
-        <InputText
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Buscar..."
-          style={{ width: "250px", position: "relative" }}
-        />
+        >
+          <i
+            className="pi pi-search"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "10px",
+              transform: "translateY(-50%)",
+              color: "#6c757d",
+              fontSize: "1rem",
+              pointerEvents: "none",
+            }}
+          />
+          <InputText
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Buscar..."
+            style={{
+              paddingLeft: "2rem",
+              width: "250px",
+            }}
+          />
+        </div>
+
+        <div className="d-flex gap-2 containerButtonActions shadow-sm">
+          <button
+            className="btnActions d-flex align-items-center gap-2"
+            onClick={functionModal}
+          >
+            <i
+              className="pi pi-user-plus"
+              style={{ color: "#28a745", fontSize: "1.4rem" }}
+            />
+            {/* Crear aprendiz */}
+          </button>
+
+          <button
+            className="btnActions d-flex align-items-center gap-2"
+            onClick={openCreatePerfil}
+          >
+            <i
+              className="pi pi-id-card"
+              style={{ color: "#28a745", fontSize: "1.4rem" }}
+            />
+            {/* Crear perfil */}
+          </button>
+
+          <button
+            className="btnActions d-flex align-items-center gap-2"
+            onClick={() => setOpenFichaModal(true)}
+          >
+            <i
+              className="pi pi-book"
+              style={{ color: "#28a745", fontSize: "1.4rem" }}
+            />
+            {/* Crear ficha */}
+          </button>
+        </div>
       </div>
     </div>
   );
-
   const actionBodyTemplate = (rowData) => (
     <div style={{ display: "flex", gap: "0.5rem" }}>
       <SplitButtonComp
@@ -238,10 +280,7 @@ export default function TableAprendiz({
   );
 
   return (
-    <div
-      className="mx-auto mt-2 shadow tableContainer tableAprendices"
-    
-    >
+    <div className="mx-auto mt-2 shadow  tableAprendices">
       <Toast ref={toast} />
       <DataTable
         value={dataTable}
@@ -253,7 +292,7 @@ export default function TableAprendiz({
         globalFilterFields={globalFilterFields}
         emptyMessage="No se encontraron resultados."
         scrollable
-        scrollHeight="420px"
+        scrollHeight="290px"
         rowClassName={() => "my-custom-row"}
       >
         {nameValue.map(({ field, header }, idx) => (
@@ -277,7 +316,11 @@ export default function TableAprendiz({
           header="Foto"
           body={(rowData) => {
             const ruta = rowData.foto;
-            const url = ruta ? `http://localhost:8000/${ruta}` : null;
+            const url = ruta?.startsWith("storage/")
+              ? `http://localhost:8000/${ruta}`
+              : ruta?.startsWith("http")
+              ? ruta
+              : null;
 
             return url ? (
               <img

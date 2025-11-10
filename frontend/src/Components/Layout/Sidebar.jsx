@@ -17,6 +17,7 @@ export default function SideBar({ valueSidebarOptions = [] }) {
             iconClass={item.iconClass}
             nameItem={item.nameItem}
             link={item.link}
+            subItems={item.subItems}
           />
         );
       })}

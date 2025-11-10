@@ -19,10 +19,17 @@
 }
 
 .btnSalidaEntrada {
-  background-color: #007832;
+  background-color: #ffffff;
+  border: 1px solid #007832;
   transition: transform 0.1s ease-in;
-  border: none;
+
 }
+
+.btnSalidaEntrada i {
+  color: #007832;
+}
+
+
 
 .btnSalidaEntrada:hover {
   background-color: #029b42;
@@ -32,11 +39,13 @@
 }
 
 .iconbtnSalidaEntrada {
-  color: white;
+  color: rgb(255, 25, 25);
 }
+
 .nameAdmin {
   font-size: 13px;
 }
+
 .labelBtnOutAndSign {
   color: white;
 }
@@ -44,9 +53,11 @@
 .iconRegistros {
   color: #007832;
 }
+
 .btnRegistros {
   background-color: #007832;
   border-radius: 10px;
   border: none;
   color: #ffffff;
 }
+
