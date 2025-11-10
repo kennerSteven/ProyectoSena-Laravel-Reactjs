@@ -51,6 +51,8 @@ Route::delete("/usuario/destroy/{id}", [UsuariosController::class, "destroy"]);
 Route::get('/visitantes/desactivados', [UsuariosController::class, 'listarVisitantesDesactivados']);
 Route::get('/instructores-contrato/desactivados', [UsuariosController::class, 'listarInstructoresContratoDesactivados']);
 Route::get('/administrativos-contrato/desactivados', [UsuariosController::class, 'listarAdministrativosContratoDesactivados']);
+Route::post('/usuarios/activar-masivo', [UsuariosController::class, 'activarMasivamente']);
+Route::put('/usuarios/{id}/activar', [UsuariosController::class, 'activarUsuario']);
 
 
 

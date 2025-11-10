@@ -37,7 +37,7 @@ class UsuariosController extends Controller
 
 
 
-    
+
 
     
     return response()->json([
@@ -82,7 +82,8 @@ class UsuariosController extends Controller
 
    public function listarVisitantesDesactivados()
 {
-    $visitantes = usuarios::where('estado', 'inactivo')
+    $visitantes = usuarios::with('perfile') 
+        ->where('estado', 'inactivo')
         ->whereHas('perfile', function ($q) {
             $q->where('nombre', 'Visitante');
         })
@@ -100,7 +101,8 @@ class UsuariosController extends Controller
 
 public function listarInstructoresContratoDesactivados()
 {
-    $instructores = usuarios::where('estado', 'inactivo')
+    $instructores = usuarios::with('perfile') 
+        ->where('estado', 'inactivo')
         ->whereHas('perfile', function ($q) {
             $q->where('nombre', 'Instructor contrato');
         })
@@ -116,10 +118,10 @@ public function listarInstructoresContratoDesactivados()
     ]);
 }
 
-
 public function listarAdministrativosContratoDesactivados()
 {
-    $administrativos = usuarios::where('estado', 'inactivo')
+    $administrativos = usuarios::with('perfile') 
+        ->where('estado', 'inactivo')
         ->whereHas('perfile', function ($q) {
             $q->where('nombre', 'Administrativo contrato');
         })
@@ -132,6 +134,57 @@ public function listarAdministrativosContratoDesactivados()
     return response()->json([
         'message' => 'Listado de administrativos contrato desactivados',
         'usuarios' => $administrativos
+    ]);
+}
+
+
+public function activarMasivamente(Request $request)
+{
+    $tipo = $request->input('tipo'); // Puede ser 'Instructor contrato' o 'Administrativo contrato'
+
+    if (!in_array($tipo, ['Instructor contrato', 'Administrativo contrato'])) {
+        return response()->json(['error' => 'Tipo de usuario no válido.'], 400);
+    }
+
+    $usuarios = usuarios::where('estado', 'inactivo')
+        ->whereHas('perfile', function ($q) use ($tipo) {
+            $q->where('nombre', $tipo);
+        })
+        ->get();
+
+    if ($usuarios->isEmpty()) {
+        return response()->json(['message' => "No hay usuarios inactivos de tipo $tipo."]);
+    }
+
+    foreach ($usuarios as $usuario) {
+        $usuario->estado = 'activo';
+        $usuario->save();
+    }
+
+    return response()->json([
+        'message' => "Usuarios tipo '$tipo' activados exitosamente.",
+        'total_activados' => $usuarios->count(),
+    ]);
+}
+
+public function activarUsuario($id)
+{
+    $usuario = usuarios::find($id);
+
+    if (!$usuario) {
+        return response()->json(['error' => 'Usuario no encontrado.'], 404);
+    }
+
+    if ($usuario->estado === 'activo') {
+        return response()->json(['message' => 'El usuario ya está activo.']);
+    }
+
+    $usuario->estado = 'activo';
+    $usuario->save();
+
+    return response()->json([
+        'message' => 'Usuario activado correctamente.',
+        'usuario' => $usuario
     ]);
 }
 
