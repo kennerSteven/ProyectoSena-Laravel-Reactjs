@@ -156,23 +156,29 @@ public function listarAdministrativosContratoDesactivados()
     ]);
 }
 
-
 public function activarMasivamente(Request $request)
 {
-    $tipo = $request->input('tipo'); // Puede ser 'Instructor contrato' o 'Administrativo contrato'
+    $ids = $request->input('ids'); 
+
+    if (!$ids || !is_array($ids)) {
+        return response()->json(['error' => 'Debes enviar un array de IDs'], 400);
+    }
+
+    $tipo = $request->input('tipo'); 
 
     if (!in_array($tipo, ['Instructor contrato', 'Administrativo contrato'])) {
         return response()->json(['error' => 'Tipo de usuario no válido.'], 400);
     }
 
-    $usuarios = usuarios::where('estado', 'inactivo')
+    $usuarios = usuarios::whereIn('id', $ids)
+        ->where('estado', 'inactivo')
         ->whereHas('perfile', function ($q) use ($tipo) {
             $q->where('nombre', $tipo);
         })
         ->get();
 
     if ($usuarios->isEmpty()) {
-        return response()->json(['message' => "No hay usuarios inactivos de tipo $tipo."]);
+        return response()->json(['message' => "No hay usuarios inactivos del tipo $tipo con los IDs seleccionados."]);
     }
 
     foreach ($usuarios as $usuario) {
@@ -183,8 +189,11 @@ public function activarMasivamente(Request $request)
     return response()->json([
         'message' => "Usuarios tipo '$tipo' activados exitosamente.",
         'total_activados' => $usuarios->count(),
+        'ids_activados' => $usuarios->pluck('id'),
     ]);
 }
+
+
 
 public function activarUsuario($id)
 {
