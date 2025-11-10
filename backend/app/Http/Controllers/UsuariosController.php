@@ -34,11 +34,6 @@ class UsuariosController extends Controller
 
     
     $usuario = usuarios::create($request->all());
-
-
-
-
-
     
     return response()->json([
         'message' => 'Usuario y entrada registrados correctamente',
@@ -79,6 +74,30 @@ class UsuariosController extends Controller
     
 
    }
+
+
+   public function eliminarVisitantesInactivos()
+{
+    $visitantes = usuarios::where('estado', 'inactivo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Visitante');
+        })
+        ->get();
+
+    if ($visitantes->isEmpty()) {
+        return response()->json(['message' => 'No hay visitantes inactivos para eliminar.']);
+    }
+
+    $total = $visitantes->count();
+    usuarios::whereIn('id', $visitantes->pluck('id'))->delete();
+
+    return response()->json([
+        'message' => "Se eliminaron $total visitantes inactivos correctamente."
+    ]);
+}
+
+
+
 
    public function listarVisitantesDesactivados()
 {
