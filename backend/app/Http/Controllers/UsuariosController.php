@@ -249,7 +249,23 @@ public function activarMasivamente(Request $request)
 
 
 
+public function listarInstructoresContratoActivos()
+{
+    $instructores = usuarios::where('estado', 'activo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Instructor contrato');
+        })
+        ->get();
 
+    if ($instructores->isEmpty()) {
+        return response()->json(['message' => 'No hay instructores contrato activos.']);
+    }
+
+    return response()->json([
+        'message' => 'Listado de instructores contrato activos.',
+        'usuarios' => $instructores
+    ]);
+}
 
 
 
