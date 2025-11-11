@@ -29,29 +29,31 @@ class DesactivarContratosCommand extends Command
 
     public function handle()
     {
-        $hoy = Carbon::now('America/Bogota');
+       
+    $hoy = Carbon::now('America/Bogota');
 
-        // Solo se ejecuta si HOY es 30 de diciembre
-        if ($hoy->isSameDay(Carbon::createFromDate($hoy->year, 12, 30))) {
+  
+    if ($hoy->format('m-d') === '12-30') {
 
-            $usuarios = usuarios::whereHas('perfile', function ($q) {
-                $q->whereIn('nombre', [
-                    'Instructor contrato',
-                    'Administrativo contrato'
-                ]);
-            })
-            ->where('estado', 'activo')
-            ->get();
+        $usuarios = usuarios::whereHas('perfile', function ($q) {
+            $q->whereIn('nombre', [
+                'Instructor contrato',
+                'Administrativo contrato'
+            ]);
+        })
+        ->where('estado', 'activo')
+        ->get();
 
-            foreach ($usuarios as $usuario) {
-                $usuario->estado = 'inactivo';
-                $usuario->save();
-            }
-
-            $this->info('Usuarios desactivados: ' . $usuarios->count());
-        } else {
-            $this->info('Hoy no es 30 de diciembre. No se desactivó a nadie.');
+        foreach ($usuarios as $usuario) {
+            $usuario->estado = 'inactivo';
+            $usuario->save();
         }
+
+        $this->info('Usuarios desactivados: ' . $usuarios->count());
+    } else {
+        $this->info('Hoy no es 30 de diciembre. No se desactivó a nadie.');
+    }
+    
     }
 
 
