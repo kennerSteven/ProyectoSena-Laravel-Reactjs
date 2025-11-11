@@ -61,6 +61,7 @@ Route::get('/instructores-contrato/desactivados', [UsuariosController::class, 'l
 Route::get('/administrativos-contrato/desactivados', [UsuariosController::class, 'listarAdministrativosContratoDesactivados']);
 Route::post('/usuarios/activar-masivo', [UsuariosController::class, 'activarMasivamente']);
 Route::put('/usuarios/{id}/activar', [UsuariosController::class, 'activarUsuario']);
+Route::get('/instructores', [UsuariosController::class, 'listarInstructoresContratoActivos']);
 
 
 
