@@ -39,11 +39,7 @@ Route::post("/ficha/store", [FichasController::class, "store"]);
 Route::get("/ficha/show/{id}", [FichasController::class, "show"]);
 Route::put("/ficha/update/{id}", [FichasController::class, "update"]);
 Route::delete("/ficha/destroy/{id}", [FichasController::class, "destroy"]);
-
-
 Route::delete("/ficha/destroyMasivo", [FichasController::class, "destroyMasivo"]);
-
-
 Route::put('/ficha/desactivar/{id}', [FichasController::class, 'desactivarFicha']);
 Route::get('/ficha/activas', [FichasController::class, 'listarFichasActivas']);
 Route::get("/ficha/listarFichasDesactivadas", [FichasController::class, "listarFichasDesactivadas"]);
@@ -59,14 +55,9 @@ Route::post("/usuario/store", [UsuariosController::class, "store"]);
 Route::get("/usuario/show/{id}", [UsuariosController::class, "show"]);
 Route::put("/usuario/update/{id}", [UsuariosController::class, "update"]);
 Route::delete("/usuario/destroy/{id}", [UsuariosController::class, "destroy"]);
-Route::delete("/usuario/eliminarVisitantesInactivos", [UsuariosController::class, "eliminarVisitantesInactivos"]);
+Route::delete("/usuario/eliminarVisitantesMasivamente", [UsuariosController::class, "eliminarVisitantesMasivamente("]);
 Route::get('/visitantes/desactivados', [UsuariosController::class, 'listarVisitantesDesactivados']);
-
-
-
-
 Route::get('/instructores-contrato/desactivados', [UsuariosController::class, 'listarInstructoresContratoDesactivados']);
-
 Route::get('/administrativos-contrato/desactivados', [UsuariosController::class, 'listarAdministrativosContratoDesactivados']);
 Route::post('/usuarios/activar-masivo', [UsuariosController::class, 'activarMasivamente']);
 Route::put('/usuarios/{id}/activar', [UsuariosController::class, 'activarUsuario']);
@@ -77,7 +68,6 @@ Route::put('/usuarios/{id}/activar', [UsuariosController::class, 'activarUsuario
 Route::get("/entradaysalidagranja/index", [eys_granjaController::class, "index"]);
 Route::post("/entradaysalidagranja/entradagranja", [eys_granjaController::class, "entradagranja"]);
 Route::post("/entradaysalidagranja/salidagranja", [eys_granjaController::class, "salidagranja"]); 
-Route::post('/salidagranja/masiva', [eys_granjaController::class, 'salidaMasivaGranja']);
 Route::get('/usuario/buscar/{numeroDocumento}', [eys_granjaController::class, 'buscarPorDocumento']);
 
 /*gym*/

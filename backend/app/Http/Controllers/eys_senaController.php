@@ -93,6 +93,41 @@ class eys_senaController extends Controller
     }
 
 
+    public function salidaMasivaSena()
+{
+   
+    $visitantesActivos = usuarios::where('estado', 'activo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Visitante');
+        })
+        ->get();
+
+    if ($visitantesActivos->isEmpty()) {
+        return response()->json(['message' => 'No hay visitantes activos para registrar salida.']);
+    }
+
+    foreach ($visitantesActivos as $visitante) {
+        
+        \App\Models\eyssena::create([
+            'numeroDocumento' => $visitante->numeroDocumento,
+            'tipo' => 'salida',
+            'idusuario' => $visitante->id,
+            'fechaRegistro' => now(),
+        ]);
+
+       
+        $visitante->fechaExpiracion = now()->addHours(12);
+        $visitante->save();
+    }
+
+    return response()->json([
+        'message' => 'Salidas registradas correctamente para todos los visitantes activos del SENA.',
+        'total' => $visitantesActivos->count()
+    ]);
+}
+
+
+
     public function buscarPorDocumento($numeroDocumento)
 {
     $usuario = usuarios::with('perfile', 'fichas')
