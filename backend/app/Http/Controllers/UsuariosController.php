@@ -36,10 +36,6 @@ class UsuariosController extends Controller
     
     $usuario = usuarios::create($request->all());
 
-
-
-    
-
     
     return response()->json([
         'message' => 'Usuario y entrada registrados correctamente',
@@ -76,19 +72,69 @@ class UsuariosController extends Controller
 
     }
 
-    public function destroy(string $id)
-    {
+   
+    public function destroy($id)
+{
+    // Buscar el usuario
+    $usuario = usuarios::findOrFail($id);
 
-        usuarios::findOrFail($id)->delete();
-        return response()->json('se elimino correctamente', 200);
-
-
-
+    // Verificar que sea visitante
+    if ($usuario->perfile->nombre !== 'Visitante') {
+        return response()->json([
+            'error' => 'Solo se pueden eliminar usuarios con perfil de Visitante.'
+        ], 403);
     }
+
+    // Eliminar usuario
+    $usuario->delete();
+
+    return response()->json([
+        'message' => 'Visitante eliminado correctamente.'
+    ], 200);
+}
+
+
+
+
+public function eliminarVisitantesMasivamente(Request $request)
+{
+    $ids = $request->input('ids'); //  Array con los IDs de visitantes a eliminar
+
+    if (!$ids || !is_array($ids)) {
+        return response()->json(['error' => 'Debes enviar un array de IDs.'], 400);
+    }
+
+    // Obtener solo los visitantes inactivos que coincidan con los IDs enviados
+    $visitantes = usuarios::whereIn('id', $ids)
+        ->where('estado', 'inactivo')
+        ->whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Visitante');
+        })
+        ->get();
+
+    if ($visitantes->isEmpty()) {
+        return response()->json(['error' => 'No se encontraron visitantes inactivos con los IDs proporcionados.'], 404);
+    }
+
+    $eliminados = $visitantes->pluck('id');
+
+    // Eliminar los visitantes seleccionados
+    usuarios::whereIn('id', $eliminados)->delete();
+
+    return response()->json([
+        'message' => 'Visitantes eliminados correctamente.',
+        'total_eliminados' => $eliminados->count(),
+        'ids_eliminados' => $eliminados,
+    ]);
+}
+  
+
+
 
    public function listarVisitantesDesactivados()
 {
-    $visitantes = usuarios::where('estado', 'inactivo')
+    $visitantes = usuarios::with('perfile') 
+        ->where('estado', 'inactivo')
         ->whereHas('perfile', function ($q) {
             $q->where('nombre', 'Visitante');
         })
@@ -141,6 +187,65 @@ public function listarAdministrativosContratoDesactivados()
     ]);
 }
 
+
+public function activarMasivamente(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        if (!$ids || !is_array($ids)) {
+            return response()->json(['error' => 'Debes enviar un array de IDs'], 400);
+        }
+
+        $tipo = $request->input('tipo');
+
+        if (!in_array($tipo, ['Instructor contrato', 'Administrativo contrato'])) {
+            return response()->json(['error' => 'Tipo de usuario no válido.'], 400);
+        }
+
+        $usuarios = usuarios::whereIn('id', $ids)
+            ->where('estado', 'inactivo')
+            ->whereHas('perfile', function ($q) use ($tipo) {
+                $q->where('nombre', $tipo);
+            })
+            ->get();
+
+        if ($usuarios->isEmpty()) {
+            return response()->json(['message' => "No hay usuarios inactivos del tipo $tipo con los IDs seleccionados."]);
+        }
+
+        foreach ($usuarios as $usuario) {
+            $usuario->estado = 'activo';
+            $usuario->save();
+        }
+
+        return response()->json([
+            'message' => "Usuarios tipo '$tipo' activados exitosamente.",
+            'total_activados' => $usuarios->count(),
+            'ids_activados' => $usuarios->pluck('id'),
+        ]);
+    }
+
+
+     public function activarUsuario($id)
+    {
+        $usuario = usuarios::find($id);
+
+        if (!$usuario) {
+            return response()->json(['error' => 'Usuario no encontrado.'], 404);
+        }
+
+        if ($usuario->estado === 'activo') {
+            return response()->json(['message' => 'El usuario ya está activo.']);
+        }
+
+        $usuario->estado = 'activo';
+        $usuario->save();
+
+        return response()->json([
+            'message' => 'Usuario activado correctamente.',
+            'usuario' => $usuario
+        ]);
+  }
 
 
 

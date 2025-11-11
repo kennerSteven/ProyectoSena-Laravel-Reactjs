@@ -8,6 +8,7 @@ use App\Models\usuarios;
 use App\Models\vehiculo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class eys_granjaController extends Controller
 {
@@ -166,6 +167,7 @@ public function salidagranja(Request $request)
     }
 }
   
+
 
  public function buscarPorDocumento($numeroDocumento)
 {

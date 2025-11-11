@@ -14,31 +14,38 @@ class usuariosSeeder extends Seeder
     {
         $faker = Faker::create('es_ES');
 
-        // Obtener los perfiles existentes
+        
         $perfiles = perfile::pluck('id', 'nombre')->toArray();
 
-        // 🔹 Excluir el perfil de "Aprendiz"
+      
         $perfilesSinAprendiz = array_filter($perfiles, function ($nombre) {
             return $nombre !== 'Aprendiz';
         }, ARRAY_FILTER_USE_KEY);
 
-        // Crear 200 usuarios que no sean aprendices
+      
         for ($i = 0; $i < 200; $i++) {
 
-            // Seleccionar un perfil que NO sea aprendiz
-            $perfil_id = $faker->randomElement($perfilesSinAprendiz);
+            
+            $perfilNombre = $faker->randomElement(array_keys($perfilesSinAprendiz));
+            $perfil_id = $perfilesSinAprendiz[$perfilNombre];
+
+            if ($perfilNombre === 'Instructor') {
+                $tipoDocumento = 'cc';
+            } else {
+                $tipoDocumento = $faker->randomElement(['cc', 'ti', 'otro']);
+            }
 
             usuarios::create([
                 'nombre' => $faker->firstName(),
                 'apellido' => $faker->lastName(),
-                'tipoDocumento' => $faker->randomElement(['cc', 'ti', 'otro']),
+                'tipoDocumento' => $tipoDocumento,
                 'numeroDocumento' => $faker->unique()->numerify('##########'),
                 'telefono' => $faker->numerify('3#########'),
                 'tipoSangre' => $faker->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
                 'estado' => $faker->randomElement(['activo', 'inactivo']),
                 'fechaRegistro' => $faker->dateTimeBetween('-6 months', 'now'),
                 'idperfil' => $perfil_id,
-                'idficha' => null, 
+                'idficha' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
