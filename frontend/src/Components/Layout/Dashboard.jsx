@@ -8,12 +8,12 @@ export default function Dashboard({ ItemsDash, nameTopBar, nameAdmin }) {
   return (
     <div>
       <div className="d-flex  ">
-        <div className="d-flex flex-column px-3 shadow  sidebar">
-          <div className="d-flex align-items-center justify-content-center mt-3 ">
+        <div className="d-flex flex-column px-4 shadow  sidebar">
+          <div className="d-flex align-items-center justify-content-center mt-2  ">
             <img
               src={logo}
-              className="pt-2 pb-3"
-              width="70px"
+              className="py-2 "
+              width="60px"
               alt="Logo Sena"
             />
           </div>

@@ -6,7 +6,7 @@ export default function SideBar({ valueSidebarOptions = [] }) {
     <div>
       {valueSidebarOptions.map((item, index) => {
         if (item.type === "divider") {
-          return <hr key={`divider-${index}`} className="divider  mt-3" />;
+          return <hr key={`divider-${index}`} className="divider  mt-1" />;
         }
 
         return (

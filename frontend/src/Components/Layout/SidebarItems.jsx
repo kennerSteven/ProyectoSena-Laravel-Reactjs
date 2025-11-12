@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Tooltip } from "primereact/tooltip";
 import "primeicons/primeicons.css";
-import "primereact/resources/themes/lara-light-green/theme.css"; // o tu tema
+import "primereact/resources/themes/lara-light-green/theme.css"; 
 import "primereact/resources/primereact.min.css";
 import "../../styles/SidebarItems.css";
 
