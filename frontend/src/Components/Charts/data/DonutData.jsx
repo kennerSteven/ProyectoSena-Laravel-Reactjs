@@ -5,9 +5,9 @@ export const categoryData = {
     {
       data: [120, 88, 65],
       backgroundColor: [
-        "rgba(51, 153, 92, 1)", // Verde oscuro
-        "rgba(102, 185, 138, 1)", // Verde medio
-        "rgba(153, 217, 184, 1)", // Verde claro
+        "rgba(51, 153, 92, 0.68)", // Verde oscuro
+        "rgba(102, 185, 138, 0.59)", // Verde medio
+        "rgba(153, 217, 184, 0.63)", // Verde claro
       ],
       borderWidth: 2,
     },

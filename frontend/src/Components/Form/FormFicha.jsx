@@ -25,13 +25,15 @@ export default function CrearFicha({ closeModal, fichaSeleccionada }) {
     <div>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
         <div className="">
-          <InputField
-            typeInput="text"
-            name="numeroFicha"
-            register={register}
-            error={errors.numeroFicha}
-            labelName="Número de ficha"
-          />
+          <div className="my-2">
+            <InputField
+              typeInput="text"
+              name="numeroFicha"
+              register={register}
+              error={errors.numeroFicha}
+              labelName="Número de ficha"
+            />
+          </div>
 
           <SelectOptions
             register={register}
@@ -45,13 +47,15 @@ export default function CrearFicha({ closeModal, fichaSeleccionada }) {
             ]}
           />
 
-          <InputField
-            typeInput="text"
-            name="nombreFormacion"
-            register={register}
-            error={errors.nombreFormacion}
-            labelName="Nombre de la formación"
-          />
+          <div className="my-3">
+            <InputField
+              typeInput="text"
+              name="nombreFormacion"
+              register={register}
+              error={errors.nombreFormacion}
+              labelName="Nombre de la formación"
+            />
+          </div>
 
           <div className="d-flex justify-content-end mt-4">
             <ButtonSubmit

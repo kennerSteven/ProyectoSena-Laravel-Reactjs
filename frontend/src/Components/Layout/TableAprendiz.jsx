@@ -7,7 +7,7 @@ import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import "primeicons/primeicons.css";
-
+import { Tooltip } from "primereact/tooltip";
 import { deleteInstructor } from "../Services/FetchServices";
 import SplitButtonComp from "../Ui/SplitButton";
 import FormInstructor from "../Form/FormInstructor";
@@ -193,15 +193,6 @@ export default function TableAprendizs({
       </div>
 
       <div className="d-flex justify-content-between headerContainer align-items-center">
-        <div>
-          <button
-            className="p-button p-button-sm p-button-success rounded shadow-sm"
-            onClick={functionModal}
-          >
-            <i className="pi pi-user-plus" style={{ marginRight: "0.5rem" }} />
-          </button>
-        </div>
-
         <div
           style={{
             position: "relative",
@@ -234,7 +225,7 @@ export default function TableAprendizs({
 
         <div className="d-flex gap-2 containerButtonActions shadow-sm">
           <button
-            className="btnActions d-flex align-items-center gap-2"
+            className="btnActions d-flex align-items-center gap-2 btn-crear-aprendiz"
             onClick={functionModal}
           >
             <i
@@ -245,7 +236,7 @@ export default function TableAprendizs({
           </button>
 
           <button
-            className="btnActions d-flex align-items-center gap-2"
+            className="btnActions d-flex align-items-center gap-2 btn-crear-perfil"
             onClick={openCreatePerfil}
           >
             <i
@@ -256,7 +247,7 @@ export default function TableAprendizs({
           </button>
 
           <button
-            className="btnActions d-flex align-items-center gap-2"
+            className="btnActions d-flex align-items-center gap-2 btn-crear-formacion"
             onClick={() => setOpenFichaModal(true)}
           >
             <i
@@ -265,6 +256,22 @@ export default function TableAprendizs({
             />
             {/* Crear ficha */}
           </button>
+
+          <Tooltip
+            target=".btn-crear-aprendiz"
+            content="Crear aprendices"
+            position="top"
+          />
+          <Tooltip
+            target=".btn-crear-perfil"
+            content="Crear perfil"
+            position="top"
+          />
+          <Tooltip
+            target=".btn-crear-formacion"
+            content="Crear Formacion"
+            position="top"
+          />
         </div>
       </div>
     </div>

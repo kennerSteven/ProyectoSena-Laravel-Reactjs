@@ -1,32 +1,32 @@
 export const ItemsConfig = [
   {
-    iconClass: "pi pi-home", // Inicio institucional
-    nameItem: "Inicio",
+    iconClass: "pi pi-home",
     link: "/Dashboard/inicio",
+    label: "Inicio",
   },
   {
     iconClass: "pi pi-users", // Grupo de personas
-    nameItem: "Aprendices",
+    label: "Aprendices",
     link: "/Dashboard/ListarAprendiz",
   },
   {
     iconClass: "pi pi-book", // Contenido académico
-    nameItem: "Formaciones",
+    label: "Formaciones",
     link: "/Dashboard/Formaciones",
   },
   {
     iconClass: "pi pi-user-edit", // Rol activo de enseñanza
-    nameItem: "Instructor",
+    label: "Instructor",
     link: "/Dashboard/ListarInstructor",
   },
   {
     iconClass: "pi pi-user-plus", // Usuario externo
-    nameItem: "Visitante",
+    label: "Visitante",
     link: "/Dashboard/ListarVisitante",
   },
   {
     iconClass: "pi pi-briefcase", // Gestión administrativa
-    nameItem: "Administrativo",
+    label: "Administrativo",
     link: "/Dashboard/ListarAdministrativo",
   },
 
@@ -34,12 +34,12 @@ export const ItemsConfig = [
 
   {
     iconClass: "pi pi-shield", // Seguridad institucional
-    nameItem: "Vigilantes",
+    label: "Vigilantes",
     link: "/Dashboard/Vigilantes",
   },
   {
     iconClass: "pi pi-sign-out", // Cierre de sesión
-    nameItem: "Cerrar sesión",
+    label: "Cerrar sesión",
     link: "/logout",
   },
 ];

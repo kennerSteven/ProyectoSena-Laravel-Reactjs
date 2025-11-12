@@ -10,7 +10,6 @@ import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
 import useFichaFetch from "../Hooks/UseFichaAprendiz";
 import HandleValidationAprendiz from "./Validation/HandleValidation/HandleEntitie/HandleValidation.Aprendiz";
 import SchemaValidationUser from "./Validation/SchemaValidation/SchemaValidationUser";
-import useHandleValidationRegister from "./Validation/HandleValidation/HandleValidationRegister";
 export default function FormAprendiz({ closeModal }) {
   const {
     register,
@@ -37,12 +36,7 @@ export default function FormAprendiz({ closeModal }) {
     closeModal,
     perfil: "Aprendiz",
     capturedImage,
-    docEntrada
   });
-
-
-
-useHandleValidationRegister(docEntrada)
 
   useEffect(() => {
     if (showCamera && videoRef.current) {

@@ -68,8 +68,8 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
   return (
     <div>
       <form className="row" onSubmit={handleSubmit(onSubmit, onError)}>
-        <div>
-          <div className="d-flex gap-4">
+        <div className="mt-2">
+          <div className="d-flex gap-4  mb-3">
             <InputField
               typeInput="text"
               name="nombre"
@@ -86,7 +86,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
             />
           </div>
 
-          <div className="d-flex gap-3">
+          <div className="d-flex gap-3 mb-3">
             <SelectOptions
               register={register}
               name="tipoDocumento"
@@ -108,29 +108,32 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
 
           <div className="row">
             <div className="col-lg-6 mt-3">
-              <InputField
-                typeInput="number"
-                name="telefono"
-                register={register}
-                error={errors.telefono}
-                labelName="Teléfono"
-              />
-              <SelectOptions
-                register={register}
-                name="tipoSangre"
-                nameSelect="Tipo de sangre"
-                error={errors.tipoSangre}
-                values={[
-                  { value: "A+", label: "A positivo" },
-                  { value: "A-", label: "A negativo" },
-                  { value: "B+", label: "B positivo" },
-                  { value: "B-", label: "B negativo" },
-                  { value: "AB+", label: "AB positivo" },
-                  { value: "AB-", label: "AB negativo" },
-                  { value: "O+", label: "O positivo" },
-                  { value: "O-", label: "O negativo" },
-                ]}
-              />
+              <div className="d-flex gap-4">
+                <InputField
+                  typeInput="number"
+                  name="telefono"
+                  register={register}
+                  error={errors.telefono}
+                  labelName="Teléfono"
+                />
+                <SelectOptions
+                  register={register}
+                  name="tipoSangre"
+                  nameSelect="Tipo de sangre"
+                  error={errors.tipoSangre}
+                  values={[
+                    { value: "A+", label: "A positivo" },
+                    { value: "A-", label: "A negativo" },
+                    { value: "B+", label: "B positivo" },
+                    { value: "B-", label: "B negativo" },
+                    { value: "AB+", label: "AB positivo" },
+                    { value: "AB-", label: "AB negativo" },
+                    { value: "O+", label: "O positivo" },
+                    { value: "O-", label: "O negativo" },
+                  ]}
+                />
+              </div>
+
               <div className="my-2">
                 <SelectOptions
                   register={register}
@@ -138,6 +141,15 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                   nameSelect="Tipo de perfil"
                   error={errors.tipoPerfil}
                   values={opcionesPerfil}
+                />
+              </div>
+              <div className="d-flex justify-content-start mt-4">
+                <ButtonSubmit
+                  textSend={usuarioSeleccionado ? "Actualizar" : "Guardar"}
+                  textSending="Guardando..."
+                  isSubmitting={isSubmitting}
+                  maxWidth={false}
+                  iconButton="bi bi-save"
                 />
               </div>
             </div>
@@ -205,16 +217,6 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                 )}
               </div>
             </div>
-          </div>
-
-          <div className="d-flex justify-content-start mt-4">
-            <ButtonSubmit
-              textSend={usuarioSeleccionado ? "Actualizar" : "Guardar"}
-              textSending="Guardando..."
-              isSubmitting={isSubmitting}
-              maxWidth={false}
-              iconButton="bi bi-save"
-            />
           </div>
         </div>
 

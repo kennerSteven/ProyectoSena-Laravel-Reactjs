@@ -33,10 +33,10 @@ export default function InputAutoComplete({
             <AutoComplete
               id={name}
               dropdown
-              value={objFormacion.find((f) => f.value === field.value) || null}
+              value={field.value} // 👈 guarda el objeto completo
               suggestions={valorItem}
               completeMethod={search}
-              onChange={(e) => field.onChange(e.value?.value || null)} // ✅ guarda solo el ID
+              onChange={(e) => field.onChange(e.value)} // 👈 guarda el objeto completo
               field="label"
               placeholder="Buscar ficha"
               className={`w-100 ${fieldState?.error ? "p-invalid" : ""}`}

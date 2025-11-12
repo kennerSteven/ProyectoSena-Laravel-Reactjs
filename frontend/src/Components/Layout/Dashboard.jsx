@@ -8,17 +8,17 @@ export default function Dashboard({ ItemsDash, nameTopBar, nameAdmin }) {
   return (
     <div>
       <div className="d-flex  ">
-        <div className="d-flex flex-column px-4 shadow  sidebar">
+        <div className="d-flex flex-column px-3 shadow  sidebar">
           <div className="d-flex align-items-center justify-content-center mt-3 ">
             <img
               src={logo}
               className="pt-2 pb-3"
-              width="120px"
+              width="70px"
               alt="Logo Sena"
             />
           </div>
           <hr />
-          <div className="d-flex flex-column  rounded ">
+          <div className="d-flex flex-column align-items-center  ">
             <SideBar valueSidebarOptions={ItemsDash} />
           </div>
         </div>

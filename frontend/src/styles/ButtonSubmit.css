@@ -4,16 +4,19 @@
 
 .btn-container .Btn {
   border: none;
-  padding: 12px 20px;
+  padding: 12px 30px;
+  font-weight: 600;
   border-radius: 12px;
   font-size: 15px;
-  background: #007832;
-  color: rgb(240, 240, 240);
+  background: #e6f4ea;
+  color: #2e7d32;
+
   transition: transform 0.2s ease-in;
 }
 .btn-container .Btn:hover {
   transform: scale(1.01);
-  background-color: #02923e;
+  background: #dcf1e2;
+  color: #2e7d32;
 }
 
 .btn-container .btnDisabled {

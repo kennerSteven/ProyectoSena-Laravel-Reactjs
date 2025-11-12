@@ -1,12 +1,19 @@
-import { Link } from "react-router-dom"; // ✅ corregido: react-router-dom
+import { Link } from "react-router-dom";
+import { Tooltip } from "primereact/tooltip";
+import "primeicons/primeicons.css";
+import "primereact/resources/themes/lara-light-green/theme.css"; // o tu tema
+import "primereact/resources/primereact.min.css";
 import "../../styles/SidebarItems.css";
-import "primeicons/primeicons.css"; // ✅ PrimeIcons
 
-export default function SidebarItems({ iconClass, nameItem, link }) {
+export default function SidebarItems({ iconClass, link, label }) {
+  const tooltipId = `tooltip-${iconClass.replace(/\s+/g, "-")}`;
+
   return (
-    <Link to={link} className="NavbarOptions d-flex gap-3 py-1 px-2 mb-2">
-      <i className={`pi ${iconClass} iconClass`}></i>
-      <span className="item-label">{nameItem}</span>
-    </Link>
+    <>
+      <Tooltip target={`#${tooltipId}`} content={label} position="right" />
+      <Link to={link} className="NavbarOptions d-flex gap-3">
+        <i id={tooltipId} className={`pi ${iconClass} iconClass`} />
+      </Link>
+    </>
   );
 }

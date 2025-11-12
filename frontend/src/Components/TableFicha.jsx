@@ -3,6 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
+import { Tooltip } from "primereact/tooltip";
 import { Tag } from "primereact/tag";
 import { Dialog } from "primereact/dialog";
 import {
@@ -31,7 +32,6 @@ export default function TablaFicha() {
   const [editarModalVisible, setEditarModalVisible] = useState(false);
   const [fichaParaEditar, setFichaParaEditar] = useState(null);
 
-  // 🔁 Cargar fichas al iniciar
   useEffect(() => {
     cargarFichas();
   }, []);
@@ -104,7 +104,7 @@ export default function TablaFicha() {
           abrirModalAccion(rowData);
         }}
       >
-        <i className="bi bi-exclamation-triangle-fill me-1"></i>
+        <i className="bi bi-exclamation-triangle-fill p-2"></i>
       </button>
       <button
         className="btn btn-outline-primary btn-sm"
@@ -113,7 +113,7 @@ export default function TablaFicha() {
           abrirModalEditar(rowData);
         }}
       >
-        <i className="bi bi-pencil-square me-1"></i>
+        <i className="bi bi-pencil-square p-2"></i>
       </button>
     </div>
   );
@@ -121,19 +121,12 @@ export default function TablaFicha() {
   return (
     <div className="tableHistorialContent mx-auto shadow mt-4">
       <div className="row">
-        <div className="">
-          <div className="card shadow-sm border-light">
-            <div className="d-flex align-items-center justify-content-between px-4">
+        <div>
+          <div className="card shadow-sm border-light ">
+            <div className="d-flex align-items-center justify-content-between px-4 py-3 shadow">
               <h2 className="fw-bold">Formaciones</h2>
 
-          
-              <div
-                style={{
-                  position: "relative",
-                  display: "inline-block",
-                  marginLeft: "1rem",
-                }}
-              >
+              <div>
                 <i
                   className="pi pi-search"
                   style={{
@@ -161,28 +154,35 @@ export default function TablaFicha() {
                 <div className="d-flex gap-2 containerButtonActions shadow-sm">
                   <button
                     onClick={() => setShowModalFichasDesactivadas(true)}
-                    className="btnActionsFicha d-flex align-items-center gap-2"
+                    className="btnActionsFicha d-flex align-items-center gap-2 btn-crear-instructor"
                   >
-                    <i
-                      className="pi pi-table"
-                      style={{ color: "#fff", fontSize: "1.2rem" }}
-                    />
+                    <i className="pi pi-table" style={{ fontSize: "1.2rem" }} />
                   </button>
 
                   <button
                     onClick={() => setShowFormacion(true)}
-                    className="btnActionsFicha d-flex align-items-center gap-2"
+                    className="btnActionsFicha d-flex align-items-center gap-2 btn-crear-perfil"
                   >
                     <i
                       className="pi pi-building"
-                      style={{ color: "#ffffffff", fontSize: "1.2rem" }}
+                      style={{ fontSize: "1.2rem" }}
                     />
                   </button>
                 </div>
               </div>
+
+              <Tooltip
+                target=".btn-crear-instructor"
+                content="Formaciones desactivadas"
+                position="top"
+              />
+              <Tooltip
+                target=".btn-crear-perfil"
+                content="Crear Formaciones"
+                position="top"
+              />
             </div>
 
-            {/* 🧾 Tabla principal */}
             <DataTable
               value={fichas}
               paginator
@@ -232,7 +232,6 @@ export default function TablaFicha() {
         </div>
       </div>
 
-      {/* 👥 Modal usuarios */}
       <Dialog
         header={`Aprendices vinculados a ficha ${
           fichaSeleccionada?.numeroFicha || ""
@@ -273,7 +272,6 @@ export default function TablaFicha() {
         </DataTable>
       </Dialog>
 
-      {/* ⚠️ Modal desactivar ficha */}
       <Dialog
         header={`Desactivar ficha ${fichaParaAccion?.numeroFicha || ""}`}
         visible={accionModalVisible}
@@ -306,14 +304,13 @@ export default function TablaFicha() {
         </div>
       </Dialog>
 
-      {/* ✏️ Modal editar ficha */}
       <Dialog
         header={`Editar ficha ${fichaParaEditar?.numeroFicha || ""}`}
         visible={editarModalVisible}
-        style={{ width: "40vw" }}
+        style={{ width: "30vw" }}
         onHide={() => setEditarModalVisible(false)}
       >
-        <div className="mb-3">
+        <div className="my-3">
           <label className="form-label">Nombre del Programa</label>
           <InputText
             value={fichaParaEditar?.nombrePrograma || ""}
@@ -327,7 +324,7 @@ export default function TablaFicha() {
           />
         </div>
 
-        <div className="mb-3">
+        <div className="my-3">
           <label className="form-label">Código de Ficha</label>
           <InputText
             value={fichaParaEditar?.numeroFicha || ""}
@@ -341,7 +338,7 @@ export default function TablaFicha() {
           />
         </div>
 
-        <div className="mb-3">
+        <div className="my-3">
           <label className="form-label">Jornada</label>
           <Dropdown
             value={fichaParaEditar?.jornada || ""}
@@ -366,7 +363,7 @@ export default function TablaFicha() {
             Cancelar
           </button>
           <button
-            className="btn btn-success"
+            className="btnVisitantesActivos"
             onClick={async () => {
               try {
                 await updateFicha(fichaParaEditar.id, fichaParaEditar);

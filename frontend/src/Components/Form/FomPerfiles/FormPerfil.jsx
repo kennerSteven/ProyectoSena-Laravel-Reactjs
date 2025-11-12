@@ -23,10 +23,8 @@ export default function FormPerfil() {
       className="d-flex justify-content-center align-items-center  "
     >
       <div className="row">
-        <div className="formRegister shadow-sm">
-        
-
-          <div className="mb-4">
+        <div className="formRegister ">
+          <div className="my-3">
             <InputField
               typeInput="text"
               name="tipoPerfil"
@@ -51,7 +49,6 @@ export default function FormPerfil() {
             isSubmitting={isSubmitting}
             iconButton="bi bi-save"
           />
-       
         </div>
       </div>
     </form>

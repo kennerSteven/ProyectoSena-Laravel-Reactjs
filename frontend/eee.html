@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro Minimalista</title>
+    <link rel="stylesheet" href="https://unpkg.com/primeicons/primeicons.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f8f9fa;
+        padding: 20px;
+      }
+
+      .registro-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 16px 20px;
+        max-width: 600px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .registro-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        color: #2e7d32;
+      }
+
+      .registro-hora i {
+        margin-right: 6px;
+      }
+
+      .registro-body {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .registro-usuario {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .registro-logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .registro-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .registro-nombre {
+        font-weight: 600;
+        font-size: 15px;
+        color: #343a40;
+      }
+
+      .registro-rol {
+        font-size: 13px;
+        color: #6c757d;
+      }
+
+      .registro-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .registro-actions button {
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
+
+      .btn-success {
+        background-color: #2e7d32;
+        color: #ffffff;
+      }
+
+      .btn-success:hover {
+        background-color: #1b5e20;
+      }
+
+      .btn-outline-success {
+        background-color: #e6f4ea;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+      }
+
+      .btn-outline-success:hover {
+        background-color: #c8e6c9;
+        color: #1b5e20;
+      }
+
+      .btn-outline-danger {
+        background-color: #fff5f5;
+        color: #d32f2f;
+        border: 1px solid #f8d7da;
+      }
+
+      .btn-outline-danger:hover {
+        background-color: #f8d7da;
+        color: #b71c1c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="registro-card">
+      <div class="registro-header">
+        <span class="registro-hora">
+          <i class="pi pi-clock"></i> 8:00 pm - 11-11-2025
+        </span>
+        <span class="registro-label">Cata</span>
+      </div>
+
+      <div class="registro-body">
+        <div class="registro-usuario">
+          <img src="logo-sena.png" alt="Logo SENA" class="registro-logo" />
+          <div class="registro-info">
+            <strong class="registro-nombre">Juan Jose Pallarez</strong>
+            <span class="registro-rol">Administrador</span>
+          </div>
+        </div>
+
+        <div class="registro-actions">
+          <button class="btn-success">Ver registros</button>
+          <button class="btn-outline-success">
+            <i class="pi pi-arrow-right"></i>
+          </button>
+          <button class="btn-outline-danger">
+            <i class="pi pi-arrow-left"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

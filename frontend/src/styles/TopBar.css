@@ -1,63 +1,88 @@
 .containerCard {
-  border-radius: 8px;
-
+  border-radius: 12px;
   background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .hour {
   font-size: 22px;
+  color: #2e7d32;
 }
 
 .titleDash {
   font-size: 16px;
-  color: #007832;
+  color: #2e7d32;
+  font-weight: 600;
 }
 
 .hourIcon {
-  color: #007832;
+  color: #2e7d32;
   font-size: 18px;
 }
 
-.btnSalidaEntrada {
-  background-color: #ffffff;
-  border: 1px solid #007832;
-  transition: transform 0.1s ease-in;
+.btnSalida {
+  background-color: #f8d7da;
+  color: #e11818;
+  border: 1px solid #f8d7da;
+  border-radius: 8px;
+  transition: transform 0.1s ease-in, background-color 0.2s ease;
+}
 
+.btnSalida:hover {
+  background-color: #f0c6c9;
+  transform: scale(1.04);
+  cursor: pointer;
 }
 
 .btnSalidaEntrada i {
-  color: #007832;
+  color: #2e7d32;
 }
 
+.btnEntrada {
+  background-color: #e6f4ea;
+  color: #2e7d32;
+  border: none;
+  border-radius: 8px;
+  transition: transform 0.1s ease-in, background-color 0.2s ease;
+}
 
+.btnEntrada:hover {
+  background-color: #c8e6c9;
+  transform: scale(1.04);
+  cursor: pointer;
+}
 
 .btnSalidaEntrada:hover {
-  background-color: #029b42;
+  background-color: #c8e6c9;
   cursor: pointer;
-
   transform: scale(1.04);
-}
-
-.iconbtnSalidaEntrada {
-  color: rgb(255, 25, 25);
 }
 
 .nameAdmin {
   font-size: 13px;
+  color: #343a40;
+  font-weight: 500;
 }
 
 .labelBtnOutAndSign {
-  color: white;
+  color: #ffffff;
+  font-size: 13px;
 }
 
 .iconRegistros {
-  color: #007832;
+  color: #2e7d32;
 }
 
 .btnRegistros {
-  background-color: #007832;
+  background-color: #2e7d32;
   border-radius: 10px;
   border: none;
   color: #ffffff;
+  font-size: 13px;
+  padding: 6px 12px;
+  transition: background-color 0.2s ease;
 }
 
+.btnRegistros:hover {
+  background-color: #1b5e20;
+}
