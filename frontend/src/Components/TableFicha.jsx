@@ -15,7 +15,7 @@ import {
 import "../styles/TablaHistorial.css";
 import TablaFichasDesactivadas from "./Ui/TableFichasDesactivadas";
 import CrearFicha from "./Form/FormFicha";
-
+import "../styles/Table.css";
 export default function TablaFicha() {
   const [showModalFichasDesactivadas, setShowModalFichasDesactivadas] =
     useState(false);
@@ -119,7 +119,7 @@ export default function TablaFicha() {
   );
 
   return (
-    <div className="tableHistorialContent mx-auto shadow mt-4">
+    <div className="tableHistorialContent mx-auto shadow mt-4 tableContainer">
       <div className="row">
         <div>
           <div className="card shadow-sm border-light ">

@@ -40,6 +40,8 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
+  border-radius: 20px;
+  padding: 20px;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page {
@@ -85,7 +87,7 @@
 
 .containerButtonActions {
   padding: 4px 13px;
-  border-radius: 5px;
+  border-radius: 52px;
   background-color: #ffffff;
 }
 

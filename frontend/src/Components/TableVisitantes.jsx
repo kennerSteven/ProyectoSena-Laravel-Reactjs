@@ -8,7 +8,7 @@ import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import TablaVisitantesDesactivados from "./TableVisitantantesDesactivados";
 import "../styles/Table.css";
-
+import "../styles/Table.css";
 const fetchVisitantes = async () => {
   try {
     const response = await fetch(
@@ -127,7 +127,10 @@ export default function TablaVisitantes() {
   );
 
   return (
-    <div className="card mx-auto shadow mt-4" style={{ width: "1000px" }}>
+    <div
+      className="card mx-auto shadow mt-4 tableContainer"
+      style={{ width: "1000px" }}
+    >
       <Dialog
         header="Visitantes desactivados"
         visible={mostrarModal}
