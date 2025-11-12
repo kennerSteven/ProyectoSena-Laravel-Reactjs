@@ -285,6 +285,33 @@ public function listarVisitantes()
 }
 
 
+/*KPI*/
+
+public function EstadisticasUsuariosKPI(){
+        
+     $totalUsuarios = usuarios::where('estado', 'activo')->count();
+
+    $porPerfil = usuarios::with('perfile:id,nombre')
+        ->selectRaw('idperfil, COUNT(*) as cantidad')
+        ->where('estado', 'activo')
+        ->groupBy('idperfil')
+        ->get()
+        ->map(function ($usuario) {
+            return [
+                'perfil' => $usuario->perfile->nombre,
+                'cantidad' => $usuario->cantidad,
+            ];
+        });
+
+  
+    return [
+        'totalusuarios' => $totalUsuarios,
+        'porperfil' => $porPerfil,
+    ];
+    
+
+    }
+
 
 
 

@@ -243,7 +243,22 @@ public function fichasConMasAprendices()
 }
     
 
+public function estadisticasFichasKPI()
+{
+ $totalFichas = fichas::where('estado', 'activo')->count();
 
+   
+    $porJornada = fichas::selectRaw('jornada, COUNT(*) as cantidad')
+        ->where('estado', 'activo')
+        ->groupBy('jornada')
+        ->get()
+        ->pluck('cantidad', 'jornada'); 
+
+    return [
+        'totalfichas' => $totalFichas,
+        'porjornada' => $porJornada
+    ];
+}
 
 
 

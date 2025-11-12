@@ -185,6 +185,90 @@ public function salidagranja(Request $request)
     ]);
 }
 
+
+public function EstadisticasEntradasGranjaKPI()
+{
+    $totalEntradas = eysgranja::where('tipo', 'entrada')->count();
+
+    
+    $entradasHoy = eysgranja::where('tipo', 'entrada')
+        ->whereDate('fechaRegistro', now()->toDateString())
+        ->count();
+
+   
+    $porcentaje = $totalEntradas > 0
+        ? round(($entradasHoy / $totalEntradas) * 100, 2)
+        : 0;
+
+
+    $porPerfil = eysgranja::with('usuarios.perfile:id,nombre')
+        ->where('tipo', 'entrada')
+        ->get()
+        ->groupBy(function ($item) {
+            if ($item->usuarios && $item->usuarios->perfile) {
+                return $item->usuarios->perfile->nombre;
+            }
+            return 'Visitante'; // cuando no hay usuario
+        })
+        ->map(function ($grupo, $perfil) {
+            return [
+                'perfil' => $perfil,
+                'cantidad' => $grupo->count(),
+            ];
+        })
+        ->values();
+
+    return response()->json([
+        'porcentaje' => $porcentaje,
+        'porperfil' => $porPerfil,
+        'total' => $totalEntradas,
+    ]);
+  
+    
+}
+
+
+public function EstadisticasSalidasGranjaKPI()
+{
+    // Total de SALIDAS registradas en la granja
+    $totalSalidas = eysgranja::where('tipo', 'salida')->count();
+
+    // Salidas registradas hoy
+    $salidasHoy = eysgranja::where('tipo', 'salida')
+        ->whereDate('fechaRegistro', now()->toDateString())
+        ->count();
+
+    // Porcentaje de salidas de hoy frente al total
+    $porcentaje = $totalSalidas > 0
+        ? round(($salidasHoy / $totalSalidas) * 100, 2)
+        : 0;
+
+    // Agrupamos por perfil (y visitantes si no tienen usuario)
+    $porPerfil = eysgranja::with('usuarios.perfile:id,nombre')
+        ->where('tipo', 'salida')
+        ->get()
+        ->groupBy(function ($item) {
+            if ($item->usuarios && $item->usuarios->perfile) {
+                return $item->usuarios->perfile->nombre;
+            }
+            return 'Visitante'; // cuando no hay usuario
+        })
+        ->map(function ($grupo, $perfil) {
+            return [
+                'perfil' => $perfil,
+                'cantidad' => $grupo->count(),
+            ];
+        })
+        ->values();
+
+    // Devolver datos
+    return response()->json([
+        'porcentaje' => $porcentaje,
+        'porperfil' => $porPerfil,
+        'total' => $totalSalidas,
+    ]);
+}
+
     
 
     

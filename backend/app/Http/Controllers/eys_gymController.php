@@ -151,6 +151,88 @@ public function salidaMasivaGym()
     ]);
 }
 
+public function EstadisticasEntradasKPI()
+{
+    $totalEntradas = eysgym::where('tipo', 'entrada')->count();
+
+
+    $entradasHoy = eysgym::where('tipo', 'entrada')
+        ->whereDate('fechaRegistro', now()->toDateString())
+        ->count();
+
+    $porcentaje = $totalEntradas > 0
+        ? round(($entradasHoy / $totalEntradas) * 100, 2)
+        : 0;
+
+    $porPerfil = eysgym::with('usuarios.perfile:id,nombre')
+        ->where('tipo', 'entrada')
+        ->get()
+        ->groupBy(function ($item) {
+           
+            if ($item->usuarios && $item->usuarios->perfile) {
+                return $item->usuarios->perfile->nombre;
+            }
+            
+            return 'Visitante';
+        })
+        ->map(function ($grupo) {
+            return [
+                'perfil' => $grupo->first()->usuarios->perfile->nombre
+                    ?? 'Visitante',
+                'cantidad' => $grupo->count(),
+            ];
+        })
+        ->values();
+
+    return response()->json([
+        'porcentaje' => $porcentaje,
+        'porperfil' => $porPerfil,
+        'total' => $totalEntradas,
+    ]);
+}
+
+public function EstadisticasSalidasKPI()
+{
+    
+    $totalSalidas = eysgym::where('tipo', 'salida')->count();
+
+    $salidasHoy = eysgym::where('tipo', 'salida')
+        ->whereDate('fechaRegistro', now()->toDateString())
+        ->count();
+
+    
+    $porcentaje = $totalSalidas > 0
+        ? round(($salidasHoy / $totalSalidas) * 100, 2)
+        : 0;
+
+    
+    $porPerfil = eysgym::with('usuarios.perfile:id,nombre')
+        ->where('tipo', 'salida')
+        ->get()
+        ->groupBy(function ($item) {
+            if ($item->usuarios && $item->usuarios->perfile) {
+                return $item->usuarios->perfile->nombre;
+            }
+            return 'Visitante';
+        })
+        ->map(function ($grupo) {
+            return [
+                'perfil' => $grupo->first()->usuarios->perfile->nombre
+                    ?? 'Visitante',
+                'cantidad' => $grupo->count(),
+            ];
+        })
+        ->values();
+
+    return response()->json([
+        'porcentaje' => $porcentaje,
+        'porperfil' => $porPerfil,
+        'total' => $totalSalidas,
+    ]);
+}
+
+
+
    
     
 }

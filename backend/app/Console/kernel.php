@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * Registrar comandos personalizados.
      */
     protected $commands = [
-        exVisitantescommand::class, // tu comando
+        exVisitantesCommand::class, // tu comando
         DesactivarContratosCommand::class,
     ];
 
@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
     {
         // Ejecutar el comando cada hora
         $schedule->command('visitantes:expirar')->hourly();
-        $schedule->command('contratos:desactivar')->dailyAt('10:10');
+        $schedule->command('contratos:desactivar')->dailyAt('00:00');
     }
 
     /**
