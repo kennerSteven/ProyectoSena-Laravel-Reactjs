@@ -19,7 +19,7 @@ export default function SelectOptions({
         {defaultValue === "" && (
           <option className="optionItem" value="" disabled>
             {" "}
-            Seleccionar opción{" "}
+            Seleccione{" "}
           </option>
         )}
 

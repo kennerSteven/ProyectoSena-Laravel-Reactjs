@@ -9,17 +9,17 @@ import TablaHistorial from "../TableHistorial";
 import FormSalida from "../Form/FormSalida";
 
 export default function TopBar({ nameTopBar, nameAdmin }) {
-  const [visibleEntrada, setVisibleEntrada] = useState(false); 
-  const [visibleSalida, setVisibleSalida] = useState(false); 
+  const [visibleEntrada, setVisibleEntrada] = useState(false);
+  const [visibleSalida, setVisibleSalida] = useState(false);
   const [visibleTableHistorial, setVisibleTableHistorial] = useState(false);
 
   return (
-    <div className="d-flex justify-content-end align-items-center topbar">
-      <div className="d-flex shadow-sm containerCard">
+    <div className="d-flex justify-content-end align-items-center topbar mt-3 ">
+      <div className="d-flex shadow containerCard">
         <div className="d-flex justify-content-between px-3 py-1 w-100">
           <div className="d-flex align-items-center gap-4">
-            <div className="d-flex gap-2 pt-2">
-              <i className="bi bi-clock-history hourIcon"></i>
+            <div className="d-flex gap-2 pt-2 align-items-center">
+              <i className="pi pi-clock hourIcon pb-2"></i>
               <div className="mt-1">
                 <ClockDisplay />
               </div>
@@ -56,7 +56,7 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
 
               <button
                 onClick={() => setVisibleEntrada(true)}
-                className="d-flex gap-2 py-2 px-3 rounded align-items-center btnSalidaEntrada"
+                className="d-flex gap-2 py-2 px-3 rounded align-items-center btnEntrada"
               >
                 <span className="d-flex align-items-center gap-2">
                   <i className="pi pi-sign-in iconbtnSalidaEntrada"></i>
@@ -64,7 +64,7 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               </button>
               <button
                 onClick={() => setVisibleSalida(true)}
-                className="d-flex gap-2 py-3 px-3 rounded align-items-center btnSalidaEntrada bg-danger"
+                className="d-flex gap-2 py-3 px-3 rounded align-items-center btnSalida"
               >
                 <span className="d-flex align-items-center gap-2">
                   <i className="pi pi-sign-out iconbtnSalidaEntrada"></i>

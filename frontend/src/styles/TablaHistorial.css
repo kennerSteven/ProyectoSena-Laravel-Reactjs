@@ -1,5 +1,5 @@
 .tableHistorialContent {
-  width: 1050px;
+  width: 980px;
 }
 /* Oculta el ícono de embudo en los filtros de columna */
 .p-column-filter-menu-button {
@@ -47,17 +47,18 @@
 }
 
 .btnActionsFicha {
-  background-color: #007832;
-  padding: 8px;
-  border-radius: 6px;
+  background: #e6f4ea;
   border: none;
-  color: white;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  color: #2e7d32;
+  border-radius: 10px;
+  padding: 9px 10px;
+  margin: 5px 10px;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 /* Hover institucional */
 .btnActionsFicha:hover {
-  background-color: #00a04e; /* verde más brillante */
-  transform: scale(1.05) rotate(-2deg);
+  transform: scale(1.1) rotate(-3deg);
+  color: #276a2b;
   cursor: pointer;
 }

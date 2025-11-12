@@ -13,8 +13,7 @@ import {
   GetDataAdministrativo,
   getAdministrativosContratoDesactivados,
   activarUsuariosPorTipo,
-getInstructoresContratoDesactivados,
-
+  getInstructoresContratoDesactivados,
 } from "../../Services/FetchServices";
 
 import {
@@ -228,11 +227,10 @@ export function TableAdministrativo() {
         reloadTable={() => {}}
         fetchUsuariosDesactivados={() =>
           getAdministrativosContratoDesactivados()
-        } // ✅ ejecutable
+        }
         activarUsuariosPorLote={() =>
           activarUsuariosPorTipo("Administrativo contrato")
-        } // ✅ tipo correcto
-        activarUsuarioPorId={(id) => activarUsuarioPorId(id)} // ✅ función correcta
+        }
       />
 
       <Dialog

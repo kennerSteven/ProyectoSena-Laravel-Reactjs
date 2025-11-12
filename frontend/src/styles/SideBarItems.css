@@ -1,8 +1,3 @@
-a {
-  font-weight: 500;
-  font-size: 14px;
-  margin-top: 20px;
-}
 
 .NavbarOptions {
   display: flex;
@@ -24,6 +19,6 @@ a {
 
 .iconClass {
   color: #007832;
-  font-size: 18px;
+  font-size: 1tpx;
   font-weight: 500;
 }

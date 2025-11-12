@@ -24,7 +24,7 @@ export default function Table({
   fetchUsuariosDesactivados,
   labelUserDisabled,
   activarUsuariosPorLote,
-  activarUsuarioPorId
+  activarUsuarioPorId,
 }) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [perfilSeleccionado, setPerfilSeleccionado] = useState(null);
@@ -201,8 +201,11 @@ export default function Table({
             <InputText
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Buscar..."
-              style={{ paddingLeft: "2rem", width: "250px" }}
+              placeholder="Buscar ficha..."
+              style={{
+                paddingLeft: "2rem",
+                width: "250px",
+              }}
             />
           </div>
 
@@ -257,11 +260,11 @@ export default function Table({
 
             <button
               onClick={() => setShowEnabledInstructors(true)}
-              className="btn-ver-inactivos seeTableDisabledInstructors d-flex align-items-center gap-2"
+              className="btn-ver-inactivos btnActions d-flex align-items-center gap-2"
             >
               <i
                 className="pi pi-id-card"
-                style={{ color: "#ffffff", fontSize: "1.4rem" }}
+                style={{ color: "#28a745", fontSize: "1.4rem" }}
               />
             </button>
           </div>
@@ -340,8 +343,8 @@ export default function Table({
         modal
       >
         <TablaActivarUsuarios
-        activarUsuarioPorId={activarUsuarioPorId}
-        activarUsuariosPorLote={activarUsuariosPorLote}
+          activarUsuarioPorId={activarUsuarioPorId}
+          activarUsuariosPorLote={activarUsuariosPorLote}
           fetchUsuariosDesactivados={fetchUsuariosDesactivados}
           closeModal={() => setShowEnabledInstructors(false)}
         />

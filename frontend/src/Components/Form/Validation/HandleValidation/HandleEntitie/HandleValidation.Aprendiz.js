@@ -38,7 +38,7 @@ export default function HandleValidationAprendiz({
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
       idperfil: perfilSeleccionado.id,
-      idficha: data.ficha_id,
+      idficha: data.idficha,
       foto: capturedImage || null,
     };
 

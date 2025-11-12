@@ -7,24 +7,30 @@ import { Tooltip } from "primereact/tooltip";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import TablaVisitantesDesactivados from "./TableVisitantantesDesactivados";
-
-// 🔒 Fetch blindado institucionalizado
+import "../styles/Table.css";
+import "../styles/Table.css";
 const fetchVisitantes = async () => {
   try {
-    const response = await fetch("http://localhost:8000/api/usuario/index", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/usuarios/visitantes",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const data = await response.json();
+    console.log("Respuesta del backend:", data);
 
-    if (!response.ok || !data.success || !Array.isArray(data.data)) {
-      throw new Error(data.message || "Respuesta inesperada del backend");
+    if (!Array.isArray(data.usuarios)) {
+      throw new Error(
+        "Respuesta inesperada del backend: 'usuarios' no es un array"
+      );
     }
 
-    return data.data;
+    return data.usuarios;
   } catch (error) {
     console.error("Error al obtener visitantes:", error);
     return []; // Fallback institucional
@@ -53,7 +59,8 @@ export default function TablaVisitantes() {
   );
 
   const fechaTemplate = (rowData) => {
-    const fecha = new Date(rowData.fechaIngreso);
+    if (!rowData.fechaRegistro) return "—";
+    const fecha = new Date(rowData.fechaRegistro);
     return fecha.toLocaleDateString("es-CO", {
       day: "2-digit",
       month: "2-digit",
@@ -63,9 +70,7 @@ export default function TablaVisitantes() {
 
   const header = (
     <div>
-      <div className="mb-3">
-        <h2 className="fw-bold d-flex gap-2">Visitantes</h2>
-      </div>
+      <h2 className="fw-bold d-flex gap-2">Visitantes</h2>
 
       <div className="d-flex justify-content-between headerContainer align-items-center">
         <div className="d-flex gap-3 align-items-center">
@@ -96,7 +101,9 @@ export default function TablaVisitantes() {
             <div>
               <Button
                 label="Visitantes inactivos"
-                className="p-button-sm rounded"
+                className="btnVisitantesActivos d-flex gap-2"
+                icon="pi pi-user-minus"
+                iconPos="left"
                 onClick={() => setMostrarModal(true)}
               />
             </div>
@@ -120,9 +127,12 @@ export default function TablaVisitantes() {
   );
 
   return (
-    <div className="card mx-auto shadow mt-4" style={{ width: "1000px" }}>
+    <div
+      className="card mx-auto shadow mt-4 tableContainer"
+      style={{ width: "1000px" }}
+    >
       <Dialog
-        header="Formulario de visitante"
+        header="Visitantes desactivados"
         visible={mostrarModal}
         style={{ width: "800px" }}
         onHide={() => setMostrarModal(false)}
@@ -134,6 +144,7 @@ export default function TablaVisitantes() {
       <DataTable
         value={visitantesFiltrados}
         paginator
+        scrollHeight={"260px"}
         rows={5}
         header={header}
         rowsPerPageOptions={[5, 10, 20]}
@@ -141,8 +152,13 @@ export default function TablaVisitantes() {
         emptyMessage="No hay visitantes registrados."
       >
         <Column field="nombre" header="Nombre" />
+        <Column field="numeroDocumento" header="Numero de documento" />
         <Column field="apellido" header="Apellido" />
-        <Column field="fechaIngreso" header="Fecha de ingreso" body={fechaTemplate} />
+        <Column
+          field="fechaRegistro"
+          header="Fecha de ingreso"
+          body={fechaTemplate}
+        />
         <Column field="estado" header="Estado" body={estadoTemplate} />
       </DataTable>
     </div>
