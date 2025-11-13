@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\eyscasadeapoyo;
+use App\Models\eysgranja;
 use App\Models\usuarios;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -144,6 +145,94 @@ class EysCasadeapoyoController extends Controller
         'usuario' => $usuario
     ]);
 }
+
+public function EstadisticasEntradasKPI()
+{
+    $totalEntradas = eysgranja::where('tipo', 'entrada')->count();
+
+
+    $entradasHoy = eyscasadeapoyo::where('tipo', 'entrada')
+        ->whereDate('fechaRegistro', now()->toDateString())
+        ->count();
+
+    $porcentaje = $totalEntradas > 0
+        ? round(($entradasHoy / $totalEntradas) * 100, 2)
+        : 0;
+
+    $porPerfil = eyscasadeapoyo::with('usuarios.perfile:id,nombre')
+        ->where('tipo', 'entrada')
+        ->get()
+        ->groupBy(function ($item) {
+           
+            if ($item->usuarios && $item->usuarios->perfile) {
+                return $item->usuarios->perfile->nombre;
+            }
+            
+            return 'Visitante';
+        })
+        ->map(function ($grupo) {
+            return [
+                'perfil' => $grupo->first()->usuarios->perfile->nombre
+                    ?? 'Visitante',
+                'cantidad' => $grupo->count(),
+            ];
+        })
+        ->values();
+
+    return response()->json([
+        'porcentaje' => $porcentaje,
+        'porperfil' => $porPerfil,
+        'total' => $totalEntradas,
+    ]);
+}
+
+
+
+public function EstadisticasSalidasKPI()
+{
+  
+    $totalSalidas = eyscasadeapoyo::where('tipo', 'salida')->count();
+
+
+    $salidasHoy = eyscasadeapoyo::where('tipo', 'salida')
+        ->whereDate('fechaRegistro', now()->toDateString())
+        ->count();
+
+   
+    $porcentaje = $totalSalidas > 0
+        ? round(($salidasHoy / $totalSalidas) * 100, 2)
+        : 0;
+
+    
+    $porPerfil = eyscasadeapoyo::with('usuarios.perfile:id,nombre')
+        ->where('tipo', 'salida')
+        ->get()
+        ->groupBy(function ($item) {
+            if ($item->usuarios && $item->usuarios->perfile) {
+                return $item->usuarios->perfile->nombre;
+            }
+            return 'Visitante';
+        })
+        ->map(function ($grupo) {
+            return [
+                'perfil' => $grupo->first()->usuarios->perfile->nombre
+                    ?? 'Visitante',
+                'cantidad' => $grupo->count(),
+            ];
+        })
+        ->values();
+
+ 
+    return response()->json([
+        'porcentaje' => $porcentaje,
+        'porperfil' => $porPerfil,
+        'total' => $totalSalidas,
+    ]);
+}
+
+
+
+
 
 
 

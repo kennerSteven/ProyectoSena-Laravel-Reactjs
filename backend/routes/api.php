@@ -103,11 +103,16 @@ Route::get('/usuario/buscar/{numeroDocumento}', [EysCasadeapoyoController::class
 
 
 /*kpi*/
-
-
-
-
-
+Route::get('/usuarios/estadisticakpi', [UsuariosController::class, 'EstadisticasUsuariosKPI']);
+Route::get('/ficha/estadisticakpi', [FichasController::class, 'estadisticasFichasKPI']);
+Route::get('/sena/entrada', [eys_senaController::class, 'EstadisticasEntradasKPI']);
+Route::get('/gym/entrada', [eys_gymController::class, 'EstadisticasEntradasKPI']);
+Route::get('/casadeapoyo/entrada', [EysCasadeapoyoController::class, 'EstadisticasEntradasKPI']);
+Route::get('/granja/entrada', [eys_granjaController::class, 'EstadisticasEntradasGranjaKPI']);
+Route::get('/granja/salida', [eys_granjaController::class, 'EstadisticasSalidasGranjaKPI']);
+Route::get('/sena/salida', [eys_senaController::class, 'EstadisticasSalidasKPI']);
+Route::get('/casadeapoyo/salida', [EysCasadeapoyoController::class, 'EstadisticasSalidasKPI']);
+Route::get('/gym/salida', [eys_gymController::class, 'EstadisticasSalidasKPI']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
