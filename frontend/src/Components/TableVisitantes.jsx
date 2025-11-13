@@ -7,17 +7,17 @@ import { Tooltip } from "primereact/tooltip";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import TablaVisitantesDesactivados from "./TableVisitantantesDesactivados";
+import FormVisitante from "./Form/FormVisitante";
 import "../styles/Table.css";
-import "../styles/Table.css";
+
+// 🔄 API: Obtener visitantes
 const fetchVisitantes = async () => {
   try {
     const response = await fetch(
       "http://127.0.0.1:8000/api/usuarios/visitantes",
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       }
     );
 
@@ -33,7 +33,7 @@ const fetchVisitantes = async () => {
     return data.usuarios;
   } catch (error) {
     console.error("Error al obtener visitantes:", error);
-    return []; // Fallback institucional
+    return [];
   }
 };
 
@@ -41,16 +41,18 @@ export default function TablaVisitantes() {
   const [visitantes, setVisitantes] = useState([]);
   const [filtroGlobal, setFiltroGlobal] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarModalAgregar, setMostrarModalAgregar] = useState(false);
+
+  useEffect(() => {
+    cargarVisitantes();
+  }, []);
 
   const cargarVisitantes = async () => {
     const data = await fetchVisitantes();
     setVisitantes(data);
   };
 
-  useEffect(() => {
-    cargarVisitantes();
-  }, []);
-
+  // 🏷️ Template para estado
   const estadoTemplate = (rowData) => (
     <Tag
       value={rowData.estado}
@@ -58,24 +60,14 @@ export default function TablaVisitantes() {
     />
   );
 
-  const fechaTemplate = (rowData) => {
-    if (!rowData.fechaRegistro) return "—";
-    const fecha = new Date(rowData.fechaRegistro);
-    return fecha.toLocaleDateString("es-CO", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
+  // 🔍 Header con búsqueda y botones
   const header = (
     <div>
       <h2 className="fw-bold d-flex gap-2">Visitantes</h2>
-
       <div className="d-flex justify-content-between headerContainer align-items-center">
         <div className="d-flex gap-3 align-items-center">
-          <div className="d-flex align-items-center">
-            <div className="d-flex justify-content-between align-items-center px-3 pt-3 mb-3">
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="d-flex justify-content-center">
               <div style={{ position: "relative", width: "100%" }}>
                 <i
                   className="pi pi-search"
@@ -97,21 +89,24 @@ export default function TablaVisitantes() {
                   style={{ paddingLeft: "2rem", width: "100%" }}
                 />
               </div>
-            </div>
-            <div>
-              <Button
-                label="Visitantes inactivos"
-                className="btnVisitantesActivos d-flex gap-2"
-                icon="pi pi-user-minus"
-                iconPos="left"
-                onClick={() => setMostrarModal(true)}
-              />
+              <div className="d-flex align-items-center ms-3 gap-2">
+                <Button
+                  className="addVisitante"
+                  icon="pi pi-plus"
+                  onClick={() => setMostrarModalAgregar(true)}
+                />
+                <Button
+                  className="btnVisitantesActivos"
+                  icon="pi pi-user-minus text-warning"
+                  iconPos="left"
+                  onClick={() => setMostrarModal(true)}
+                />
+              </div>
             </div>
           </div>
         </div>
-
         <Tooltip
-          target=".btn-crear-instructor"
+          target=".btnVisitantesActivos"
           content="Visitantes inactivos"
           position="top"
         />
@@ -119,18 +114,47 @@ export default function TablaVisitantes() {
     </div>
   );
 
-  const visitantesFiltrados = visitantes.filter(
-    (v) =>
-      v.nombre?.toLowerCase().includes(filtroGlobal.toLowerCase()) ||
-      v.apellido?.toLowerCase().includes(filtroGlobal.toLowerCase()) ||
-      v.estado?.toLowerCase().includes(filtroGlobal.toLowerCase())
+  // 🔎 Filtro global
+  const visitantesFiltrados = visitantes.filter((v) =>
+    [v.nombre, v.apellido, v.estado]
+      .map((campo) => campo?.toLowerCase() || "")
+      .some((valor) => valor.includes(filtroGlobal.toLowerCase()))
   );
+
+  // 🖼️ Template para foto
+  const fotoTemplate = (rowData) => {
+    const ruta = rowData.foto;
+    let url = null;
+
+    if (ruta?.startsWith("storage/")) {
+      url = `http://localhost:8000/${ruta}`;
+    } else if (ruta?.startsWith("http")) {
+      url = ruta;
+    }
+
+    return url ? (
+      <img
+        src={url}
+        alt="Foto"
+        className="img-thumbnail"
+        style={{
+          width: "60px",
+          height: "60px",
+          objectFit: "cover",
+          borderRadius: "8px",
+        }}
+      />
+    ) : (
+      <span className="text-muted">—</span>
+    );
+  };
 
   return (
     <div
       className="card mx-auto shadow mt-4 tableContainer"
       style={{ width: "1000px" }}
     >
+      {/* 🧾 Modal visitantes desactivados */}
       <Dialog
         header="Visitantes desactivados"
         visible={mostrarModal}
@@ -141,10 +165,22 @@ export default function TablaVisitantes() {
         <TablaVisitantesDesactivados onClose={() => setMostrarModal(false)} />
       </Dialog>
 
+      {/* ➕ Modal agregar visitante */}
+      <Dialog
+        header="Agregar visitante"
+        visible={mostrarModalAgregar}
+        style={{ width: "800px" }}
+        onHide={() => setMostrarModalAgregar(false)}
+        modal
+      >
+        <FormVisitante onClose={() => setMostrarModalAgregar(false)} />
+      </Dialog>
+
+      {/* 📋 Tabla principal */}
       <DataTable
         value={visitantesFiltrados}
         paginator
-        scrollHeight={"260px"}
+        scrollHeight="260px"
         rows={5}
         header={header}
         rowsPerPageOptions={[5, 10, 20]}
@@ -152,13 +188,10 @@ export default function TablaVisitantes() {
         emptyMessage="No hay visitantes registrados."
       >
         <Column field="nombre" header="Nombre" />
-        <Column field="numeroDocumento" header="Numero de documento" />
         <Column field="apellido" header="Apellido" />
-        <Column
-          field="fechaRegistro"
-          header="Fecha de ingreso"
-          body={fechaTemplate}
-        />
+        <Column field="numeroDocumento" header="Número de documento" />
+        <Column header="Foto" body={fotoTemplate} />
+        <Column field="fechaRegistro" header="Fecha de ingreso" />
         <Column field="estado" header="Estado" body={estadoTemplate} />
       </DataTable>
     </div>

@@ -149,7 +149,7 @@ export async function onSubmitFicha(payload) {
     }
 
     const data = await response.json();
-    return data; 
+    return data;
   } catch (error) {
     console.error("Error en onSubmitFicha:", error);
     throw error;
@@ -219,18 +219,17 @@ export async function getUsuariosDeFicha(id) {
   }
 }
 
-
-
-
 export const desactivarFicha = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8000/api/ficha/desactivar/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-   
-      },
-    });
+    const response = await fetch(
+      `http://localhost:8000/api/ficha/desactivar/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -244,19 +243,17 @@ export const desactivarFicha = async (id) => {
   }
 };
 
-
-
-
-
-
 export const deleteFicha = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8000/api/ficha/destroy/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `http://localhost:8000/api/ficha/destroy/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Error al eliminar la ficha");
@@ -269,16 +266,18 @@ export const deleteFicha = async (id) => {
   }
 };
 
-
 export async function getFichasDesactivadas() {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/ficha/listarFichasDesactivadas", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/ficha/listarFichasDesactivadas",
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -292,17 +291,19 @@ export async function getFichasDesactivadas() {
   }
 }
 
-
 export async function deleteFichasMasivo(ids = []) {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/ficha/destroyMasivo", {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ids }), // Enviamos array de IDs
-    });
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/ficha/destroyMasivo",
+      {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ids }), // Enviamos array de IDs
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -317,43 +318,45 @@ export async function deleteFichasMasivo(ids = []) {
   }
 }
 
-
-
-
 export async function getAdministrativosContratoDesactivados() {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/administrativos-contrato/desactivados", {
-      method: "GET",
-      headers: { Accept: "application/json" },
-    });
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/administrativos-contrato/desactivados",
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
 
-    const data = await response.json(); 
-    console.log(data)
+    const data = await response.json();
+    console.log(data);
     return Array.isArray(data.usuarios) ? data.usuarios : [];
   } catch (error) {
     console.error("Error al obtener instructores desactivados:", error);
     return [];
   }
 }
-
 
 export async function getInstructoresContratoDesactivados() {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/instructores-contrato/desactivados", {
-      method: "GET",
-      headers: { Accept: "application/json" },
-    });
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/instructores-contrato/desactivados",
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
 
-    const data = await response.json(); 
-    console.log(data)
+    const data = await response.json();
+    console.log(data);
     return Array.isArray(data.usuarios) ? data.usuarios : [];
   } catch (error) {
     console.error("Error al obtener instructores desactivados:", error);
@@ -361,17 +364,18 @@ export async function getInstructoresContratoDesactivados() {
   }
 }
 
-
-
 export async function activarUsuariosPorTipo(tipo) {
   try {
-    const response = await fetch("http://localhost:8000/api/usuarios/activar-masivo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ tipo }),
-    });
+    const response = await fetch(
+      "http://localhost:8000/api/usuarios/activar-masivo",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tipo }),
+      }
+    );
 
     const data = await response.json();
 
@@ -386,8 +390,6 @@ export async function activarUsuariosPorTipo(tipo) {
     throw error;
   }
 }
-
-
 
 export async function activarInstructorPorId(id) {
   return await fetch(`/api/instructores/${id}/activar`, { method: "POST" });
@@ -422,3 +424,34 @@ export async function fetchVisitantes() {
     return []; // Fallback institucional
   }
 }
+export const onSubmitVisitante = async (payload) => {
+  try {
+    const response = await fetch("http://localhost:8000/api/usuario/store", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const text = await response.text(); // 🔍 Leer como texto
+    let result;
+
+    try {
+      result = JSON.parse(text); // ✅ Parsear manualmente
+    } catch {
+      console.error("Respuesta no es JSON:", text);
+      return null;
+    }
+
+    if (!response.ok) {
+      console.error("Error en respuesta:", result);
+      return null;
+    }
+
+    return result; // ✅ Aquí es donde debe retornar
+  } catch (error) {
+    console.error("Error en onSubmitVisitante:", error);
+    return null;
+  }
+};
