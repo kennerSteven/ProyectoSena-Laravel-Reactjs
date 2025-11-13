@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class usuarios extends Model
@@ -59,6 +60,15 @@ class usuarios extends Model
 
         return $this->hasMany(eyscasadeapoyo::class);
     }
+
+    
+    protected function serializeDate(\DateTimeInterface $date)
+{
+    return Carbon::parse($date)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
+}
+
 
 
 }

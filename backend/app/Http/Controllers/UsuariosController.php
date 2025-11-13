@@ -8,6 +8,7 @@ use App\Models\eysgym;
 use App\Models\eyssena;
 use App\Models\perfile;
 use App\Models\usuarios;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -33,6 +34,7 @@ class UsuariosController extends Controller
             $request['foto'] = 'storage/fotos/' . $nombreFoto;
         }
 
+     $request['fechaRegistro'] = Carbon::now('America/Bogota')->format('Y-m-d H:i:s');
     
     $usuario = usuarios::create($request->all());
 
