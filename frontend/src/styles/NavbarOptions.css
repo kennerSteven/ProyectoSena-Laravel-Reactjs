@@ -7,7 +7,7 @@
 .main {
   display: flex;
   align-items: center;
-  margin: 50px;
+
   color: #fff;
 
   text-decoration: none;
@@ -17,19 +17,12 @@
 }
 
 .NavbarOptions {
-  margin-top: 10px;
+  margin-top: 11px;
 }
 .NavbarOptions:hover {
   background: #f5f5f9;
   color: #007832;
 }
-
-/* Logo institucional */
-.imgContainer {
-  display: flex;
-  gap: 5px;
-}
-
 
 hr {
   width: 90%;
@@ -37,7 +30,7 @@ hr {
 }
 .iconClass {
   background-color: #e6f4ea;
-  padding: 10px;
+  padding: 11px;
   border-radius: 10px;
   color: #2e7d32;
   font-size: 20px;

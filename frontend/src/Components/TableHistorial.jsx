@@ -88,9 +88,9 @@ export default function TablaHistorial() {
     const getColor = (tipo) => {
       switch (tipo?.toLowerCase()) {
         case "entrada":
-          return "info"; // azul claro
+          return "info";
         case "salida":
-          return "danger"; // rojo
+          return "danger";
         default:
           return null;
       }
@@ -128,6 +128,7 @@ export default function TablaHistorial() {
               globalFilterFields={[
                 "usuarios.nombre",
                 "usuarios.telefono",
+                "usuarios.numeroDocumento",
                 "usuarios.perfile.nombre",
                 "tipo",
                 "fechaRegistro",
@@ -147,6 +148,12 @@ export default function TablaHistorial() {
                 header="Teléfono"
                 filter
                 filterPlaceholder="Buscar teléfono"
+              />
+              <Column
+                field="usuarios.numeroDocumento"
+                header="Documento"
+                filter
+                filterPlaceholder="Buscar documento"
               />
               <Column
                 field="usuarios.perfile.nombre"

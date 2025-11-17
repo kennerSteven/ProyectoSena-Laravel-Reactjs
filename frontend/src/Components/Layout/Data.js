@@ -1,48 +1,190 @@
-export const ItemsConfig = [
+export const ItemsConfigGranja = [
+  { iconClass: "pi pi-home", link: "/dashboardgranja/inicio", label: "Inicio" },
   {
-    iconClass: "pi pi-home",
-    link: "/Dashboard/inicio",
-    label: "Inicio",
-  },
-  {
-    iconClass: "pi pi-users", // Grupo de personas
+    iconClass: "pi pi-users",
     label: "Aprendices",
-    link: "/Dashboard/ListarAprendiz",
+    link: "/dashboardgranja/listaraprendiz",
   },
   {
-    iconClass: "pi pi-book", // Contenido académico
+    iconClass: "pi pi-book",
     label: "Formaciones",
-    link: "/Dashboard/Formaciones",
+    link: "/dashboardgranja/formaciones",
   },
   {
-    iconClass: "pi pi-user-edit", // Rol activo de enseñanza
+    iconClass: "pi pi-user-edit",
     label: "Instructor",
-    link: "/Dashboard/ListarInstructor",
+    link: "/dashboardgranja/listarinstructor",
   },
   {
-    iconClass: "pi pi-user-plus", // Usuario externo
+    iconClass: "pi pi-user-plus",
     label: "Visitante",
-    link: "/Dashboard/ListarVisitante",
+    link: "/dashboardgranja/listarvisitante",
+  },
+
+  {
+    iconClass: "pi pi-briefcase",
+    label: "Administrativo",
+    link: "/dashboardgranja/listaradministrativo",
+  },
+  { type: "divider" },
+  {
+    iconClass: "pi pi-question-circle",
+    label: "Vigilantes",
+    link: "/dashboardgranja/vigilantes",
+  },
+  { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
+];
+export const ItemsConfigCata = [
+  { iconClass: "pi pi-home", link: "/dashboardcata/inicio", label: "Inicio" },
+  {
+    iconClass: "pi pi-users",
+    label: "Aprendices",
+    link: "/dashboardcata/listaraprendiz",
   },
   {
-    iconClass: "pi pi-briefcase", // Gestión administrativa
+    iconClass: "pi pi-bookt",
+    label: "Formaciones",
+    link: "/dashboardcata/formaciones",
+  },
+  {
+    iconClass: "pi pi-user-edit",
+    label: "Instructor",
+    link: "/dashboardcata/listarinstructor",
+  },
+  {
+    iconClass: "pi pi-briefcase",
     label: "Administrativo",
-    link: "/Dashboard/ListarAdministrativo",
+    link: "/dashboardcata/listaradministrativo",
+  },
+  {
+    iconClass: "pi pi-user-plus",
+    label: "Visitante",
+    link: "/dashboardcata/listarvisitante",
   },
 
   { type: "divider" },
-
   {
-    iconClass: "pi pi-shield", // Seguridad institucional
+    iconClass: "pi pi-question-circle",
     label: "Vigilantes",
-    link: "/Dashboard/Vigilantes",
+    link: "/dashboardcata/vigilantes",
+  },
+  { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
+];
+export const ItemsConfigCasaApoyo = [
+  { iconClass: "pi pi-home", link: "/dashboardcasa/inicio", label: "Inicio" },
+  {
+    iconClass: "pi pi-users",
+    label: "Aprendices",
+    link: "/dashboardcasa/listaraprendiz",
   },
   {
-    iconClass: "pi pi-sign-out", // Cierre de sesión
-    label: "Cerrar sesión",
-    link: "/logout",
+    iconClass: "pi pi-book",
+    label: "Formaciones",
+    link: "/dashboardcasa/formaciones",
   },
+  {
+    iconClass: "pi pi-user-edit",
+    label: "Instructor",
+    link: "/dashboardcasa/listarinstructor",
+  },
+  {
+    iconClass: "pi pi-briefcase",
+    label: "Administrativo",
+    link: "/dashboardcasa/listaradministrativo",
+  },
+  {
+    iconClass: "pi pi-user-plus",
+    label: "Visitante",
+    link: "/dashboardcasa/listarvisitante",
+  },
+
+  { type: "divider" },
+  {
+    iconClass: "pi pi-question-circle",
+    label: "Vigilantes",
+    link: "/dashboardcasa/vigilantes",
+  },
+  { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
 ];
+export const getItemsConfigByDashboard = (dashboard) => {
+  const prefix = `/dashboard${dashboard.toLowerCase()}`;
+  return [
+    { iconClass: "pi pi-home", link: `${prefix}/inicio`, label: "Inicio" },
+    {
+      iconClass: "pi pi-users",
+      label: "Aprendices",
+      link: `${prefix}/listaraprendiz`,
+    },
+    {
+      iconClass: "pi pi-book",
+      label: "Formaciones",
+      link: `${prefix}/formaciones`,
+    },
+    {
+      iconClass: "pi pi-user-edit",
+      label: "Instructor",
+      link: `${prefix}/listarinstructor`,
+    },
+    {
+      iconClass: "pi pi-user-plus",
+      label: "Visitante",
+      link: `${prefix}/listarvisitante`,
+    },
+    {
+      iconClass: "pi pi-briefcase",
+      label: "Administrativo",
+      link: `${prefix}/listaradministrativo`,
+    },
+    { type: "divider" },
+    {
+      iconClass: "pi pi-question-circle",
+      label: "Vigilantes",
+      link: `${prefix}/vigilantes`,
+    },
+    { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
+  ];
+};
+
+export const getItemsConfig = (dashboardPrefix) => [
+  {
+    iconClass: "pi pi-home",
+    link: `${dashboardPrefix}/inicio`,
+    label: "Inicio",
+  },
+  {
+    iconClass: "pi pi-users",
+    label: "Aprendices",
+    link: `${dashboardPrefix}/listaraprendiz`,
+  },
+  {
+    iconClass: "pi pi-book",
+    label: "Formaciones",
+    link: `${dashboardPrefix}/formaciones`,
+  },
+  {
+    iconClass: "pi pi-user-edit",
+    label: "Instructor",
+    link: `${dashboardPrefix}/listarinstructor`,
+  },
+  {
+    iconClass: "pi pi-user-plus",
+    label: "Visitante",
+    link: `${dashboardPrefix}/listarvisitante`,
+  },
+  {
+    iconClass: "pi pi-briefcase",
+    label: "Administrativo",
+    link: `${dashboardPrefix}/listaradministrativo`,
+  },
+  { type: "divider" },
+  {
+    iconClass: "pi pi-question-circle",
+    label: "Vigilantes",
+    link: `${dashboardPrefix}/vigilantes`,
+  },
+  { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
+];
+
 export const TipoPerfil = [
   { value: "Aprendiz", label: "Aprendiz" },
   { value: "Instructor", label: "Instructor" },
@@ -55,7 +197,7 @@ export const nameValueInstructor = [
   { field: "tipoPerfil", header: "Perfil" },
   { field: "numeroDocumento", header: "Documento" },
   { field: "telefono", header: "Teléfono" },
-  { field: "fechaRegistro", header: "Fecha registro" }, // ✅ agregado
+  { field: "fechaRegistro", header: "Fecha registro" },
 ];
 
 export const nameValueAprendiz = [
@@ -64,11 +206,11 @@ export const nameValueAprendiz = [
 
   { field: "numeroDocumento", header: "Documento" },
   { field: "telefono", header: "Teléfono" },
-
+  { field: "numeroFicha", header: "Ficha" },
   { field: "nombrePrograma", header: "Formación" },
   { field: "jornada", header: "Jornada" },
   { field: "tipoSangre", header: " Sangre" },
-  { field: "fechaRegistro", header: "Fecha de Registro" }, // ✅ agregado
+  { field: "fechaRegistro", header: "Fecha de Registro" },
 ];
 export const nameValueVisitante = [
   "Id",

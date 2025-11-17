@@ -34,7 +34,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
     reset,
     perfiles,
     closeModal,
-    perfil: "Instructor",
+    perfil: "Visitante",
     usuarioSeleccionado,
     capturedImage,
   });
@@ -117,7 +117,6 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                   error={errors.telefono}
                   labelName="Teléfono"
                 />
-        
               </div>
 
               <div className="my-2">
@@ -146,7 +145,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                   <div className="text-center">
                     <img
                       src={capturedImage}
-                      alt="Foto del instructor"
+                      alt="Foto del visitante"
                       className="img-fluid rounded"
                       style={{ maxHeight: "200px", objectFit: "cover" }}
                     />

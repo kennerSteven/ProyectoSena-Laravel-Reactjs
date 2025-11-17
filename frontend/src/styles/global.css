@@ -33,3 +33,80 @@ hr {
   font-weight: 500;
   letter-spacing: 0.3px;
 }
+
+.buttonConfirmSwal {
+  border: none;
+  padding: 12px 30px;
+  font-weight: 600;
+  border-radius: 12px;
+  font-size: 15px;
+  background: #e6f4ea;
+  color: #2e7d32;
+}
+
+.buttonConfirmSwal:hover {
+  transform: scale(1.01);
+  background: #c2e3cc !important;
+  color: #2e7d32;
+}
+
+.swal2-container {
+  z-index: 9999 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.p-button:focus,
+.p-button:active,
+.p-button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.p-inputtext,
+.p-inputtext:focus,
+.p-inputtext:active,
+.p-inputtext.p-focus,
+.p-inputtext:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #ccc !important;
+  background-color: #fff !important;
+  transition: none !important;
+}
+
+.p-dropdown,
+.p-dropdown:focus,
+.p-dropdown:active,
+.p-dropdown.p-focus,
+.p-dropdown:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #ccc !important;
+  background-color: #fff !important;
+  transition: none !important;
+}
+
+.p-calendar,
+.p-calendar:focus,
+.p-calendar:active,
+.p-calendar.p-focus,
+.p-calendar:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #ccc !important;
+  background-color: #fff !important;
+  transition: none !important;
+}
+
+.p-input-icon-left .p-inputtext,
+.p-input-icon-left .p-inputtext:focus {
+  box-shadow: none !important;
+  border-color: #ccc !important;
+}

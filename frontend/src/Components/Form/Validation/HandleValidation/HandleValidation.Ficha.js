@@ -5,7 +5,7 @@ import "../../../../styles/ButtonSubmit.css";
 
 export default function HandleValidationFicha({
   reset,
-
+  closeModal,
   fichaSeleccionada,
 }) {
   const onSubmit = async (data) => {
@@ -26,20 +26,32 @@ export default function HandleValidationFicha({
 
         Swal.fire({
           icon: "success",
-          title: "Ficha actualizada",
-          text: "La ficha fue actualizada exitosamente",
+          title: "Ficha actualizada ",
+          text: "La ficha fue actualizada correctamente",
           confirmButtonText: "Aceptar",
           timer: 2000,
           timerProgressBar: true,
           showConfirmButton: true,
           customClass: {
-            confirmButton: "swal-confirm-green",
+            confirmButton: "buttonConfirmSwal",
           },
         });
+        closeModal();
       } else {
         await onSubmitFicha(payload);
 
-        toast.success("Ficha creada exitosamente!");
+        Swal.fire({
+          icon: "success",
+          title: "Ficha creada ",
+          text: "La ficha fue creada exitosamente",
+          confirmButtonText: "Aceptar",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          customClass: {
+            confirmButton: "buttonConfirmSwal",
+          },
+        });
       }
 
       reset();

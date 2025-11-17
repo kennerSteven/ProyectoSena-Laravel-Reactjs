@@ -13,6 +13,7 @@ import FormFicha from "./Components/Form/FormFicha";
 import App from "./Components/Routes/Routes";
 import TablaFicha from "./Components/TableFicha";
 import ActivarInstructor from "./Components/Form/TableActivarInstructor";
+import SelectLogin from "./Components/Main/SelectLogin/SelectLogin";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>

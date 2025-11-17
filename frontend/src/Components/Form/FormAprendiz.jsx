@@ -2,15 +2,16 @@ import { useEffect, useState, useRef } from "react";
 import ButtonSubmit from "../Ui/ButtonSubmit";
 import SelectOptions from "../Ui/SelectOptions";
 import InputField from "../Ui/InputField";
+import InputAutoComplete from "../Ui/InputAutocomplete";
 import useFormWithYup from "./Validation/connectYupRhf";
 import { Toaster } from "react-hot-toast";
 import "../../styles/FormUsers.css";
-import InputAutoComplete from "../Ui/InputAutocomplete";
 import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
 import useFichaFetch from "../Hooks/UseFichaAprendiz";
 import HandleValidationAprendiz from "./Validation/HandleValidation/HandleEntitie/HandleValidation.Aprendiz";
 import SchemaValidationUser from "./Validation/SchemaValidation/SchemaValidationUser";
-export default function FormAprendiz({ closeModal }) {
+
+export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
   const {
     register,
     control,
@@ -21,9 +22,6 @@ export default function FormAprendiz({ closeModal }) {
 
   const { perfil } = useTipoPerfilFetch("Aprendiz");
   const { fichas } = useFichaFetch();
-  const opcionesPerfil = perfil
-    ? [{ value: perfil.id, label: perfil.nombre }]
-    : [];
 
   const [capturedImage, setCapturedImage] = useState(null);
   const [showCamera, setShowCamera] = useState(false);
@@ -36,7 +34,39 @@ export default function FormAprendiz({ closeModal }) {
     closeModal,
     perfil: "Aprendiz",
     capturedImage,
+    usuarioSeleccionado,
   });
+
+  const getFotoUrl = (foto) => {
+    const baseURL = "http://127.0.0.1:8000";
+    if (!foto) return null;
+    if (foto.startsWith("http")) return foto;
+    if (foto.startsWith("storage/fotos")) return `${baseURL}/${foto}`;
+    return `${baseURL}/storage/fotos/${foto}`;
+  };
+
+  useEffect(() => {
+    if (usuarioSeleccionado && perfil && fichas.length > 0) {
+      const fichaSeleccionada = fichas.find(
+        (f) => f.id === usuarioSeleccionado.idficha
+      );
+
+      reset({
+        nombre: usuarioSeleccionado.nombre || "",
+        apellido: usuarioSeleccionado.apellido || "",
+        tipoDocumento: usuarioSeleccionado.tipoDocumento || "",
+        numeroDocumento: usuarioSeleccionado.numeroDocumento || "",
+        telefono: usuarioSeleccionado.telefono || "",
+        tipoSangre: usuarioSeleccionado.tipoSangre || "",
+        ficha_id: fichaSeleccionada || null,
+        tipoPerfil: perfil.id,
+      });
+
+      if (usuarioSeleccionado.foto) {
+        setCapturedImage(getFotoUrl(usuarioSeleccionado.foto));
+      }
+    }
+  }, [usuarioSeleccionado, perfil, fichas, reset]);
 
   useEffect(() => {
     if (showCamera && videoRef.current) {
@@ -55,7 +85,7 @@ export default function FormAprendiz({ closeModal }) {
     <div className="container">
       <form
         className="row mt-4 formUsers mx-auto"
-        onSubmit={handleSubmit(onSubmit, onError)} // ✅ conecta correctamente
+        onSubmit={handleSubmit(onSubmit, onError)}
       >
         <div className="col-12">
           <div className="d-flex gap-4">
@@ -133,7 +163,9 @@ export default function FormAprendiz({ closeModal }) {
                 register={register}
                 error={errors.tipoPerfil}
                 labelName="Tipo perfil"
-                values={opcionesPerfil}
+                values={
+                  perfil ? [{ value: perfil.id, label: perfil.nombre }] : []
+                }
               />
             </div>
 
@@ -143,20 +175,16 @@ export default function FormAprendiz({ closeModal }) {
                   <div className="text-center">
                     <img
                       src={capturedImage}
-                      alt="Captura"
+                      alt="Foto del aprendiz"
                       className="img-fluid rounded"
-                      style={{ maxHeight: "200px" }}
+                      style={{ maxHeight: "200px", objectFit: "cover" }}
+                      onError={() =>
+                        console.warn(
+                          "No se pudo cargar la imagen:",
+                          capturedImage
+                        )
+                      }
                     />
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger mt-2"
-                      onClick={() => {
-                        setCapturedImage(null);
-                        setShowCamera(true);
-                      }}
-                    >
-                      Retomar foto
-                    </button>
                   </div>
                 ) : showCamera ? (
                   <div className="text-center">
@@ -204,11 +232,15 @@ export default function FormAprendiz({ closeModal }) {
 
           <div className="d-flex justify-content-start mt-4">
             <ButtonSubmit
-              textSend="Guardar"
-              textSending="Guardando..."
+              textSend={usuarioSeleccionado ? "Actualizar" : "Guardar"}
+              textSending={
+                usuarioSeleccionado ? "Actualizando..." : "Guardando..."
+              }
               isSubmitting={isSubmitting}
               maxWidth={false}
-              iconButton="bi bi-save"
+              iconButton={
+                usuarioSeleccionado ? "bi bi-pencil-square" : "bi bi-save"
+              }
             />
           </div>
         </div>

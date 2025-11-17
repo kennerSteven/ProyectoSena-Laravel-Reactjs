@@ -1,4 +1,3 @@
-// src/Form/FormVehicles/FormRegister.jsx
 import SchemaValidationRegister from "../Validation/SchemaValidation/SchemaValidationRegister";
 import ButtonSubmit from "../../Ui/ButtonSubmit";
 import SelectOptions from "../../Ui/SelectOptions";
@@ -12,7 +11,7 @@ import useHandleValidationRegister from "../Validation/HandleValidation/HandleVa
 import FormRegisterVehicles from "./FormRegisterVehicles";
 import Carnet from "../../Carnet";
 
-export default function FormRegister({ showEntrada = true }) {
+export default function FormRegisterGranja() {
   const [visible, stateVisible] = useState(false);
   const [vehiculoData, setVehiculoData] = useState(null);
   const [modalCarnet, setModalCarnet] = useState(false);
@@ -32,11 +31,9 @@ export default function FormRegister({ showEntrada = true }) {
   });
 
   const documento = watch("documento");
-  const tipoIngreso = showEntrada ? watch("tipoIngreso") : "sinVehiculo"; // ✅ evita efectos si oculto
+  const tipoIngreso = watch("tipoIngreso");
 
   useEffect(() => {
-    if (!showEntrada) return;
-
     if (tipoIngreso === "conVehiculo") {
       trigger(["tipoDocumento", "documento"]).then((valid) => {
         if (!valid || documento.length !== 10) {
@@ -51,7 +48,7 @@ export default function FormRegister({ showEntrada = true }) {
     } else {
       setVehiculoData(null);
     }
-  }, [tipoIngreso, documento, trigger, showEntrada]);
+  }, [tipoIngreso, documento, trigger]);
 
   useEffect(() => {
     if (dataCarnet && dataCarnet.nombre) {
@@ -69,12 +66,10 @@ export default function FormRegister({ showEntrada = true }) {
   }
 
   const handleFinalSubmit = (formData) => {
-    const tipo = showEntrada ? formData.tipoIngreso : "sinVehiculo";
-
     const payload = {
       numeroDocumento: formData.documento?.trim(),
       tipo: "entrada",
-      ...(tipo === "conVehiculo" && vehiculoData
+      ...(formData.tipoIngreso === "conVehiculo" && vehiculoData
         ? { vehiculo: vehiculoData }
         : {}),
     };
@@ -97,6 +92,7 @@ export default function FormRegister({ showEntrada = true }) {
         className="p-3 d-flex flex-column rounded"
       >
         <div className="row flex-column">
+          <div className="col-lg-12 mb-3"></div>
           <div className="col-lg-12 mb-3">
             <InputField
               typeIntput="text"
@@ -106,22 +102,7 @@ export default function FormRegister({ showEntrada = true }) {
               labelName="Documento"
             />
           </div>
-
-          <div className="col-lg-12 mb-4">
-            {showEntrada && (
-              <SelectOptions
-                register={register}
-                name="tipoIngreso"
-                nameSelect="Tipo de ingreso"
-                defaultValue="sinVehiculo"
-                error={errors.tipoIngreso}
-                values={[
-                  { value: "sinVehiculo", label: "Sin vehículo" },
-                  { value: "conVehiculo", label: "Con vehículo" },
-                ]}
-              />
-            )}
-          </div>
+          <div className="col-lg-12 mb-4"></div>
         </div>
 
         <ButtonSubmit
@@ -150,7 +131,7 @@ export default function FormRegister({ showEntrada = true }) {
       <Dialog
         header="Entrada registrada exitosamente"
         visible={modalCarnet}
-        style={{ width: "450px" }}
+        style={{ width: "420px" }}
         onHide={() => setModalCarnet(false)}
       >
         {dataCarnet && (

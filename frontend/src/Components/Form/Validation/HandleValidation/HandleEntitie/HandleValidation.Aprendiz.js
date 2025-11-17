@@ -1,7 +1,8 @@
-import { useState } from "react";
+import {
+  onSubmitAprendiz,
+  updateAdministrativo,
+} from "../../../../Services/FetchServices";
 import Swal from "sweetalert2";
-import { onSubmitAprendiz } from "../../../../Services/FetchServices";
-import toast from "react-hot-toast";
 import "../../../../../styles/ButtonSubmit.css";
 
 export default function HandleValidationAprendiz({
@@ -10,23 +11,26 @@ export default function HandleValidationAprendiz({
   closeModal,
   perfil: nombrePerfil,
   capturedImage,
+  usuarioSeleccionado,
 }) {
-  const [formData, setFormData] = useState();
-  const [docEntrada, setDocEntrada] = useState();
   const onSubmit = async (data) => {
-    toast.dismiss();
-
     const perfilSeleccionado = perfiles.find(
       (p) => p.nombre?.toLowerCase() === nombrePerfil?.toLowerCase()
     );
 
-    if (!perfilSeleccionado) {
-      toast.error("No se encontró el perfil solicitado");
-      return;
-    }
-
-    if (!data.ficha_id) {
-      toast.error("Debes seleccionar una ficha de formación");
+    if (!perfilSeleccionado || !data.ficha_id?.id) {
+      Swal.fire({
+        icon: "warning",
+        title: "Ficha requerida",
+        text: "Debes seleccionar una ficha de formación",
+        confirmButtonText: "Aceptar",
+        timer: 2500,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
       return;
     }
 
@@ -38,43 +42,75 @@ export default function HandleValidationAprendiz({
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
       idperfil: perfilSeleccionado.id,
-      idficha: data.idficha,
+      idficha: data.ficha_id.id,
       foto: capturedImage || null,
     };
 
-    const numeroDocEntrada = payload.numeroDocumento;
-    setDocEntrada(numeroDocEntrada);
-
-    console.table("Aprendiz data", payload);
-    setFormData(payload);
-
     try {
-      await onSubmitAprendiz(payload);
-      closeModal();
-      await Swal.fire({
-        icon: "success",
-        title: "Aprendiz creado",
-        text: "El aprendiz fue guardado exitosamente",
-        confirmButtonText: "Aceptar",
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: true,
-        customClass: {
-          confirmButton: "swal-confirm-green",
-        },
-      });
+      if (usuarioSeleccionado?.id) {
+        await updateAdministrativo(usuarioSeleccionado.id, payload); // ✅ id separado
+        Swal.fire({
+          icon: "success",
+          title: "Aprendiz actualizado",
+          text: `El aprendiz ${data.nombre} ${data.apellido} fue actualizado exitosamente`,
+          confirmButtonText: "Aceptar",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          customClass: {
+            confirmButton: "buttonConfirmSwal",
+          },
+        });
+      } else {
+        await onSubmitAprendiz(payload);
+        Swal.fire({
+          icon: "success",
+          title: "Aprendiz creado",
+          text: `El aprendiz ${data.nombre} ${data.apellido} fue creado exitosamente`,
+          confirmButtonText: "Aceptar",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          customClass: {
+            confirmButton: "buttonConfirmSwal",
+          },
+        });
+      }
 
+      closeModal();
       reset();
     } catch (error) {
       console.error("Error en envío:", error);
-      toast.error("Error al guardar el aprendiz");
+      Swal.fire({
+        icon: "error",
+        title: "Error al guardar",
+        text: "No se pudo guardar el aprendiz",
+        confirmButtonText: "Aceptar",
+        timer: 2500,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
     }
   };
 
   const onError = (errors) => {
     console.warn("Errores de validación:", errors);
-    toast.dismiss();
+    Swal.fire({
+      icon: "warning",
+      title: "Campos obligatorios",
+      text: "Revisa los campos requeridos antes de continuar",
+      confirmButtonText: "Aceptar",
+      timer: 2500,
+      timerProgressBar: true,
+      showConfirmButton: true,
+      customClass: {
+        confirmButton: "buttonConfirmSwal",
+      },
+    });
   };
 
-  return { onSubmit, onError, formData, closeModal, docEntrada };
+  return { onSubmit, onError, closeModal };
 }

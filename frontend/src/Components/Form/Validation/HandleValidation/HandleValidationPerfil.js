@@ -1,12 +1,8 @@
-import toast from "react-hot-toast";
 import { onSubmitPerfil } from "../../../Services/FetchServices";
-
-export default function usePerfilForm({ reset }) {
+import Swal from "sweetalert2";
+export default function usePerfilForm({ reset, closeModal }) {
   const onSubmit = async (data) => {
-
-
     try {
-      // Construcción defensiva del objeto
       const dataLaravel = {
         nombre: data.tipoPerfil,
         descripcion: data.descripcion,
@@ -17,15 +13,26 @@ export default function usePerfilForm({ reset }) {
 
       await onSubmitPerfil(dataLaravel);
 
+      closeModal();
+      Swal.fire({
+        icon: "success",
+        title: "Perfil creado ",
+        text: "El perfil fue creado exitosamente",
+        confirmButtonText: "Aceptar",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
       reset();
     } catch (error) {
-      toast.error("Error interno del servidor");
       console.error("Error en envío de perfil:", error);
     }
   };
 
   const onError = (errors) => {
-
     console.warn("Errores de validación:", errors);
   };
 

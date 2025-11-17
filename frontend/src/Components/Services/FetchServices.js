@@ -63,14 +63,27 @@ export const onSubmitFoormacion = async (data) => {
 };
 export async function updateInstructor(id, payload) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/usuario/update/${id}
-`,
+    `http://127.0.0.1:8000/api/usuario/update/${id}`, // ✅ sin salto de línea
     {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     }
   );
+  if (!response.ok) throw new Error("Error al actualizar");
+  return await response.json();
+}
+
+export async function updateAprendiz(id, payload) {
+  const response = await fetch(
+    `http://127.0.0.1:8000/api/usuario/update/${id}`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+
   if (!response.ok) throw new Error("Error al actualizar");
   return await response.json();
 }
@@ -301,17 +314,18 @@ export async function deleteFichasMasivo(ids = []) {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ids }), // Enviamos array de IDs
+        body: JSON.stringify({ ids }),
       }
     );
 
+    console.log(ids);
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || `Error ${response.status}`);
     }
 
     const data = await response.json();
-    return data; // { message, eliminadas, noEliminadas }
+    return data; //
   } catch (error) {
     console.error("Error al eliminar fichas masivamente:", error);
     throw error;
@@ -455,3 +469,29 @@ export const onSubmitVisitante = async (payload) => {
     return null;
   }
 };
+
+export async function deleteUsuario(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8000/api/usuario/destroy/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          // Agrega autorización si es necesario:
+          // Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Error al eliminar el usuario");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error en deleteUsuario:", error);
+    throw error;
+  }
+}

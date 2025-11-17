@@ -5,9 +5,9 @@ import useFormWithYup from "../Validation/connectYupRhf";
 import HandleValidationInstructor from "../Validation/HandleValidation/HandleEntitie/HandleValidation.Instructor";
 import SchemaValidationFormacion from "../Validation/SchemaValidation/SchemaValidationFormacion";
 import "../../../styles/FormFormacion.css";
-  import { Toast } from "bootstrap";
+
 import { Toaster } from "react-hot-toast";
-export default function FormFormacion(params) {
+export default function FormFormacion({ closeModal }) {
   const {
     register,
     handleSubmit,
@@ -15,7 +15,7 @@ export default function FormFormacion(params) {
     reset,
   } = useFormWithYup(SchemaValidationFormacion);
 
-  const { onError, onSubmit } = HandleValidationInstructor(reset);
+  const { onError, onSubmit } = HandleValidationInstructor(reset, closeModal);
 
   return (
     <form
@@ -73,16 +73,16 @@ export default function FormFormacion(params) {
           { value: "inactivo", label: "Inactivo" },
         ]}
       />
-<div className="mt-4">
-   <ButtonSubmit
-        textSend="Crear formacióm"
-        textSending="Creando formación..."
-        iconButton="pi pi-save"
-        isSubmitting={isSubmitting}
-      />
-</div>
-   
-      <Toaster  position="top-right" containerStyle={{marginTop:"90px"}} />
+      <div className="mt-4">
+        <ButtonSubmit
+          textSend="Crear formacióm"
+          textSending="Creando formación..."
+          iconButton="pi pi-save"
+          isSubmitting={isSubmitting}
+        />
+      </div>
+
+      <Toaster position="top-right" containerStyle={{ marginTop: "90px" }} />
     </form>
   );
 }

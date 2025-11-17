@@ -27,9 +27,9 @@ export default function Carnet({
   return (
     <div className="containerC">
       <div className="containerCarnet">
-        <div className="d-flex justify-content-between px-3 py-2">
+        <div className="d-flex justify-content-between px-3 pt-3 pb-4">
           <div className="mt-2">
-            <img src={logoSena} alt="Logo SENA" style={{ width: "60px" }} />
+            <img src={logoSena} alt="Logo SENA" style={{ width: "80px" }} />
           </div>
 
           <div className="d-flex align-items-end gap-2 mt-2">
@@ -55,7 +55,7 @@ export default function Carnet({
             {nombre} {apellido}
           </strong>
 
-          <div className="d-flex flex-column mt-2">
+          <div className="d-flex flex-column mt-2 ">
             <p className="normalText">
               {tipoDoc}: {numeroDoc}
             </p>
@@ -66,13 +66,13 @@ export default function Carnet({
           <div className="d-flex flex-column mt-3">
             <hr />
             <div className="d-flex flex-column gap-1">
-              <small>Regional Santander</small>
+              <small className="normalText">Regional Santander</small>
               {mostrarFicha && (
                 <strong className="strong2">{mostrarFicha}</strong>
               )}
-              <strong className="strong2">
+              <p className=" normalText text-success ">
                 Centro Agroempresarial y Turístico de los Andes
-              </strong>
+              </p>
             </div>
           </div>
         </div>

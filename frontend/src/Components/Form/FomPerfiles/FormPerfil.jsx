@@ -7,7 +7,7 @@ import usePerfilForm from "../Validation/HandleValidation/HandleValidationPerfil
 import SchemaValidationFormPerfil from "../Validation/SchemaValidation/SchemaValidationFormPerfil";
 import "../../../styles/FormPerfil.css";
 import { Toaster } from "react-hot-toast";
-export default function FormPerfil() {
+export default function FormPerfil({ closeModal }) {
   const {
     register,
     handleSubmit,
@@ -15,15 +15,15 @@ export default function FormPerfil() {
     reset,
   } = useFormWithYup(SchemaValidationFormPerfil);
 
-  const { onError, onSubmit } = usePerfilForm({ reset });
+  const { onError, onSubmit } = usePerfilForm({ reset, closeModal });
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit, onError)}
-      className="d-flex justify-content-center align-items-center  "
+      className="d-flex justify-content-center align-items-center"
     >
       <div className="row">
-        <div className="formRegister ">
+        <div className="formRegister">
           <div className="my-3">
             <InputField
               typeInput="text"
@@ -43,14 +43,19 @@ export default function FormPerfil() {
               labelName="Descripcion"
             />
           </div>
+
           <ButtonSubmit
-            textSend="Guardar "
+            textSend="Guardar"
             textSending="Guardando..."
             isSubmitting={isSubmitting}
             iconButton="bi bi-save"
           />
         </div>
       </div>
+      <Toaster
+        position="top-right"
+        toastOptions={{ style: { marginTop: "100px" } }}
+      />
     </form>
   );
 }

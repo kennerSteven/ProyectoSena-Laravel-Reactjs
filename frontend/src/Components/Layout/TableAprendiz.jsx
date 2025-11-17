@@ -5,14 +5,15 @@ import { InputText } from "primereact/inputtext";
 import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { ConfirmDialog } from "primereact/confirmdialog";
 import "primeicons/primeicons.css";
 import { Tooltip } from "primereact/tooltip";
-import { deleteInstructor } from "../Services/FetchServices";
+
 import SplitButtonComp from "../Ui/SplitButton";
 import FormInstructor from "../Form/FormInstructor";
 import FormFicha from "../Form/FormFicha"; // ✅ nuevo import
 import "../../styles/Table.css";
+import FormAprendiz from "../Form/FormAprendiz";
 
 export default function TableAprendizs({
   tableTitle,
@@ -25,155 +26,10 @@ export default function TableAprendizs({
   const [globalFilter, setGlobalFilter] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
-  const [openFichaModal, setOpenFichaModal] = useState(false); // ✅ nuevo estado
+  const [openFichaModal, setOpenFichaModal] = useState(false);
   const toast = useRef(null);
 
   const globalFilterFields = nameValue.map(({ field }) => field);
-
-  const handleDeleteUser = (rowData) => {
-    confirmDialog({
-      message: (
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <i
-            className="pi pi-exclamation-triangle"
-            style={{ fontSize: "2rem", color: "#dc3545" }}
-          />
-          <span>¿Estás seguro de que deseas eliminar este usuario?</span>
-        </div>
-      ),
-      header: "Confirmar eliminación",
-      className: "custom-confirm-dialog",
-      style: { borderRadius: "10px" },
-      accept: async () => {
-        try {
-          await deleteInstructor(rowData.id);
-          confirmDialog({
-            message: (
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "1rem" }}
-              >
-                <i
-                  className="pi pi-check-circle"
-                  style={{ fontSize: "2rem", color: "#00A859" }}
-                />
-                <span>El usuario fue eliminado correctamente.</span>
-              </div>
-            ),
-            header: "Usuario eliminado",
-            className: "custom-confirm-dialog",
-            style: { borderRadius: "10px" },
-            acceptLabel: "Aceptar",
-            rejectVisible: false,
-            footer: (props) => (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "1rem",
-                }}
-              >
-                <button
-                  onClick={props.accept}
-                  style={{
-                    padding: "0.5rem 1.5rem",
-                    backgroundColor: "#0fe581ff",
-                    border: "none",
-                    borderRadius: "10px",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Aceptar
-                </button>
-              </div>
-            ),
-          });
-          if (reloadTable) reloadTable();
-        } catch (error) {
-          console.error("Error al eliminar:", error);
-          confirmDialog({
-            message: (
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "1rem" }}
-              >
-                <i
-                  className="pi pi-times-circle"
-                  style={{ fontSize: "2rem", color: "#dc3545" }}
-                />
-                <span>No se pudo eliminar el usuario.</span>
-              </div>
-            ),
-            header: "Error al eliminar",
-            className: "custom-confirm-dialog",
-            style: { borderRadius: "10px" },
-            acceptLabel: "Aceptar",
-            rejectVisible: false,
-            footer: (props) => (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "1rem",
-                }}
-              >
-                <button
-                  onClick={props.accept}
-                  style={{
-                    padding: "0.5rem 1.5rem",
-                    backgroundColor: "#00A859",
-                    border: "none",
-                    borderRadius: "10px",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Aceptar
-                </button>
-              </div>
-            ),
-          });
-        }
-      },
-      reject: () => {},
-      footer: (props) => (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          <button
-            onClick={props.accept}
-            style={{
-              padding: "0.5rem 1.5rem",
-              backgroundColor: "#dc3545",
-              border: "none",
-              borderRadius: "10px",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            Sí, eliminar
-          </button>
-          <button
-            onClick={props.reject}
-            style={{
-              padding: "0.5rem 1.5rem",
-              border: "none",
-              borderRadius: "10px",
-              backgroundColor: "white",
-              color: "#424242ff",
-              cursor: "pointer",
-            }}
-          >
-            Cancelar
-          </button>
-        </div>
-      ),
-    });
-  };
 
   const handleEditUser = (rowData) => {
     setSelectedUser(rowData);
@@ -183,7 +39,6 @@ export default function TableAprendizs({
   const handleCloseUpdateModal = () => {
     setOpenUpdateModal(false);
     setSelectedUser(null);
-    if (reloadTable) reloadTable();
   };
 
   const header = (
@@ -223,7 +78,7 @@ export default function TableAprendizs({
           />
         </div>
 
-        <div className="d-flex gap-2 containerButtonActions shadow-sm">
+        <div className="d-flex  containerButtonActions shadow-sm">
           <button
             className="btnActions d-flex align-items-center gap-2 btn-crear-aprendiz"
             onClick={functionModal}
@@ -232,7 +87,6 @@ export default function TableAprendizs({
               className="pi pi-user-plus"
               style={{ color: "#28a745", fontSize: "1.4rem" }}
             />
-            {/* Crear aprendiz */}
           </button>
 
           <button
@@ -241,9 +95,8 @@ export default function TableAprendizs({
           >
             <i
               className="pi pi-id-card"
-              style={{ color: "#28a745", fontSize: "1.4rem" }}
+              style={{ color: "#17a2b8", fontSize: "1.4rem" }}
             />
-            {/* Crear perfil */}
           </button>
 
           <button
@@ -252,11 +105,9 @@ export default function TableAprendizs({
           >
             <i
               className="pi pi-book"
-              style={{ color: "#28a745", fontSize: "1.4rem" }}
+              style={{ color: "#ffc107", fontSize: "1.4rem" }}
             />
-            {/* Crear ficha */}
           </button>
-
           <Tooltip
             target=".btn-crear-aprendiz"
             content="Crear aprendices"
@@ -278,11 +129,7 @@ export default function TableAprendizs({
   );
   const actionBodyTemplate = (rowData) => (
     <div style={{ display: "flex", gap: "0.5rem" }}>
-      <SplitButtonComp
-        rowData={rowData}
-        onDelete={handleDeleteUser}
-        onEdit={handleEditUser}
-      />
+      <SplitButtonComp rowData={rowData} onEdit={handleEditUser} />
     </div>
   );
 
@@ -355,13 +202,13 @@ export default function TableAprendizs({
       </DataTable>
 
       <Dialog
-        header="Actualizar Usuario"
+        header="Actualizar Aprendiz"
         visible={openUpdateModal}
         style={{ width: "750px" }}
         onHide={handleCloseUpdateModal}
         modal
       >
-        <FormInstructor
+        <FormAprendiz
           usuarioSeleccionado={selectedUser}
           closeModal={handleCloseUpdateModal}
         />

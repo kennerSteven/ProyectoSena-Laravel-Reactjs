@@ -30,7 +30,7 @@ export default function HandleValidationInstructor({
       numeroDocumento: data.numeroDocumento,
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
-      idperfil: perfilSeleccionado.id, 
+      idperfil: perfilSeleccionado.id,
       foto: capturedImage || null,
     };
 
@@ -46,7 +46,7 @@ export default function HandleValidationInstructor({
           timerProgressBar: true,
           showConfirmButton: true,
           customClass: {
-            confirmButton: "swal-confirm-green",
+            confirmButton: "buttonConfirmSwal",
           },
         });
       } else {
@@ -60,7 +60,7 @@ export default function HandleValidationInstructor({
           timerProgressBar: true,
           showConfirmButton: true,
           customClass: {
-            confirmButton: "swal-confirm-green",
+            confirmButton: "buttonConfirmSwal",
           },
         });
       }
