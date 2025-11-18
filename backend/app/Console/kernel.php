@@ -12,6 +12,8 @@ class Kernel extends ConsoleKernel
     /**
      * Registrar comandos personalizados.
      */
+
+    
     protected $commands = [
         exVisitantesCommand::class, // tu comando
         DesactivarContratosCommand::class,
