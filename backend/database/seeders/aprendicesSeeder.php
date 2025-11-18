@@ -8,7 +8,7 @@ use App\Models\usuarios;
 use App\Models\fichas;
 use App\Models\perfile;
 
-class AprendicesSeeder extends Seeder
+class aprendicesSeeder extends Seeder
 {
     public function run(): void
     {
