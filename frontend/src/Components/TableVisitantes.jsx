@@ -124,14 +124,12 @@ export default function TablaVisitantes() {
     </div>
   );
 
-  // 🔎 Filtro global
   const visitantesFiltrados = visitantes.filter((v) =>
     [v.nombre, v.apellido, v.estado]
       .map((campo) => campo?.toLowerCase() || "")
       .some((valor) => valor.includes(filtroGlobal.toLowerCase()))
   );
 
-  // 🖼️ Template para foto
   const fotoTemplate = (rowData) => {
     const ruta = rowData.foto;
     let url = null;
@@ -164,7 +162,6 @@ export default function TablaVisitantes() {
       className="card mx-auto shadow mt-4 tableContainer"
       style={{ width: "1000px" }}
     >
-      {/* 🧾 Modal visitantes desactivados */}
       <Dialog
         header="Visitantes desactivados"
         visible={mostrarModal}
@@ -175,7 +172,6 @@ export default function TablaVisitantes() {
         <TablaVisitantesDesactivados onClose={() => setMostrarModal(false)} />
       </Dialog>
 
-      {/* ➕ Modal agregar visitante */}
       <Dialog
         header="Agregar visitante"
         visible={mostrarModalAgregar}
@@ -183,7 +179,7 @@ export default function TablaVisitantes() {
         onHide={() => setMostrarModalAgregar(false)}
         modal
       >
-        <FormVisitante onClose={() => setMostrarModalAgregar(false)} />
+        <FormVisitante closeModal={() => setMostrarModalAgregar(false)} />
       </Dialog>
 
       {/* 📋 Tabla principal */}

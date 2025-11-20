@@ -8,7 +8,7 @@ export default function MainDashboard() {
     <div className="container px-4 py-3 mt-1 mt-md-2 mt-lg-4 mt-xl-5">
       <div className="">
         <div className="row justify-content-center gap-2">
-          <div className="col-12 col-md-6 col-xl-2 mb-3 mb-xl-0">
+          <div className="col-12 col-md-6 col-xl-3 mb-3 mb-xl-0">
             <KPI
               nameKpi="Usuarios"
               bigValue="582"
@@ -36,7 +36,7 @@ export default function MainDashboard() {
             />
           </div>
 
-          <div className="col-12 col-md-6 col-xl-3 mb-3 mb-xl-0">
+          <div className="col-12 col-md-6 col-xl-4 mb-2 mb-xl-0">
             <KPI
               nameKpi="Entradas"
               bigValue="56%"
@@ -47,20 +47,6 @@ export default function MainDashboard() {
               labelSubNameThird="Administrativos"
               valueThird="32"
               icon={<i className="bi bi-door-open iconStyle"></i>}
-            />
-          </div>
-
-          <div className="col-12 col-md-6 col-xl-2 mb-3 mb-xl-0">
-            <KPI
-              nameKpi="Salidas"
-              bigValue="44%"
-              labelSubNameFirst="Instructores"
-              valueFirst="18"
-              labelSubNameSecond="Aprendices"
-              valueSecond="95"
-              labelSubNameThird="Administrativos"
-              valueThird="28"
-              icon={<i className="bi bi-box-arrow-right iconStyle"></i>}
             />
           </div>
         </div>

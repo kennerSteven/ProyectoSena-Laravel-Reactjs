@@ -1,23 +1,24 @@
-import SchemaValidationRegister from "./Validation/SchemaValidation/SchemaValidationRegister";
+import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import Swal from "sweetalert2";
+import { Dialog } from "primereact/dialog";
+
+import SchemaValidationSalida from "./Validation/SchemaValidation/SchemaValidationSalida";
 import ButtonSubmit from "../Ui/ButtonSubmit";
 import SelectOptions from "../Ui/SelectOptions";
 import InputField from "../Ui/InputField";
-import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 import useFormWithYup from "./Validation/connectYupRhf";
-import { Dialog } from "primereact/dialog";
+import FormRegisterVehicles from "./FormVehicles/FormRegisterVehicles";
+import Carnet from "../Carnet";
+import useHandleValidationSalida from "../Form/Validation/HandleValidation/HandleValidationSalida";
+
 import "../../styles/FormRegisterVehicles.css";
 
-import FormRegisterVehicles from "./FormVehicles/FormRegisterVehicles";
-import HandleValidationSalida from "./Validation/HandleValidation/HandleValidationSalida";
-import logoSena from "../../assets/img/logoSena.png";
-import defaultUser from "../../assets/img/iconUser.png";
-
-export default function FormSalida() {
-  const [visible, stateVisible] = useState(false);
+export default function FormSalida({ createSalida, showTipoIngreso = true }) {
+  const [visible, setVisible] = useState(false);
   const [vehiculoData, setVehiculoData] = useState(null);
   const [modalSalida, setModalSalida] = useState(false);
-  const [usuarioSalida, setUsuarioSalida] = useState(null);
+  const [modalMasivo, setModalMasivo] = useState(false);
 
   const {
     register,
@@ -26,28 +27,30 @@ export default function FormSalida() {
     trigger,
     watch,
     formState: { errors, isSubmitting, isValid },
-  } = useFormWithYup(SchemaValidationRegister, { mode: "onChange" });
-
-  const { onSubmit, onError } = HandleValidationSalida({
-    reset,
-    setVisible: stateVisible,
-    onSuccess: (usuario) => {
-      setUsuarioSalida(usuario);
-      setModalSalida(true);
+  } = useFormWithYup(SchemaValidationSalida, {
+    mode: "onChange",
+    defaultValues: {
+      tipoIngreso: "sinVehiculo",
     },
   });
 
   const documento = watch("documento");
-  const tipoIngreso = watch("tipoIngreso");
+  const tipoIngreso = showTipoIngreso ? watch("tipoIngreso") : "sinVehiculo";
+
+  const { onSubmit, onError, usuarioSalida } = useHandleValidationSalida({
+    reset,
+    setVisible,
+    createSalida,
+    onSuccess: () => setModalSalida(true),
+  });
 
   useEffect(() => {
     if (tipoIngreso === "conVehiculo") {
-      trigger(["tipoDocumento", "documento"]).then((valid) => {
-        if (!valid || documento.length !== 10) {
-          toast.dismiss();
-          toast.error("Seleccione tipo de documento y documento antes de continuar");
+      trigger(["documento"]).then((valid) => {
+        if (!valid || documento.length < 6) {
+          toast.error("Completa el documento antes de continuar");
         } else {
-          stateVisible(true);
+          setVisible(true);
         }
       });
     } else {
@@ -57,37 +60,72 @@ export default function FormSalida() {
 
   const handleVehiculoSuccess = (dataVehiculo) => {
     setVehiculoData(dataVehiculo);
-    stateVisible(false);
+    setVisible(false);
+  };
+
+  const closeModalSalida = () => {
+    setModalSalida(false);
   };
 
   const handleFinalSubmit = (formData) => {
+    const tipo = showTipoIngreso ? formData.tipoIngreso : "sinVehiculo";
+
     const payload = {
       numeroDocumento: formData.documento?.trim(),
       tipo: "salida",
-      ...(formData.tipoIngreso === "conVehiculo" && vehiculoData
-        ? { vehiculo: vehiculoData }
-        : {}),
+      tieneVehiculo: tipo === "conVehiculo",
+      ...(tipo === "conVehiculo" &&
+        vehiculoData && {
+          placa: vehiculoData.placa,
+          tipoVehiculo: vehiculoData.tipoVehiculo,
+        }),
     };
 
-    if (!payload.numeroDocumento || !payload.tipo) {
-      console.warn("Payload incompleto:", payload);
-      toast.error("Faltan datos para registrar la salida");
-      return;
-    }
-
+    console.log("Payload enviado:", payload);
     onSubmit(payload);
   };
 
-  const isBlocked = tipoIngreso === "conVehiculo" && !vehiculoData;
+  const isBlocked =
+    tipoIngreso === "conVehiculo" &&
+    (!vehiculoData?.placa || !vehiculoData?.tipoVehiculo);
+
+  // ✅ Salida masiva
+  const handleSalidaMasiva = async () => {
+    try {
+      toast.dismiss();
+
+      const response = await fetch(
+        "http://localhost:8000/api/gym/salidamasiva",
+        {
+          method: "POST",
+        }
+      );
+
+      toast.dismiss();
+
+      if (!response.ok) {
+        throw new Error("Error al procesar salida masiva");
+      }
+
+      toast.success("Salida masiva registrada correctamente");
+      setModalMasivo(false);
+    } catch (error) {
+      console.error("Error en salida masiva:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error en salida masiva",
+        text: error.message || "No se pudo completar la operación.",
+      });
+    }
+  };
 
   return (
     <div>
       <form
         onSubmit={handleSubmit(handleFinalSubmit, onError)}
-        className="p-3 d-flex flex-column rounded"
+        className="p-5 d-flex flex-column rounded"
       >
-        <div className="row flex-column">
-          <div className="col-lg-12 mb-3"></div>
+        <div className="row">
           <div className="col-lg-12 mb-3">
             <InputField
               typeIntput="text"
@@ -97,37 +135,49 @@ export default function FormSalida() {
               labelName="Documento"
             />
           </div>
-          <div className="col-lg-12 mb-4">
-            <SelectOptions
-              register={register}
-              name="tipoIngreso"
-              nameSelect="Tipo de ingreso"
-              defaultValue="sinVehiculo"
-              error={errors.tipoIngreso}
-              values={[
-                { value: "sinVehiculo", label: "Sin vehículo" },
-                { value: "conVehiculo", label: "Con vehículo" },
-              ]}
-            />
-          </div>
+
+          {showTipoIngreso && (
+            <div className="col-lg-12">
+              <SelectOptions
+                register={register}
+                name="tipoIngreso"
+                nameSelect="Tipo de ingreso"
+                defaultValue="sinVehiculo"
+                error={errors.tipoIngreso}
+                values={[
+                  { value: "sinVehiculo", label: "Sin vehículo" },
+                  { value: "conVehiculo", label: "Con vehículo" },
+                ]}
+              />
+            </div>
+          )}
         </div>
 
-        <ButtonSubmit
-          textSend="Registrar salida"
-          textSending="Registrando salida..."
-          isSubmitting={isSubmitting}
-          disabled={isBlocked || isSubmitting || !isValid}
-        />
+        <div className="mt-4 d-flex gap-2 mx-auto align-items-center">
+          <ButtonSubmit
+            textSend="Salida"
+            textSending="Registrando salida..."
+            isSubmitting={isSubmitting}
+            disabled={isBlocked || isSubmitting || !isValid}
+          />
+          <button
+            type="button"
+            className="btn btn-danger rounded"
+            onClick={() => setModalMasivo(true)}
+          >
+            Salida masiva
+          </button>
+        </div>
 
         <Dialog
           header="Registrar vehículo"
           visible={visible}
-          style={{ width: "30vw", maxHeight: "80vh" }}
+          style={{ width: "500px" }}
           modal
-          onHide={() => stateVisible(false)}
+          onHide={() => setVisible(false)}
         >
           <FormRegisterVehicles
-            closeModal={() => stateVisible(false)}
+            closeModal={() => setVisible(false)}
             onSuccess={handleVehiculoSuccess}
           />
         </Dialog>
@@ -138,84 +188,51 @@ export default function FormSalida() {
       <Dialog
         header="Salida registrada exitosamente"
         visible={modalSalida}
-        style={{ width: "500px" }}
-        onHide={() => setModalSalida(false)}
+        style={{ width: "450px" }}
+        onHide={closeModalSalida}
       >
         {usuarioSalida && (
-          <div className="p-3">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <img src={logoSena} alt="Logo SENA" style={{ width: "60px" }} />
-              <div className="d-flex align-items-center gap-3">
-                <div className="text-end">
-                  <strong>{usuarioSalida.perfile?.nombre}</strong>
-                  <p className="text-muted mb-0" style={{ fontSize: "0.8rem" }}>
-                    {new Date(usuarioSalida.fechaRegistro).toLocaleString("es-CO")}
-                  </p>
-                </div>
-                <img
-                  src={
-                    usuarioSalida.foto
-                      ? usuarioSalida.foto.startsWith("http")
-                        ? usuarioSalida.foto
-                        : `http://localhost:8000/${usuarioSalida.foto}`
-                      : defaultUser
-                  }
-                  alt="Foto"
-                  className="rounded"
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    objectFit: "cover",
-                    border: "2px solid #ccc",
-                  }}
-                />
-              </div>
-            </div>
-
-            <hr />
-
-            <div>
-              <h5 className="mb-2">
-                {usuarioSalida.nombre} {usuarioSalida.apellido}
-              </h5>
-              <p className="mb-1">
-                <strong>{usuarioSalida.tipoDocumento}:</strong>{" "}
-                {usuarioSalida.numeroDocumento}
-              </p>
-              <p className="mb-1">
-                <strong>Teléfono:</strong> {usuarioSalida.telefono}
-              </p>
-              <p className="mb-1">
-                <strong>Grupo sanguíneo:</strong> {usuarioSalida.tipoSangre}
-              </p>
-
-              {usuarioSalida.perfile?.nombre?.toLowerCase() === "aprendiz" &&
-                usuarioSalida.fichas && (
-                  <div className="mt-3">
-                    <p className="mb-1">
-                      <strong>Ficha:</strong> {usuarioSalida.fichas.numeroFicha}
-                    </p>
-                    <p className="mb-1">
-                      <strong>Programa:</strong>{" "}
-                      {usuarioSalida.fichas.nombrePrograma}
-                    </p>
-                    <p className="mb-1">
-                      <strong>Jornada:</strong> {usuarioSalida.fichas.jornada}
-                    </p>
-                  </div>
-                )}
-
-              <div className="mt-4 text-end">
-                <button
-                  className="btn btn-success"
-                  onClick={() => setModalSalida(false)}
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </div>
+          <Carnet
+            nombre={usuarioSalida.nombre}
+            apellido={usuarioSalida.apellido}
+            tipoDoc={usuarioSalida.tipoDocumento}
+            numeroDoc={usuarioSalida.numeroDocumento}
+            telefono={usuarioSalida.telefono}
+            sangre={usuarioSalida.tipoSangre}
+            tipoPerfil={usuarioSalida.perfile?.nombre}
+            Formacion={usuarioSalida.perfile?.nombre}
+            ficha={
+              usuarioSalida.perfile?.nombre?.toLowerCase() === "aprendiz"
+                ? usuarioSalida.fichas?.nombrePrograma
+                : null
+            }
+            foto={usuarioSalida.foto}
+            closeCarnet={closeModalSalida}
+          />
         )}
+      </Dialog>
+
+      <Dialog
+        header="¿Confirmar salida masiva?"
+        visible={modalMasivo}
+        style={{ width: "400px" }}
+        modal
+        onHide={() => setModalMasivo(false)}
+        footer={
+          <div className="d-flex justify-content-end gap-2">
+            <button
+              className="btn btn-secondary"
+              onClick={() => setModalMasivo(false)}
+            >
+              Cancelar
+            </button>
+            <button className="btn btn-danger" onClick={handleSalidaMasiva}>
+              Aceptar salida masiva
+            </button>
+          </div>
+        }
+      >
+        <p>¿Estás seguro de que deseas registrar la salida masiva?</p>
       </Dialog>
     </div>
   );

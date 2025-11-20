@@ -108,7 +108,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
           </div>
 
           <div className="row">
-            <div className="col-lg-6 mt-3">
+            <div className="col-lg-6 ">
               <div className="d-flex gap-4">
                 <InputField
                   typeInput="number"

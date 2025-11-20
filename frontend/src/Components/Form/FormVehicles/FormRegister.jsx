@@ -1,4 +1,3 @@
-// src/Form/FormVehicles/FormRegister.jsx
 import SchemaValidationRegister from "../Validation/SchemaValidation/SchemaValidationRegister";
 import ButtonSubmit from "../../Ui/ButtonSubmit";
 import SelectOptions from "../../Ui/SelectOptions";
@@ -12,8 +11,8 @@ import useHandleValidationRegister from "../Validation/HandleValidation/HandleVa
 import FormRegisterVehicles from "./FormRegisterVehicles";
 import Carnet from "../../Carnet";
 
-export default function FormRegister({ showEntrada = true }) {
-  const [visible, stateVisible] = useState(false);
+export default function FormRegister({ showEntrada = true, createRegister }) {
+  const [visible, setVisible] = useState(false);
   const [vehiculoData, setVehiculoData] = useState(null);
   const [modalCarnet, setModalCarnet] = useState(false);
 
@@ -24,28 +23,31 @@ export default function FormRegister({ showEntrada = true }) {
     trigger,
     watch,
     formState: { errors, isSubmitting, isValid },
-  } = useFormWithYup(SchemaValidationRegister, { mode: "onChange" });
-
-  const { onSubmit, onError, dataCarnet } = useHandleValidationRegister({
-    reset,
-    setVisible: stateVisible,
+  } = useFormWithYup(SchemaValidationRegister, {
+    mode: "onChange",
+    defaultValues: {
+      tipoIngreso: "sinVehiculo",
+    },
   });
 
   const documento = watch("documento");
-  const tipoIngreso = showEntrada ? watch("tipoIngreso") : "sinVehiculo"; // ✅ evita efectos si oculto
+  const tipoIngreso = showEntrada ? watch("tipoIngreso") : "sinVehiculo";
+
+  const { onSubmit, onError, dataCarnet } = useHandleValidationRegister({
+    reset,
+    setVisible,
+    createRegister,
+  });
 
   useEffect(() => {
     if (!showEntrada) return;
 
     if (tipoIngreso === "conVehiculo") {
-      trigger(["tipoDocumento", "documento"]).then((valid) => {
-        if (!valid || documento.length !== 10) {
-          toast.dismiss();
-          toast.error(
-            "Seleccione tipo de documento y documento antes de continuar"
-          );
+      trigger(["documento"]).then((valid) => {
+        if (!valid || documento.length < 6) {
+          toast.error("Completa el documento antes de continuar");
         } else {
-          stateVisible(true);
+          setVisible(true);
         }
       });
     } else {
@@ -54,41 +56,45 @@ export default function FormRegister({ showEntrada = true }) {
   }, [tipoIngreso, documento, trigger, showEntrada]);
 
   useEffect(() => {
-    if (dataCarnet && dataCarnet.nombre) {
+    if (dataCarnet?.nombre) {
       setModalCarnet(true);
     }
   }, [dataCarnet]);
 
   const handleVehiculoSuccess = (dataVehiculo) => {
-    setVehiculoData(dataVehiculo);
-    stateVisible(false);
+    setVehiculoData(dataVehiculo); // { placa, tipoVehiculo }
+    setVisible(false);
   };
 
-  function closeModalCarnet() {
+  const closeModalCarnet = () => {
     setModalCarnet(false);
-  }
+  };
 
   const handleFinalSubmit = (formData) => {
     const tipo = showEntrada ? formData.tipoIngreso : "sinVehiculo";
 
-    const payload = {
-      numeroDocumento: formData.documento?.trim(),
-      tipo: "entrada",
-      ...(tipo === "conVehiculo" && vehiculoData
-        ? { vehiculo: vehiculoData }
-        : {}),
-    };
+    const payload =
+      tipo === "conVehiculo"
+        ? {
+            numeroDocumento: formData.documento?.trim(),
+            tipo: "entrada",
+            tieneVehiculo: true,
+            placa: vehiculoData?.placa,
+            tipoVehiculo: vehiculoData?.tipoVehiculo,
+          }
+        : {
+            numeroDocumento: formData.documento?.trim(),
+            tipo: "entrada",
+            tieneVehiculo: false,
+          };
 
-    if (!payload.numeroDocumento || !payload.tipo) {
-      console.warn("Payload incompleto:", payload);
-      toast.error("Faltan datos para registrar la entrada");
-      return;
-    }
-
+    console.log("Payload enviado:", payload);
     onSubmit(payload);
   };
 
-  const isBlocked = tipoIngreso === "conVehiculo" && !vehiculoData;
+  const isBlocked =
+    tipoIngreso === "conVehiculo" &&
+    (!vehiculoData?.placa || !vehiculoData?.tipoVehiculo);
 
   return (
     <div>
@@ -107,8 +113,8 @@ export default function FormRegister({ showEntrada = true }) {
             />
           </div>
 
-          <div className="col-lg-12 mb-4">
-            {showEntrada && (
+          {showEntrada && (
+            <div className="col-lg-12 mb-4">
               <SelectOptions
                 register={register}
                 name="tipoIngreso"
@@ -120,26 +126,36 @@ export default function FormRegister({ showEntrada = true }) {
                   { value: "conVehiculo", label: "Con vehículo" },
                 ]}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
-        <ButtonSubmit
-          textSend="Registrar entrada"
-          textSending="Registrando entrada..."
-          isSubmitting={isSubmitting}
-          disabled={isBlocked || isSubmitting || !isValid}
-        />
+        <div>
+          <div className="mb-3">
+            <ButtonSubmit
+              textSend="Registrar entrada"
+              textSending="Registrando entrada..."
+              isSubmitting={isSubmitting}
+              disabled={isBlocked || isSubmitting || !isValid}
+            />
+          </div>
+          <span className="my-2">
+            ¿Usuario no registrado?{" "}
+            <a className="forgetPassword" href="">
+              Cree uno
+            </a>
+          </span>
+        </div>
 
         <Dialog
           header="Registrar vehículo"
           visible={visible}
-          style={{ width: "30vw", maxHeight: "80vh" }}
+          style={{ width: "450px" }}
           modal
-          onHide={() => stateVisible(false)}
+          onHide={() => setVisible(false)}
         >
           <FormRegisterVehicles
-            closeModal={() => stateVisible(false)}
+            closeModal={() => setVisible(false)}
             onSuccess={handleVehiculoSuccess}
           />
         </Dialog>
@@ -151,7 +167,7 @@ export default function FormRegister({ showEntrada = true }) {
         header="Entrada registrada exitosamente"
         visible={modalCarnet}
         style={{ width: "450px" }}
-        onHide={() => setModalCarnet(false)}
+        onHide={closeModalCarnet}
       >
         {dataCarnet && (
           <Carnet

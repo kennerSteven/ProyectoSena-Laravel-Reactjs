@@ -74,15 +74,17 @@
 }
 
 .btnRegistros {
-  background-color: #2e7d32;
+  background-color: #e6f4ea;
+  color: #2e7d32;
   border-radius: 10px;
   border: none;
-  color: #ffffff;
+
   font-size: 13px;
   padding: 6px 12px;
   transition: background-color 0.2s ease;
 }
 
 .btnRegistros:hover {
-  background-color: #1b5e20;
+  background-color: #c8e6c9;
+  color: #2e7d32;
 }

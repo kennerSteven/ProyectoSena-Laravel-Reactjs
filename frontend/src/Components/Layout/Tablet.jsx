@@ -213,7 +213,7 @@ export default function Table({
             <InputText
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Buscar ficha..."
+              placeholder="Buscar..."
               style={{ paddingLeft: "2rem", width: "250px" }}
             />
           </div>

@@ -110,3 +110,27 @@ hr {
   box-shadow: none !important;
   border-color: #ccc !important;
 }
+
+.menuLink {
+  background-color: #e6f4ea;
+  color: #2e7d32;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.menuLink:hover {
+  background-color: #c8e6c9;
+  transform: scale(1.02);
+  text-decoration: none;
+}
+
+.menuLink i {
+  font-size: 1.2rem;
+  color: #2e7d32;
+}

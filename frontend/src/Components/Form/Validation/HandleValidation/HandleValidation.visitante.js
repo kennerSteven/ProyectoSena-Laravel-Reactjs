@@ -34,10 +34,12 @@ export default function HandleValidationVisitante({
     try {
       const response = await onSubmitVisitante(payload);
       console.log("Respuesta del backend:", response);
-      closeModal();
-      Swal.fire({
+
+      closeModal(); // Cierra el modal primero
+
+      await Swal.fire({
         icon: "success",
-        title: "visitante creado",
+        title: "Visitante creado",
         text: `El visitante ${data.nombre} ${data.apellido} fue creado exitosamente`,
         confirmButtonText: "Aceptar",
         timer: 2000,
@@ -48,7 +50,7 @@ export default function HandleValidationVisitante({
         },
       });
 
-      reset?.();
+      reset?.(); // Limpia el formulario después del Swal
     } catch (error) {
       console.error("Error en envío:", error);
       toast.error("Error al guardar el visitante");

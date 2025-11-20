@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-const SchemaValidationRegister = yup.object({
+const SchemaValidationSalida = yup.object({
   documento: yup
     .string()
 
@@ -20,4 +20,4 @@ const SchemaValidationRegister = yup.object({
     }),
 });
 
-export default SchemaValidationRegister;
+export default SchemaValidationSalida;
