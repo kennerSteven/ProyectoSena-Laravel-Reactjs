@@ -75,7 +75,8 @@ Route::get('/usuarios/visitantes', [UsuariosController::class, 'listarVisitantes
 /*granja*/
 Route::get("/entradaysalidagranja/index", [eys_granjaController::class, "index"]);
 Route::post("/entradaysalidagranja/entradagranja", [eys_granjaController::class, "entradagranja"]);
-Route::post("/entradaysalidagranja/salidagranja", [eys_granjaController::class, "salidagranja"]); 
+Route::post("/entradaysalidagranja/salidagranja", [eys_granjaController::class, "salidagranja"]);
+Route::post('/granja/salidamasiva', [eys_granjaController::class, 'salidaMasivaGranja']); 
 Route::get('/usuario/buscar/{numeroDocumento}', [eys_granjaController::class, 'buscarPorDocumento']);
 
 /*gym*/
