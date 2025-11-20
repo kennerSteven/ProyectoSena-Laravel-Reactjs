@@ -5,12 +5,11 @@ import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
 import { Tooltip } from "primereact/tooltip";
 import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
+
 import TablaVisitantesDesactivados from "./TableVisitantantesDesactivados";
 import FormVisitante from "./Form/FormVisitante";
 import "../styles/Table.css";
 
-// 🔄 API: Obtener visitantes
 const fetchVisitantes = async () => {
   try {
     const response = await fetch(
@@ -52,7 +51,6 @@ export default function TablaVisitantes() {
     setVisitantes(data);
   };
 
-  // 🏷️ Template para estado
   const estadoTemplate = (rowData) => (
     <Tag
       value={rowData.estado}
@@ -60,7 +58,6 @@ export default function TablaVisitantes() {
     />
   );
 
-  // 🔍 Header con búsqueda y botones
   const header = (
     <div>
       <h2 className="fw-bold d-flex gap-2">Visitantes</h2>
@@ -90,26 +87,39 @@ export default function TablaVisitantes() {
                 />
               </div>
               <div className="d-flex align-items-center ms-3 gap-2">
-                <Button
-                  className="addVisitante"
-                  icon="pi pi-plus"
+                <button
+                  className="btnAgregarVisitante btnVisitantesActivos  d-flex align-items-center gap-2"
                   onClick={() => setMostrarModalAgregar(true)}
-                />
-                <Button
-                  className="btnVisitantesActivos"
-                  icon="pi pi-user-minus text-warning"
-                  iconPos="left"
+                >
+                  <i
+                    className="pi pi-user-plus"
+                    style={{ fontSize: "1.2rem", color: "#28a745" }}
+                  />
+                </button>
+
+                <button
+                  className="btnVerInactivos  btnVisitantesActivos d-flex align-items-center gap-2"
                   onClick={() => setMostrarModal(true)}
+                >
+                  <i
+                    className="pi pi-users"
+                    style={{ fontSize: "1.2rem", color: "#e1a626ff" }}
+                  />
+                </button>
+                <Tooltip
+                  target=".btnAgregarVisitante"
+                  content="Agregar visitante"
+                  position="top"
+                />
+                <Tooltip
+                  target=".btnVerInactivos"
+                  content="Ver visitantes inactivos"
+                  position="top"
                 />
               </div>
             </div>
           </div>
         </div>
-        <Tooltip
-          target=".btnVisitantesActivos"
-          content="Visitantes inactivos"
-          position="top"
-        />
       </div>
     </div>
   );

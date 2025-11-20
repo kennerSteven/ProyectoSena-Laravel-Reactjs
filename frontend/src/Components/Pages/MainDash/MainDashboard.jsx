@@ -7,7 +7,6 @@ export default function MainDashboard() {
   return (
     <div className="container px-4 py-3 mt-1 mt-md-2 mt-lg-4 mt-xl-5">
       <div className="">
-        {/* KPIs distribuidos responsivamente y centrados */}
         <div className="row justify-content-center gap-2">
           <div className="col-12 col-md-6 col-xl-2 mb-3 mb-xl-0">
             <KPI

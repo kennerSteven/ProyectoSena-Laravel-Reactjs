@@ -85,3 +85,8 @@
   transform: scale(1.05) rotate(-2deg);
   cursor: pointer;
 }
+
+.btnCancelar {
+  background-color: transparent;
+  color: rgb(66, 66, 66);
+}

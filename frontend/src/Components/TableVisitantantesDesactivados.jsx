@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
+import Swal from "sweetalert2";
 import "../styles/Table.css";
 
 export default function TableVisitantesDesactivados() {
@@ -14,16 +15,12 @@ export default function TableVisitantesDesactivados() {
   const [seleccionados, setSeleccionados] = useState([]);
   const toast = useRef(null);
 
-  // 🔄 Cargar visitantes inactivos
   const cargarVisitantes = async () => {
     try {
       const response = await fetch(
         "http://localhost:8000/api/visitantes/desactivados"
       );
-
-      if (!response.ok) {
-        throw new Error("Error al obtener visitantes");
-      }
+      if (!response.ok) throw new Error("Error al obtener visitantes");
 
       const data = await response.json();
       const usuarios = Array.isArray(data.usuarios) ? data.usuarios : [];
@@ -33,12 +30,6 @@ export default function TableVisitantesDesactivados() {
       setVisitantes(inactivos);
     } catch (error) {
       console.error("Error al cargar visitantes:", error);
-      toast.current?.show({
-        severity: "error",
-        summary: "Error",
-        detail: "No se pudo cargar la lista de visitantes",
-        life: 3000,
-      });
     }
   };
 
@@ -46,45 +37,32 @@ export default function TableVisitantesDesactivados() {
     cargarVisitantes();
   }, []);
 
-  // 🗑️ Eliminar visitantes
   const eliminarVisitantes = async (ids) => {
+    const response = await fetch(
+      "http://localhost:8000/api/usuario/eliminarVisitantesMasivamente",
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      }
+    );
+
+    const text = await response.text();
+    let result;
+
     try {
-      if (!Array.isArray(ids) || ids.length === 0) {
-        throw new Error("Debe proporcionar un array de IDs para eliminar.");
-      }
-
-      const response = await fetch(
-        "http://localhost:8000/api/usuario/eliminarVisitantesMasivamente",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ids }), // Laravel lo leerá con getContent()
-        }
-      );
-
-      const text = await response.text(); // 🔍 Leer como texto primero
-      let result;
-
-      try {
-        result = JSON.parse(text);
-      } catch {
-        throw new Error("Respuesta inválida del servidor.");
-      }
-
-      if (!response.ok) {
-        throw new Error(result?.error || "No se pudo eliminar los visitantes.");
-      }
-
-      return result;
-    } catch (error) {
-      console.error("Error al eliminar visitantes:", error);
-      throw error;
+      result = JSON.parse(text);
+    } catch {
+      throw new Error("Respuesta inválida del servidor.");
     }
+
+    if (!response.ok) {
+      throw new Error(result?.error || "No se pudo eliminar los visitantes.");
+    }
+
+    return result;
   };
 
-  // ✅ Confirmar eliminación
   const confirmarEliminacion = (ids) => {
     confirmDialog({
       message: `¿Seguro que deseas eliminar ${ids.length} visitante(s)?`,
@@ -96,27 +74,38 @@ export default function TableVisitantesDesactivados() {
       accept: async () => {
         try {
           const result = await eliminarVisitantes(ids);
-          toast.current?.show({
-            severity: "success",
-            summary: "Eliminado",
-            detail: `${result.total_eliminados} visitante(s) eliminado(s) correctamente`,
-            life: 3000,
+          Swal.fire({
+            icon: "success",
+            title: "Visitantes eliminados",
+            text: `${result.total_eliminados} visitante(s) eliminado(s) correctamente`,
+            confirmButtonText: "Aceptar",
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: true,
+            customClass: {
+              confirmButton: "buttonConfirmSwal",
+            },
           });
           setSeleccionados([]);
           await cargarVisitantes();
         } catch (error) {
-          toast.current?.show({
-            severity: "error",
-            summary: "Error",
-            detail: error.message || "Error al eliminar visitantes",
-            life: 3000,
+          Swal.fire({
+            icon: "error",
+            title: "Error al eliminar",
+            text: `No se pudo eliminar los visitantes seleccionados. ${error.message}`,
+            confirmButtonText: "Aceptar",
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: true,
+            customClass: {
+              confirmButton: "buttonConfirmSwal",
+            },
           });
         }
       },
     });
   };
 
-  // 🔍 Filtro global
   const filtrarVisitantes = visitantes.filter((v) => {
     const texto = filtroGlobal.toLowerCase();
     const fecha = new Date(v.fechaIngreso).toLocaleDateString("es-CO", {
@@ -132,20 +121,10 @@ export default function TableVisitantesDesactivados() {
     );
   });
 
-  // 🏷️ Templates
   const estadoTemplate = (rowData) => (
     <Tag value={rowData.estado} severity="danger" />
   );
-  const fechaTemplate = (rowData) => {
-    const fecha = new Date(rowData.fechaIngreso);
-    return fecha.toLocaleDateString("es-CO", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
 
-  // 🧭 Header
   const header = (
     <div className="d-flex justify-content-between align-items-center">
       <div style={{ position: "relative", width: "300px" }}>
@@ -198,11 +177,8 @@ export default function TableVisitantesDesactivados() {
         <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
         <Column field="nombre" header="Nombre" />
         <Column field="apellido" header="Apellido" />
-        <Column
-          field="fechaIngreso"
-          header="Fecha de ingreso"
-          body={fechaTemplate}
-        />
+        <Column field="numeroDocumento" header="Número de Documento" />
+        <Column field="fechaIngreso" header="Fecha de ingreso" />
         <Column field="estado" header="Estado" body={estadoTemplate} />
       </DataTable>
     </div>

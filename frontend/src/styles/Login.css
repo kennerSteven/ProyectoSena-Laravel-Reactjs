@@ -10,13 +10,8 @@
 }
 
 .titleLogin {
-  font-size: 30px;
+  font-size: 26px;
 }
-
-/* strong {
-  color: #007832;
-  font-size: 22px;
-} */
 
 .forgetPassword {
   font-size: 15px;
@@ -27,6 +22,7 @@
   font-size: 14px;
 }
 
-.gato {
-  height: 100%;
+.place {
+  font-size: 16px;
+  margin: 0;
 }

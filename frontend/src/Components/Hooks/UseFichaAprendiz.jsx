@@ -10,14 +10,14 @@ export default function useFichaFetch() {
         const data = await getFichas();
 
         const opciones = data.map((ficha) => ({
-          value: ficha.id,
+          ...ficha,
           label: `${ficha.numeroFicha} - ${ficha.nombrePrograma} - ${ficha.jornada}`,
           icon:
-            ficha.jornada === "mañana"
+            ficha.jornada?.toLowerCase() === "mañana"
               ? "pi pi-sun"
-              : ficha.jornada === "tarde"
+              : ficha.jornada?.toLowerCase() === "tarde"
               ? "pi pi-cloud"
-              : ficha.jornada === "noche"
+              : ficha.jornada?.toLowerCase() === "noche"
               ? "pi pi-moon"
               : "pi pi-question",
         }));

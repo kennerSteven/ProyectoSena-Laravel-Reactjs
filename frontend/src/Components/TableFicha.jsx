@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -6,6 +6,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Tooltip } from "primereact/tooltip";
 import { Tag } from "primereact/tag";
 import { Dialog } from "primereact/dialog";
+import { Toast } from "primereact/toast";
 import {
   getFichas,
   getUsuariosDeFicha,
@@ -16,6 +17,7 @@ import "../styles/TablaHistorial.css";
 import TablaFichasDesactivadas from "./Ui/TableFichasDesactivadas";
 import CrearFicha from "./Form/FormFicha";
 import "../styles/Table.css";
+import Swal from "sweetalert2";
 export default function TablaFicha() {
   const [showModalFichasDesactivadas, setShowModalFichasDesactivadas] =
     useState(false);
@@ -31,6 +33,8 @@ export default function TablaFicha() {
 
   const [editarModalVisible, setEditarModalVisible] = useState(false);
   const [fichaParaEditar, setFichaParaEditar] = useState(null);
+
+  const toast = useRef(null);
 
   useEffect(() => {
     cargarFichas();
@@ -95,10 +99,56 @@ export default function TablaFicha() {
     setEditarModalVisible(true);
   };
 
+  const confirmarDesactivacion = async () => {
+    try {
+      await desactivarFicha(fichaParaAccion.id);
+
+      Swal.fire({
+        icon: "warning",
+        title: "Ficha desactivada ",
+        text: `La ficha ${fichaParaAccion.nombrePrograma} fue desactivada correctamente. Para ver las fichas desactivadas accede al panel de formaciones desactivadas.`,
+        confirmButtonText: "Aceptar",
+        timer: 6000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
+
+      setAccionModalVisible(false);
+      cargarFichas();
+    } catch (error) {
+      console.error("Error al desactivar ficha:", error);
+    }
+  };
+
+  const confirmarActualizacion = async (datosActualizados) => {
+    try {
+      await updateFicha(fichaParaEditar.id, datosActualizados);
+      Swal.fire({
+        icon: "success",
+        title: "Ficha actualizada ",
+        text: `La ficha ${fichaParaAccion.nombrePrograma} fué actualizada correctamente.`,
+        confirmButtonText: "Aceptar",
+        timer: 6000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
+      setEditarModalVisible(false);
+      cargarFichas();
+    } catch (error) {
+      console.error("Error al actualizar ficha:", error);
+    }
+  };
+
   const accionesBodyTemplate = (rowData) => (
     <div className="d-flex gap-2">
       <button
-        className="btn btn-outline-danger btn-sm"
+        className="btnDesactivar"
         onClick={(e) => {
           e.stopPropagation();
           abrirModalAccion(rowData);
@@ -107,7 +157,7 @@ export default function TablaFicha() {
         <i className="bi bi-exclamation-triangle-fill p-2"></i>
       </button>
       <button
-        className="btn btn-outline-primary btn-sm"
+        className="btnActualizars"
         onClick={(e) => {
           e.stopPropagation();
           abrirModalEditar(rowData);
@@ -117,12 +167,13 @@ export default function TablaFicha() {
       </button>
     </div>
   );
-
   return (
     <div className="tableHistorialContent mx-auto shadow mt-4 tableContainer">
+      <Toast ref={toast} />
+
       <div className="row">
         <div>
-          <div className="card shadow-sm border-light ">
+          <div className="card shadow-sm border-light">
             <div className="d-flex align-items-center justify-content-between px-4 py-3 shadow">
               <h2 className="fw-bold">Formaciones</h2>
 
@@ -139,24 +190,18 @@ export default function TablaFicha() {
                     pointerEvents: "none",
                   }}
                 />
-                <InputText
-                  value={globalFilter}
-                  onChange={(e) => setGlobalFilter(e.target.value)}
-                  placeholder="Buscar ficha..."
-                  style={{
-                    paddingLeft: "2rem",
-                    width: "250px",
-                  }}
-                />
               </div>
 
               <div>
-                <div className="d-flex gap-2 containerButtonActions shadow-sm">
+                <div className="d-flex gap-1 containerButtonActions shadow-sm">
                   <button
                     onClick={() => setShowModalFichasDesactivadas(true)}
                     className="btnActionsFicha d-flex align-items-center gap-2 btn-crear-instructor"
                   >
-                    <i className="pi pi-table" style={{ fontSize: "1.2rem" }} />
+                    <i
+                      className="pi pi-table"
+                      style={{ fontSize: "1.2rem", color: "#e8ad17ff" }}
+                    />
                   </button>
 
                   <button
@@ -165,7 +210,7 @@ export default function TablaFicha() {
                   >
                     <i
                       className="pi pi-building"
-                      style={{ fontSize: "1.2rem" }}
+                      style={{ fontSize: "1.2rem", color: "#1779e8ff" }}
                     />
                   </button>
                 </div>
@@ -214,6 +259,7 @@ export default function TablaFicha() {
                 filter
                 filterPlaceholder="Buscar código"
               />
+
               <Column
                 field="jornada"
                 header="Jornada"
@@ -221,7 +267,17 @@ export default function TablaFicha() {
                 filterElement={jornadaFilterTemplate}
                 body={jornadaBodyTemplate}
               />
-              <Column field="estado" header="Estado" />
+              <Column
+                header="Estado"
+                body={(rowData) => (
+                  <Tag
+                    value={rowData.estado === "activo" ? "Activo" : "Inactivo"}
+                    severity={
+                      rowData.estado === "activo" ? "success" : "danger"
+                    }
+                  />
+                )}
+              />
               <Column
                 header="Acciones"
                 body={accionesBodyTemplate}
@@ -267,7 +323,14 @@ export default function TablaFicha() {
         >
           <Column field="nombre" header="Nombre" />
           <Column field="apellido" header="Apellido" />
+          <Column
+            field="tipoDocumento"
+            header="Tipo de documento"
+            filter
+            filterPlaceholder="Buscar código"
+          />
           <Column field="numeroDocumento" header="Documento" />
+
           <Column field="telefono" header="Teléfono" />
         </DataTable>
       </Dialog>
@@ -286,19 +349,7 @@ export default function TablaFicha() {
           >
             Cancelar
           </button>
-          <button
-            className="btn btn-warning"
-            onClick={async () => {
-              try {
-                await desactivarFicha(fichaParaAccion.id);
-                console.log("Ficha desactivada correctamente");
-                setAccionModalVisible(false);
-                await cargarFichas();
-              } catch (error) {
-                console.error("Error al desactivar ficha:", error);
-              }
-            }}
-          >
+          <button className="btn btn-warning" onClick={confirmarDesactivacion}>
             Desactivar
           </button>
         </div>
@@ -364,34 +415,23 @@ export default function TablaFicha() {
           </button>
           <button
             className="btnVisitantesActivos"
-            onClick={async () => {
-              try {
-                await updateFicha(fichaParaEditar.id, fichaParaEditar);
-                console.log("Ficha actualizada correctamente");
-                setEditarModalVisible(false);
-                await cargarFichas();
-              } catch (error) {
-                console.error("Error al guardar cambios:", error);
-              }
-            }}
+            onClick={() => confirmarActualizacion(fichaParaEditar)}
           >
             Guardar cambios
           </button>
         </div>
       </Dialog>
 
-      {/* 💤 Modal fichas desactivadas */}
       <Dialog
         header="Fichas desactivadas"
         visible={showModalFichasDesactivadas}
-        style={{ width: "700px" }}
+        style={{ width: "900px" }}
         modal
         onHide={() => setShowModalFichasDesactivadas(false)}
       >
         {showModalFichasDesactivadas && <TablaFichasDesactivadas />}
       </Dialog>
 
-      {/* 🏗️ Modal crear ficha */}
       <Dialog
         header="Crear formación"
         visible={showFormacion}
@@ -403,7 +443,7 @@ export default function TablaFicha() {
           <CrearFicha
             onAceptar={async () => {
               setShowFormacion(false);
-              await cargarFichas(); // 🔁 refresca tabla al aceptar
+              await cargarFichas();
             }}
           />
         )}

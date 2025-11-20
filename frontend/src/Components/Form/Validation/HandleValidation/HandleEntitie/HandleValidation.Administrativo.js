@@ -1,5 +1,8 @@
 import Swal from "sweetalert2";
-import { onSubmitAdministrativo } from "../../../../Services/FetchServices";
+import {
+  onSubmitAdministrativo,
+  updateAdministrativo,
+} from "../../../../Services/FetchServices";
 import toast from "react-hot-toast";
 import "../../../../../styles/ButtonSubmit.css";
 
@@ -7,6 +10,7 @@ export default function HandleValidationAdministrativo({
   reset,
   perfiles,
   closeModal,
+  usuarioSeleccionado,
   capturedImage,
 }) {
   const onSubmit = async (data) => {
@@ -26,28 +30,40 @@ export default function HandleValidationAdministrativo({
       numeroDocumento: data.numeroDocumento,
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
-      idperfil: perfilSeleccionado.id, // ✅ requerido por el backend
-      tipoPerfil: perfilSeleccionado, // ✅ útil para frontend si lo necesitas
+      idperfil: perfilSeleccionado.id,
       foto: capturedImage || null,
     };
 
-    console.table(payload);
-
     try {
-      await onSubmitAdministrativo(payload);
-
-      Swal.fire({
-        icon: "success",
-        title: "Administrativo creado",
-        text: "El administrativo fue guardado exitosamente",
-        confirmButtonText: "Aceptar",
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: true,
-        customClass: {
-          confirmButton: "swal-confirm-green",
-        },
-      });
+      if (usuarioSeleccionado?.id) {
+        await updateAdministrativo(usuarioSeleccionado.id, payload);
+        Swal.fire({
+          icon: "success",
+          title: "Administrativo actualizado",
+          text: "El administrativo fue actualizado exitosamente",
+          confirmButtonText: "Aceptar",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          customClass: {
+            confirmButton: "buttonConfirmSwal",
+          },
+        });
+      } else {
+        await onSubmitAdministrativo(payload);
+        Swal.fire({
+          icon: "success",
+          title: "Administrativo creado",
+          text: "El administrativo fue guardado exitosamente",
+          confirmButtonText: "Aceptar",
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          customClass: {
+            confirmButton: "buttonConfirmSwal",
+          },
+        });
+      }
 
       reset();
       closeModal();

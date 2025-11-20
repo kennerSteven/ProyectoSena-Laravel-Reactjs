@@ -24,53 +24,55 @@ class eys_granjaController extends Controller
 
 
     public function entradagranja(Request $request)
-{
-    $request->validate([
-        'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
-        'tieneVehiculo' => ['required', 'boolean'],
-        'placa' => ['nullable', 'string', 'max:10'],
-        'tipoVehiculo' => ['nullable', 'in:moto,carro,bus,otro'],
-    ]);
+    {
+        \Log::info('Payload recibido:', $request->all());
 
-    
-    $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
-
-     if ($usuario && $usuario->perfile->nombre === 'Visitante' && $usuario->estado === 'inactivo') {
-        $usuario->estado = 'activo';
-        $usuario->fechaExpiracion = null; 
-        $usuario->save();
-    }
-
-    if (!$usuario) {
-        return response()->json(['error' => 'Usuario no encontrado'], 404);
-    }
-
-    
-    if ($request->tieneVehiculo == true) {
-        $vehiculo = vehiculo::create([
-            'placa' => strtoupper($request->placa),
-            'tipoVehiculo' => $request->tipoVehiculo,
-            'idusuario' => $usuario->id,
-            'fechaRegistro' => now(),
+        $request->validate([
+            'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
+            'tieneVehiculo' => ['required', 'boolean'],
+            'placa' => ['nullable', 'string', 'max:10'],
+            'tipoVehiculo' => ['nullable', 'in:moto,carro,bus,otro'],
         ]);
 
-        $entrada = eysgranja::create([
-            'numeroDocumento' => $usuario->numeroDocumento,
-            'tipo' => 'entrada',
-            'idusuario' => $usuario->id,
-            'fechaRegistro' => now(),
-        ]);
+        $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
-       
-        $entrada = eysgranja::with('usuarios.perfile')->find($entrada->id);
+        if (!$usuario) {
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
 
-        return response()->json([
-            'message' => 'Entrada y vehículo registrados correctamente',
-            'usuario' => $usuario,
-            'vehiculo' => $vehiculo,
-            'entrada' => $entrada
-        ], 201);
-    } else {
+        if ($usuario->perfile->nombre === 'Visitante' && $usuario->estado === 'inactivo') {
+            $usuario->estado = 'activo';
+            $usuario->fechaExpiracion = null;
+            $usuario->save();
+        }
+
+        if ($request->tieneVehiculo === true) {
+            $vehiculo = vehiculo::create([
+                'placa' => strtoupper($request->placa),
+                'tipoVehiculo' => $request->tipoVehiculo,
+                'idusuario' => $usuario->id,
+                'fechaRegistro' => now(),
+            ]);
+
+            $entrada = eysgranja::create([
+                'numeroDocumento' => $usuario->numeroDocumento,
+                'tipo' => 'entrada',
+                'idusuario' => $usuario->id,
+                'idvehiculo' => $vehiculo->id, // ✅ vínculo directo
+                'fechaRegistro' => now(),
+            ]);
+
+            $entrada = eysgranja::with('usuarios.perfile', 'vehiculo')->find($entrada->id);
+
+            return response()->json([
+                'message' => 'Entrada y vehículo registrados correctamente',
+                'usuario' => $usuario,
+                'vehiculo' => $vehiculo,
+                'entrada' => $entrada
+            ], 201);
+        }
+
+        // Entrada sin vehículo
         $entrada = eysgranja::create([
             'numeroDocumento' => $usuario->numeroDocumento,
             'tipo' => 'entrada',
@@ -79,10 +81,10 @@ class eys_granjaController extends Controller
         ]);
 
         $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
-        ->timezone('America/Bogota')
-        ->format('Y-m-d H:i:s');
-        
-        
+            ->timezone('America/Bogota')
+            ->format('Y-m-d H:i:s');
+
+        $entrada = eysgranja::with('usuarios.perfile')->find($entrada->id);
 
         return response()->json([
             'message' => 'Entrada registrada correctamente (sin vehículo)',
@@ -90,186 +92,184 @@ class eys_granjaController extends Controller
             'entrada' => $entrada
         ], 201);
     }
-}
 
 
-
-public function salidagranja(Request $request)
-{
-    $request->validate([
-        'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
-        'tieneVehiculo' => ['required', 'boolean'],
-        'placa' => ['nullable', 'string', 'max:10'],
-        'tipoVehiculo' => ['nullable', 'in:moto,carro,bus,otro'],
-    ]);
-
-    
-    $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
-
-    if (!$usuario) {
-        return response()->json(['error' => 'Usuario no encontrado'], 404);
-    }
-
-    
-    $ultimoRegistro = eysgranja::where('idusuario', $usuario->id)->latest()->first();
-
-    if (!$ultimoRegistro || $ultimoRegistro->tipo === 'salida') {
-        return response()->json([
-            'error' => 'No se puede registrar salida sin una entrada previa.'
-        ], 400);
-    }
-
-    if ($request->tieneVehiculo == true) {
-        $vehiculo = vehiculo::create([
-            'placa' => strtoupper($request->placa),
-            'tipoVehiculo' => $request->tipoVehiculo,
-            'idusuario' => $usuario->id,
-            'fechaRegistro' => now(),
+    public function salidagranja(Request $request)
+    {
+        $request->validate([
+            'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
+            'tieneVehiculo' => ['required', 'boolean'],
+            'placa' => ['nullable', 'string', 'max:10'],
+            'tipoVehiculo' => ['nullable', 'in:moto,carro,bus,otro'],
         ]);
 
-        $salida = eysgranja::create([
-            'numeroDocumento' => $usuario->numeroDocumento,
-            'tipo' => 'salida',
-            'idusuario' => $usuario->id,
-            'fechaRegistro' => now(),
-        ]);
+        $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
 
+        if (!$usuario) {
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
 
-        return response()->json([
-            'message' => 'Salida registrada correctamente (usuario y vehículo)',
-            'usuario' => $usuario,
-            'vehiculo' => $vehiculo,
-            'salida' => $salida
-        ], 201);
-    } else {
-        $salida = eysgranja::create([
-            'numeroDocumento' => $usuario->numeroDocumento,
-            'tipo' => 'salida',
-            'idusuario' => $usuario->id,
-            'fechaRegistro' => now(),
-        ]);
+        $ultimoRegistro = eysgranja::where('idusuario', $usuario->id)->latest()->first();
 
-        if ($usuario->perfile->nombre === 'Visitante') {
-        $usuario->fechaExpiracion = now()->addHours(12);
-        $usuario->save();
-    }
+        if (!$ultimoRegistro || $ultimoRegistro->tipo === 'salida') {
+            return response()->json([
+                'error' => 'No se puede registrar salida sin una entrada previa.'
+            ], 400);
+        }
 
-     $salida->fechaRegistro = Carbon::parse($salida->fechaRegistro)
-        ->timezone('America/Bogota')
-        ->format('Y-m-d H:i:s');
+        if ($request->tieneVehiculo == true) {
+            $vehiculo = vehiculo::create([
+                'placa' => strtoupper($request->placa),
+                'tipoVehiculo' => $request->tipoVehiculo,
+                'idusuario' => $usuario->id,
+                'fechaRegistro' => now(),
+            ]);
 
+            $salida = eysgranja::create([
+                'numeroDocumento' => $usuario->numeroDocumento,
+                'tipo' => 'salida',
+                'idusuario' => $usuario->id,
+                'idvehiculo' => $vehiculo->id, // ✅ Aquí se asocia el vehículo
+                'fechaRegistro' => now(),
+            ]);
 
-        return response()->json([
-            'message' => 'Salida registrada correctamente (sin vehículo)',
-            'usuario' => $usuario,
-            'salida' => $salida
-        ], 201);
-    }
-}
-  
+            $salida->load(['usuarios.perfile', 'vehiculo']); // ✅ Relaciones cargadas
 
+            return response()->json([
+                'message' => 'Salida registrada correctamente (usuario y vehículo)',
+                'usuario' => $usuario,
+                'vehiculo' => $vehiculo,
+                'salida' => $salida
+            ], 201);
+        } else {
+            $salida = eysgranja::create([
+                'numeroDocumento' => $usuario->numeroDocumento,
+                'tipo' => 'salida',
+                'idusuario' => $usuario->id,
+                'fechaRegistro' => now(),
+            ]);
 
- public function buscarPorDocumento($numeroDocumento)
-{
-    $usuario = usuarios::with('perfile', 'fichas')
-        ->where('numeroDocumento', $numeroDocumento)
-        ->first();
-
-    if (!$usuario) {
-        return response()->json(['error' => 'Usuario no encontrado'], 404);
-    }
-
-    return response()->json([
-        'message' => 'Usuario encontrado',
-        'usuario' => $usuario
-    ]);
-}
-
-
-public function EstadisticasEntradasGranjaKPI()
-{
-    $totalEntradas = eysgranja::where('tipo', 'entrada')->count();
-
-    
-    $entradasHoy = eysgranja::where('tipo', 'entrada')
-        ->whereDate('fechaRegistro', now()->toDateString())
-        ->count();
-
-   
-    $porcentaje = $totalEntradas > 0
-        ? round(($entradasHoy / $totalEntradas) * 100, 2)
-        : 0;
-
-
-    $porPerfil = eysgranja::with('usuarios.perfile:id,nombre')
-        ->where('tipo', 'entrada')
-        ->get()
-        ->groupBy(function ($item) {
-            if ($item->usuarios && $item->usuarios->perfile) {
-                return $item->usuarios->perfile->nombre;
+            if ($usuario->perfile->nombre === 'Visitante') {
+                $usuario->fechaExpiracion = now()->addHours(12);
+                $usuario->save();
             }
-            return 'Visitante'; // cuando no hay usuario
-        })
-        ->map(function ($grupo, $perfil) {
-            return [
-                'perfil' => $perfil,
-                'cantidad' => $grupo->count(),
-            ];
-        })
-        ->values();
 
-    return response()->json([
-        'porcentaje' => $porcentaje,
-        'porperfil' => $porPerfil,
-        'total' => $totalEntradas,
-    ]);
-  
-    
-}
+            $salida->fechaRegistro = Carbon::parse($salida->fechaRegistro)
+                ->timezone('America/Bogota')
+                ->format('Y-m-d H:i:s');
 
+            $salida->load(['usuarios.perfile']); // ✅ Cargar relaciones también aquí
 
-public function EstadisticasSalidasGranjaKPI()
-{
-    // Total de SALIDAS registradas en la granja
-    $totalSalidas = eysgranja::where('tipo', 'salida')->count();
-
-    // Salidas registradas hoy
-    $salidasHoy = eysgranja::where('tipo', 'salida')
-        ->whereDate('fechaRegistro', now()->toDateString())
-        ->count();
-
-    // Porcentaje de salidas de hoy frente al total
-    $porcentaje = $totalSalidas > 0
-        ? round(($salidasHoy / $totalSalidas) * 100, 2)
-        : 0;
-
-    // Agrupamos por perfil (y visitantes si no tienen usuario)
-    $porPerfil = eysgranja::with('usuarios.perfile:id,nombre')
-        ->where('tipo', 'salida')
-        ->get()
-        ->groupBy(function ($item) {
-            if ($item->usuarios && $item->usuarios->perfile) {
-                return $item->usuarios->perfile->nombre;
-            }
-            return 'Visitante'; // cuando no hay usuario
-        })
-        ->map(function ($grupo, $perfil) {
-            return [
-                'perfil' => $perfil,
-                'cantidad' => $grupo->count(),
-            ];
-        })
-        ->values();
-
-    // Devolver datos
-    return response()->json([
-        'porcentaje' => $porcentaje,
-        'porperfil' => $porPerfil,
-        'total' => $totalSalidas,
-    ]);
-}
-
-    
-
-    
+            return response()->json([
+                'message' => 'Salida registrada correctamente (sin vehículo)',
+                'usuario' => $usuario,
+                'salida' => $salida
+            ], 201);
+        }
     }
+
+
+    public function buscarPorDocumento($numeroDocumento)
+    {
+        $usuario = usuarios::with('perfile', 'fichas')
+            ->where('numeroDocumento', $numeroDocumento)
+            ->first();
+
+        if (!$usuario) {
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
+
+        return response()->json([
+            'message' => 'Usuario encontrado',
+            'usuario' => $usuario
+        ]);
+    }
+
+
+    public function EstadisticasEntradasGranjaKPI()
+    {
+        $totalEntradas = eysgranja::where('tipo', 'entrada')->count();
+
+
+        $entradasHoy = eysgranja::where('tipo', 'entrada')
+            ->whereDate('fechaRegistro', now()->toDateString())
+            ->count();
+
+
+        $porcentaje = $totalEntradas > 0
+            ? round(($entradasHoy / $totalEntradas) * 100, 2)
+            : 0;
+
+
+        $porPerfil = eysgranja::with('usuarios.perfile:id,nombre')
+            ->where('tipo', 'entrada')
+            ->get()
+            ->groupBy(function ($item) {
+                if ($item->usuarios && $item->usuarios->perfile) {
+                    return $item->usuarios->perfile->nombre;
+                }
+                return 'Visitante'; // cuando no hay usuario
+            })
+            ->map(function ($grupo, $perfil) {
+                return [
+                    'perfil' => $perfil,
+                    'cantidad' => $grupo->count(),
+                ];
+            })
+            ->values();
+
+        return response()->json([
+            'porcentaje' => $porcentaje,
+            'porperfil' => $porPerfil,
+            'total' => $totalEntradas,
+        ]);
+
+
+    }
+
+
+    public function EstadisticasSalidasGranjaKPI()
+    {
+        // Total de SALIDAS registradas en la granja
+        $totalSalidas = eysgranja::where('tipo', 'salida')->count();
+
+        // Salidas registradas hoy
+        $salidasHoy = eysgranja::where('tipo', 'salida')
+            ->whereDate('fechaRegistro', now()->toDateString())
+            ->count();
+
+        // Porcentaje de salidas de hoy frente al total
+        $porcentaje = $totalSalidas > 0
+            ? round(($salidasHoy / $totalSalidas) * 100, 2)
+            : 0;
+
+        // Agrupamos por perfil (y visitantes si no tienen usuario)
+        $porPerfil = eysgranja::with('usuarios.perfile:id,nombre')
+            ->where('tipo', 'salida')
+            ->get()
+            ->groupBy(function ($item) {
+                if ($item->usuarios && $item->usuarios->perfile) {
+                    return $item->usuarios->perfile->nombre;
+                }
+                return 'Visitante'; // cuando no hay usuario
+            })
+            ->map(function ($grupo, $perfil) {
+                return [
+                    'perfil' => $perfil,
+                    'cantidad' => $grupo->count(),
+                ];
+            })
+            ->values();
+
+        // Devolver datos
+        return response()->json([
+            'porcentaje' => $porcentaje,
+            'porperfil' => $porPerfil,
+            'total' => $totalSalidas,
+        ]);
+    }
+
+
+
+
+}

@@ -38,6 +38,14 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
     capturedImage,
   });
 
+  const getFotoUrl = (foto) => {
+    const baseURL = "http://127.0.0.1:8000";
+    if (!foto) return null;
+    if (foto.startsWith("http")) return foto;
+    if (foto.startsWith("storage/fotos")) return `${baseURL}/${foto}`;
+    return `${baseURL}/storage/fotos/${foto}`;
+  };
+
   useEffect(() => {
     if (usuarioSeleccionado && perfiles.length > 0) {
       reset({
@@ -49,6 +57,10 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
         tipoSangre: usuarioSeleccionado.tipoSangre || "",
         tipoPerfil: usuarioSeleccionado.perfile?.id || perfiles[0]?.id || "",
       });
+
+      if (usuarioSeleccionado.foto) {
+        setCapturedImage(getFotoUrl(usuarioSeleccionado.foto));
+      }
     }
   }, [usuarioSeleccionado, reset, perfiles]);
 
@@ -69,7 +81,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
     <div>
       <form className="row" onSubmit={handleSubmit(onSubmit, onError)}>
         <div className="mt-2">
-          <div className="d-flex gap-4  mb-3">
+          <div className="d-flex gap-4 mb-3">
             <InputField
               typeInput="text"
               name="nombre"
@@ -143,13 +155,18 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                   values={opcionesPerfil}
                 />
               </div>
+
               <div className="d-flex justify-content-start mt-4">
                 <ButtonSubmit
                   textSend={usuarioSeleccionado ? "Actualizar" : "Guardar"}
-                  textSending="Guardando..."
+                  textSending={
+                    usuarioSeleccionado ? "Actualizando..." : "Guardando..."
+                  }
                   isSubmitting={isSubmitting}
                   maxWidth={false}
-                  iconButton="bi bi-save"
+                  iconButton={
+                    usuarioSeleccionado ? "bi bi-pencil-square" : "bi bi-save"
+                  }
                 />
               </div>
             </div>
@@ -163,17 +180,13 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                       alt="Foto del instructor"
                       className="img-fluid rounded"
                       style={{ maxHeight: "200px", objectFit: "cover" }}
+                      onError={() =>
+                        console.warn(
+                          "No se pudo cargar la imagen:",
+                          capturedImage
+                        )
+                      }
                     />
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger mt-2"
-                      onClick={() => {
-                        setCapturedImage(null);
-                        setShowCamera(true);
-                      }}
-                    >
-                      Retomar foto
-                    </button>
                   </div>
                 ) : showCamera ? (
                   <div className="text-center">

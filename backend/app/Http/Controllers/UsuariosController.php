@@ -34,17 +34,17 @@ class UsuariosController extends Controller
             $request['foto'] = 'storage/fotos/' . $nombreFoto;
         }
 
-     $request['fechaRegistro'] = Carbon::now('America/Bogota')->format('Y-m-d H:i:s');
-    
-    $usuario = usuarios::create($request->all());
+        $request['fechaRegistro'] = Carbon::now('America/Bogota')->format('Y-m-d H:i:s');
 
-    
-    return response()->json([
-        'message' => 'Usuario y entrada registrados correctamente',
-        'usuario' => $usuario
-       
-    ], 201);
-}
+        $usuario = usuarios::create($request->all());
+
+
+        return response()->json([
+            'message' => 'Usuario y entrada registrados correctamente',
+            'usuario' => $usuario
+
+        ], 201);
+    }
 
 
 
@@ -74,77 +74,77 @@ class UsuariosController extends Controller
 
     }
 
-   
+
     public function destroy($id)
-{
-    // Buscar el usuario
-    $usuario = usuarios::findOrFail($id);
+    {
+        // Buscar el usuario
+        $usuario = usuarios::findOrFail($id);
 
-    // Verificar que sea visitante
-    if ($usuario->perfile->nombre !== 'Visitante') {
+        // Verificar que sea visitante
+        if ($usuario->perfile->nombre !== 'Visitante') {
+            return response()->json([
+                'error' => 'Solo se pueden eliminar usuarios con perfil de Visitante.'
+            ], 403);
+        }
+
+        // Eliminar usuario
+        $usuario->delete();
+
         return response()->json([
-            'error' => 'Solo se pueden eliminar usuarios con perfil de Visitante.'
-        ], 403);
+            'message' => 'Visitante eliminado correctamente.'
+        ], 200);
     }
 
-    // Eliminar usuario
-    $usuario->delete();
-
-    return response()->json([
-        'message' => 'Visitante eliminado correctamente.'
-    ], 200);
-}
 
 
 
+    public function eliminarVisitantesMasivamente(Request $request)
+    {
+        $ids = $request->input('ids'); //  Array con los IDs de visitantes a eliminar
 
-public function eliminarVisitantesMasivamente(Request $request)
-{
-    $ids = $request->input('ids'); //  Array con los IDs de visitantes a eliminar
+        if (!$ids || !is_array($ids)) {
+            return response()->json(['error' => 'Debes enviar un array de IDs.'], 400);
+        }
 
-    if (!$ids || !is_array($ids)) {
-        return response()->json(['error' => 'Debes enviar un array de IDs.'], 400);
+        // Obtener solo los visitantes inactivos que coincidan con los IDs enviados
+        $visitantes = usuarios::whereIn('id', $ids)
+            ->where('estado', 'inactivo')
+            ->whereHas('perfile', function ($q) {
+                $q->where('nombre', 'Visitante');
+            })
+            ->get();
+
+        if ($visitantes->isEmpty()) {
+            return response()->json(['error' => 'No se encontraron visitantes inactivos con los IDs proporcionados.'], 404);
+        }
+
+        $eliminados = $visitantes->pluck('id');
+
+        // Eliminar los visitantes seleccionados
+        usuarios::whereIn('id', $eliminados)->delete();
+
+        return response()->json([
+            'message' => 'Visitantes eliminados correctamente.',
+            'total_eliminados' => $eliminados->count(),
+            'ids_eliminados' => $eliminados,
+        ]);
     }
 
-    // Obtener solo los visitantes inactivos que coincidan con los IDs enviados
-    $visitantes = usuarios::whereIn('id', $ids)
-        ->where('estado', 'inactivo')
-        ->whereHas('perfile', function ($q) {
-            $q->where('nombre', 'Visitante');
-        })
-        ->get();
-
-    if ($visitantes->isEmpty()) {
-        return response()->json(['error' => 'No se encontraron visitantes inactivos con los IDs proporcionados.'], 404);
-    }
-
-    $eliminados = $visitantes->pluck('id');
-
-    // Eliminar los visitantes seleccionados
-    usuarios::whereIn('id', $eliminados)->delete();
-
-    return response()->json([
-        'message' => 'Visitantes eliminados correctamente.',
-        'total_eliminados' => $eliminados->count(),
-        'ids_eliminados' => $eliminados,
-    ]);
-}
-  
 
 
 
-   public function listarVisitantesDesactivados()
-{
-    $visitantes = usuarios::with('perfile') 
-        ->where('estado', 'inactivo')
-        ->whereHas('perfile', function ($q) {
-            $q->where('nombre', 'Visitante');
-        })
-        ->get();
+    public function listarVisitantesDesactivados()
+    {
+        $visitantes = usuarios::with('perfile')
+            ->where('estado', 'inactivo')
+            ->whereHas('perfile', function ($q) {
+                $q->where('nombre', 'Visitante');
+            })
+            ->get();
 
-    if ($visitantes->isEmpty()) {
-        return response()->json(['message' => 'No hay visitantes desactivados.']);
-    }
+        if ($visitantes->isEmpty()) {
+            return response()->json(['message' => 'No hay visitantes desactivados.']);
+        }
 
         return response()->json([
             'message' => 'Listado de visitantes desactivados',
@@ -152,45 +152,45 @@ public function eliminarVisitantesMasivamente(Request $request)
         ]);
     }
 
-public function listarInstructoresContratoDesactivados()
-{
-    $instructores = usuarios::where('estado', 'inactivo')
-        ->whereHas('perfile', function ($q) {
-            $q->where('nombre', 'Instructor contrato');
-        })
-        ->get();
+    public function listarInstructoresContratoDesactivados()
+    {
+        $instructores = usuarios::where('estado', 'inactivo')
+            ->whereHas('perfile', function ($q) {
+                $q->where('nombre', 'Instructor contrato');
+            })
+            ->get();
 
         if ($instructores->isEmpty()) {
             return response()->json(['message' => 'No hay instructores contrato desactivados.']);
         }
 
-    return response()->json([
-        'message' => 'Listado de instructores contrato desactivados',
-        'usuarios' => $instructores
-    ]);
-}
+        return response()->json([
+            'message' => 'Listado de instructores contrato desactivados',
+            'usuarios' => $instructores
+        ]);
+    }
 
 
-public function listarAdministrativosContratoDesactivados()
-{
-    $administrativos = usuarios::where('estado', 'inactivo')
-        ->whereHas('perfile', function ($q) {
-            $q->where('nombre', 'Administrativo contrato');
-        })
-        ->get();
+    public function listarAdministrativosContratoDesactivados()
+    {
+        $administrativos = usuarios::where('estado', 'inactivo')
+            ->whereHas('perfile', function ($q) {
+                $q->where('nombre', 'Administrativo contrato');
+            })
+            ->get();
 
         if ($administrativos->isEmpty()) {
             return response()->json(['message' => 'No hay administrativos contrato desactivados.']);
         }
 
-    return response()->json([
-        'message' => 'Listado de administrativos contrato desactivados',
-        'usuarios' => $administrativos
-    ]);
-}
+        return response()->json([
+            'message' => 'Listado de administrativos contrato desactivados',
+            'usuarios' => $administrativos
+        ]);
+    }
 
 
-public function activarMasivamente(Request $request)
+    public function activarMasivamente(Request $request)
     {
         $ids = $request->input('ids');
 
@@ -228,7 +228,7 @@ public function activarMasivamente(Request $request)
     }
 
 
-     public function activarUsuario($id)
+    public function activarUsuario($id)
     {
         $usuario = usuarios::find($id);
 
@@ -247,70 +247,71 @@ public function activarMasivamente(Request $request)
             'message' => 'Usuario activado correctamente.',
             'usuario' => $usuario
         ]);
-  }
-
-
-
-public function listarInstructoresContratoActivos()
-{
-    $instructores = usuarios::where('estado', 'activo')
-        ->whereHas('perfile', function ($q) {
-            $q->where('nombre', 'Instructor contrato');
-        })
-        ->get();
-
-    if ($instructores->isEmpty()) {
-        return response()->json(['message' => 'No hay instructores contrato activos.']);
     }
 
-    return response()->json([
-        'message' => 'Listado de instructores contrato activos.',
-        'usuarios' => $instructores
-    ]);
-}
 
 
-public function listarVisitantes()
-{
-    $visitantes = usuarios::whereHas('perfile', function ($q) {
-        $q->where('nombre', 'Visitante');
-    })->get();
+    public function listarInstructoresContratoActivos()
+    {
+        $instructores = usuarios::where('estado', 'activo')
+            ->whereHas('perfile', function ($q) {
+                $q->where('nombre', 'Instructor contrato');
+            })
+            ->get();
 
-    if ($visitantes->isEmpty()) {
-        return response()->json(['message' => 'No hay visitantes registrados.']);
+        if ($instructores->isEmpty()) {
+            return response()->json(['message' => 'No hay instructores contrato activos.']);
+        }
+
+        return response()->json([
+            'message' => 'Listado de instructores contrato activos.',
+            'usuarios' => $instructores
+        ]);
     }
 
-    return response()->json([
-        'message' => 'Listado general de visitantes.',
-        'usuarios' => $visitantes
-    ]);
-}
+
+    public function listarVisitantes()
+    {
+        $visitantes = usuarios::whereHas('perfile', function ($q) {
+            $q->where('nombre', 'Visitante');
+        })->get();
+
+        if ($visitantes->isEmpty()) {
+            return response()->json(['message' => 'No hay visitantes registrados.']);
+        }
+
+        return response()->json([
+            'message' => 'Listado general de visitantes.',
+            'usuarios' => $visitantes
+        ]);
+    }
 
 
-/*KPI*/
+    /*KPI*/
 
-public function EstadisticasUsuariosKPI(){
-        
-     $totalUsuarios = usuarios::where('estado', 'activo')->count();
+    public function EstadisticasUsuariosKPI()
+    {
 
-    $porPerfil = usuarios::with('perfile:id,nombre')
-        ->selectRaw('idperfil, COUNT(*) as cantidad')
-        ->where('estado', 'activo')
-        ->groupBy('idperfil')
-        ->get()
-        ->map(function ($usuario) {
-            return [
-                'perfil' => $usuario->perfile->nombre,
-                'cantidad' => $usuario->cantidad,
-            ];
-        });
+        $totalUsuarios = usuarios::where('estado', 'activo')->count();
 
-  
-    return [
-        'totalusuarios' => $totalUsuarios,
-        'porperfil' => $porPerfil,
-    ];
-    
+        $porPerfil = usuarios::with('perfile:id,nombre')
+            ->selectRaw('idperfil, COUNT(*) as cantidad')
+            ->where('estado', 'activo')
+            ->groupBy('idperfil')
+            ->get()
+            ->map(function ($usuario) {
+                return [
+                    'perfil' => $usuario->perfile->nombre,
+                    'cantidad' => $usuario->cantidad,
+                ];
+            });
+
+
+        return [
+            'totalusuarios' => $totalUsuarios,
+            'porperfil' => $porPerfil,
+        ];
+
 
     }
 

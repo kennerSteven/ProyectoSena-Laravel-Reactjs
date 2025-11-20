@@ -1,5 +1,3 @@
-import "../../styles/InputField.css";
-
 export default function SelectOptions({
   register,
   name,
@@ -7,7 +5,10 @@ export default function SelectOptions({
   error,
   values = [],
   defaultValue = "",
+  showEntrada = true,
 }) {
+  if (!showEntrada) return null; // ✅ oculta el campo si no se debe mostrar
+
   return (
     <div style={{ width: "100%" }}>
       <label className="form-label label">{nameSelect}</label>
@@ -18,8 +19,7 @@ export default function SelectOptions({
       >
         {defaultValue === "" && (
           <option className="optionItem" value="" disabled>
-            {" "}
-            Seleccione{" "}
+            Seleccione
           </option>
         )}
 

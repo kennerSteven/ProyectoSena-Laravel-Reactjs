@@ -41,26 +41,31 @@ export default function FormAdministrativo({
     capturedImage,
   });
 
+  const getFotoUrl = (foto) => {
+    const baseURL = "http://127.0.0.1:8000";
+    if (!foto) return null;
+    if (foto.startsWith("http")) return foto;
+    if (foto.startsWith("storage/fotos")) return `${baseURL}/${foto}`;
+    return `${baseURL}/storage/fotos/${foto}`;
+  };
+
   useEffect(() => {
-    if (usuarioSeleccionado) {
+    if (usuarioSeleccionado && perfiles.length > 0) {
       reset({
         nombre: usuarioSeleccionado.nombre || "",
         apellido: usuarioSeleccionado.apellido || "",
-        tipoDocumento: usuarioSeleccionado.tipoDocumento || "cc",
+        tipoDocumento: usuarioSeleccionado.tipoDocumento || "",
         numeroDocumento: usuarioSeleccionado.numeroDocumento || "",
         telefono: usuarioSeleccionado.telefono || "",
         tipoSangre: usuarioSeleccionado.tipoSangre || "",
-        tipoPerfil:
-          usuarioSeleccionado.perfile?.id ||
-          (perfiles.length > 0 ? perfiles[0].id : ""),
+        tipoPerfil: usuarioSeleccionado.perfile?.id || perfiles[0]?.id || "",
       });
-    } else if (perfiles.length > 0) {
-      reset({
-        tipoPerfil: perfiles[0].id,
-      });
+
+      if (usuarioSeleccionado.foto) {
+        setCapturedImage(getFotoUrl(usuarioSeleccionado.foto));
+      }
     }
   }, [usuarioSeleccionado, reset, perfiles]);
-
   useEffect(() => {
     if (showCamera && videoRef.current) {
       navigator.mediaDevices
@@ -127,20 +132,16 @@ export default function FormAdministrativo({
                   <div className="text-center">
                     <img
                       src={capturedImage}
-                      alt="Captura"
+                      alt="Foto del administrativo"
                       className="img-fluid rounded"
-                      style={{ maxHeight: "200px" }}
+                      style={{ maxHeight: "200px", objectFit: "cover" }}
+                      onError={() =>
+                        console.warn(
+                          "No se pudo cargar la imagen:",
+                          capturedImage
+                        )
+                      }
                     />
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger mt-2"
-                      onClick={() => {
-                        setCapturedImage(null);
-                        setShowCamera(true);
-                      }}
-                    >
-                      Retomar foto
-                    </button>
                   </div>
                 ) : showCamera ? (
                   <div className="text-center">
@@ -228,10 +229,14 @@ export default function FormAdministrativo({
             <div className="col-12 d-flex justify-content-end mt-4 mb-2">
               <ButtonSubmit
                 textSend={usuarioSeleccionado ? "Actualizar" : "Guardar"}
-                textSending="Guardando..."
+                textSending={
+                  usuarioSeleccionado ? "Actualizando..." : "Guardando..."
+                }
                 isSubmitting={isSubmitting}
                 maxWidth={false}
-                iconButton="bi bi-save"
+                iconButton={
+                  usuarioSeleccionado ? "bi bi-pencil-square" : "bi bi-save"
+                }
               />
             </div>
 

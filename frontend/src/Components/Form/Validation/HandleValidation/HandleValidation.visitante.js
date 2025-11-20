@@ -34,28 +34,24 @@ export default function HandleValidationVisitante({
     try {
       const response = await onSubmitVisitante(payload);
       console.log("Respuesta del backend:", response);
+      closeModal();
+      Swal.fire({
+        icon: "success",
+        title: "visitante creado",
+        text: `El visitante ${data.nombre} ${data.apellido} fue creado exitosamente`,
+        confirmButtonText: "Aceptar",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
 
       reset?.();
-      closeModal?.();
-
-      // ✅ Esperar a que el modal se cierre antes de mostrar el Swal
-      setTimeout(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Instructor creado",
-          text: "El instructor fue guardado exitosamente",
-          confirmButtonText: "Aceptar",
-          timer: 2000,
-          timerProgressBar: true,
-          showConfirmButton: true,
-          customClass: {
-            confirmButton: "swal-confirm-green",
-          },
-        });
-      }, 300); // ⏱️ Espera breve para que el modal se cierre visualmente
     } catch (error) {
       console.error("Error en envío:", error);
-      toast.error("Error al guardar el instructor");
+      toast.error("Error al guardar el visitante");
     }
   };
 

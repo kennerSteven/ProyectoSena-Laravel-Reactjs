@@ -1,31 +1,49 @@
 .btnActivar {
-    background-color: rgb(255, 255, 255);
-    border-radius: 10px;
-    color: #007832;
-    padding:  4px;
-    border: 1px solid #007832;
+  background-color: #dcf1e2;
+  border-radius: 10px;
+  color: #2e7d32;
+  padding: 4px;
+  border: 1px solid #2e7d32;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.buttnAceptar {
-    background-color: #007832 !important;
-    border: none !important;
-    color: white !important;
+.btnActivar:hover {
+  background-color: #c0e6cb;
+  transform: scale(1.05);
+  cursor: pointer;
+}
 
-    border-radius: 6px;
-    font-weight: bold;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+/* Botón de aceptación institucional */
+.buttnAceptar {
+  background-color: #dcf1e2 !important;
+
+  color: #2e7d32 !important;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .buttnAceptar:hover {
-    background-color: #00a04e !important;
-    transform: scale(1.05);
-    cursor: pointer;
+  background-color: #c0e6cb !important;
+  transform: scale(1.05);
+  cursor: pointer;
 }
 
-
+/* Botón de activar todos */
 .btnActivarTodos {
-    background-color: #007832;
-    border-radius: 10px;
-    color: white;
-    padding: 8px;
+  background-color: #dcf1e2;
+
+  border-radius: 10px;
+  color: #2e7d32;
+  padding: 8px;
+
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btnActivarTodos:hover {
+  background-color: #c0e6cb;
+  transform: scale(1.05);
+  cursor: pointer;
 }

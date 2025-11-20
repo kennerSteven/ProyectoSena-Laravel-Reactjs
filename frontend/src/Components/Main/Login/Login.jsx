@@ -6,10 +6,11 @@ import useHandleValidationLogin from "../../Form/Validation/HandleValidation/Han
 import ButtonSubmit from "../../Ui/ButtonSubmit";
 import BackButton from "../../Ui/BackButton";
 import { Toaster } from "react-hot-toast";
-import granjaImg from "../../../assets/img/SENAGRANJA.jpg";
-import logoSena from "../../../assets/img/logoSena.png";
 
-export default function Login() {
+import logoSena from "../../../assets/img/logoSena.png";
+import { Link } from "react-router";
+
+export default function Login({ entitiePlace, imgEntitiePlace }) {
   const {
     register,
     handleSubmit,
@@ -27,14 +28,24 @@ export default function Login() {
             className="d-flex flex-column formContainer bg-light p-3 rounded shadow-sm"
           >
             <div className="mx-auto my-2">
-              <img src={logoSena} alt="Logo SENA" style={{ width: "200px" }} />
+              <img src={logoSena} alt="Logo SENA" style={{ width: "120px" }} />
             </div>
 
             <div className="d-flex flex-column align-items-center justify-content-center">
               <div className="d-flex align-items-center gap-4">
-                <BackButton />
-                <div className="d-flex align-items-center gap-3">
-                  <h1 className="fw-bold titleLogin">Iniciar sesión</h1>
+                <div className="d-flex flex-column  gap-1">
+                  <div className="d-flex gap-3">
+                    <Link
+                      to="/"
+                      className="d-flex align-items-center text-dark"
+                    >
+                      <BackButton />
+                    </Link>
+                    <h1 className="fw-bold titleLogin">Iniciar sesión</h1>
+                  </div>
+                  <h2 className="text-success place text-center ">
+                    {entitiePlace}
+                  </h2>
                 </div>
               </div>
             </div>
@@ -81,7 +92,7 @@ export default function Login() {
         {/* Imagen lateral */}
         <div className="flex-grow-1 h-100">
           <img
-            src={granjaImg}
+            src={imgEntitiePlace}
             className="img-fluid w-100 h-100 object-fit-cover"
             alt="Imagen Granja"
             style={{ objectFit: "cover", height: "100%" }}

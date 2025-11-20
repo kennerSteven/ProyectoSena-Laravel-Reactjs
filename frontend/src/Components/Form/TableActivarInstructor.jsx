@@ -4,6 +4,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { InputText } from "primereact/inputtext";
 import "../../styles/ActivarInstructor.css";
 
 export default function TablaActivarUsuarios({
@@ -15,6 +16,7 @@ export default function TablaActivarUsuarios({
   const [seleccionados, setSeleccionados] = useState([]);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [confirmTargetId, setConfirmTargetId] = useState(null);
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const cargarUsuarios = async () => {
     const data = await fetchUsuariosDesactivados();
@@ -27,13 +29,13 @@ export default function TablaActivarUsuarios({
 
   const activarUsuario = async (id) => {
     await activarUsuarioPorId(id);
-    await cargarUsuarios(); // ✅ recarga tabla
+    await cargarUsuarios();
   };
 
   const activarSeleccionados = async () => {
     const ids = seleccionados.map((u) => u.id);
     await activarUsuariosPorLote(ids);
-    await cargarUsuarios(); // ✅ recarga tabla
+    await cargarUsuarios();
     setSeleccionados([]);
   };
 
@@ -48,7 +50,7 @@ export default function TablaActivarUsuarios({
     } else {
       await activarSeleccionados();
     }
-    setConfirmVisible(false); // ✅ cerrar modal
+    setConfirmVisible(false);
     setConfirmTargetId(null);
   };
 
@@ -59,21 +61,24 @@ export default function TablaActivarUsuarios({
     />
   );
 
-  const accionesTemplate = (rowData) => (
-    <Button
-      icon="pi pi-check"
-      className="btnActivar"
-      disabled={rowData.estado === "activo"}
-      onClick={() => confirmarActivacion(rowData.id)}
-    />
-  );
+  // Campos que se filtran por texto
+  const camposFiltrables = ["nombre", "apellido", "numeroDocumento"];
+
+  const usuariosFiltrados = usuarios.filter((item) => {
+    const texto = globalFilter.trim().toLowerCase();
+    return camposFiltrables.some((campo) =>
+      item[campo]?.toString().toLowerCase().includes(texto)
+    );
+  });
 
   return (
     <div className="card">
       <ConfirmDialog
         visible={confirmVisible}
         onHide={() => setConfirmVisible(false)}
-        message={`¿Activar ${confirmTargetId ? "este usuario" : "los usuarios seleccionados"}?`}
+        message={`¿Activar ${
+          confirmTargetId ? "este usuario" : "los usuarios seleccionados"
+        }?`}
         header="Confirmar activación"
         icon="pi pi-exclamation-triangle"
         acceptClassName="buttnAceptar"
@@ -83,9 +88,17 @@ export default function TablaActivarUsuarios({
         reject={() => setConfirmVisible(false)}
       />
 
-      <div className="d-flex justify-content-end align-items-center px-3 pt-3 mb-3">
+      <div className="d-flex justify-content-between align-items-center px-3 pt-3 mb-3">
+        <InputText
+          value={globalFilter}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          placeholder="Buscar Administrativo..."
+          style={{ paddingLeft: "2rem", width: "250px" }}
+      
+        />
+
         <Button
-          label="Activar Todos"
+          label="Activar"
           icon="pi pi-check"
           className="btnActivarTodos"
           disabled={seleccionados.length === 0}
@@ -94,7 +107,7 @@ export default function TablaActivarUsuarios({
       </div>
 
       <DataTable
-        value={usuarios}
+        value={usuariosFiltrados}
         selection={seleccionados}
         onSelectionChange={(e) => setSeleccionados(e.value)}
         dataKey="id"
@@ -109,7 +122,6 @@ export default function TablaActivarUsuarios({
         <Column field="apellido" header="Apellido" />
         <Column field="numeroDocumento" header="Número de documento" />
         <Column field="estado" header="Estado" body={estadoTemplate} />
-        <Column header="Acciones" body={accionesTemplate} style={{ width: "6rem" }} />
       </DataTable>
     </div>
   );

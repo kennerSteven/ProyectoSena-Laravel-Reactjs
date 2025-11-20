@@ -136,3 +136,51 @@ ul {
   background: #d2edda;
   color: #2e7d32;
 }
+
+.btnDesactivar {
+  background-color: #ffffff;
+
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btnDesactivar i {
+  color: #f5a623; /* amarillo-naranja */
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.btnDesactivar:hover {
+  transform: scale(1.05) rotate(-3deg);
+  box-shadow: 0 2px 6px rgba(245, 166, 35, 0.3);
+}
+
+.btnDesactivar:hover i {
+  transform: rotate(15deg);
+}
+
+/* Botón Actualizar */
+.btnActualizars {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btnActualizars i {
+  color: #007bff; /* azul institucional */
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.btnActualizars:hover {
+  transform: scale(1.05) rotate(3deg);
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+}
+
+.btnActualizars:hover i {
+  transform: rotate(-15deg);
+}

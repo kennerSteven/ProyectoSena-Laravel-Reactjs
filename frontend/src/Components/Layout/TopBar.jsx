@@ -8,7 +8,7 @@ import ClockDisplay from "../ClockDisplay";
 import TablaHistorial from "../TableHistorial";
 import FormSalida from "../Form/FormSalida";
 
-export default function TopBar({ nameTopBar, nameAdmin }) {
+export default function TopBar({ nameTopBar, nameAdmin, showEntrada }) {
   const [visibleEntrada, setVisibleEntrada] = useState(false);
   const [visibleSalida, setVisibleSalida] = useState(false);
   const [visibleTableHistorial, setVisibleTableHistorial] = useState(false);
@@ -78,9 +78,8 @@ export default function TopBar({ nameTopBar, nameAdmin }) {
               onHide={() => setVisibleEntrada(false)}
               style={{ width: "370px", maxHeight: "660px" }}
             >
-              <FormRegister />
+              <FormRegister showEntrada={showEntrada} />
             </Dialog>
-
             <Dialog
               header="Registrar Salida"
               visible={visibleSalida}

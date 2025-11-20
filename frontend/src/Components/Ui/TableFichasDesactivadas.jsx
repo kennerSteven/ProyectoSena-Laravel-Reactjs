@@ -1,22 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { Toast } from "primereact/toast";
 import {
   getFichasDesactivadas,
   deleteFicha,
   deleteFichasMasivo,
+  getUsuariosDeFicha,
 } from "../Services/FetchServices";
 import "../../styles/TableFichasDesactivadas.css";
-
+import Swal from "sweetalert2";
 export default function TablaFichasDesactivadas() {
   const [fichas, setFichas] = useState([]);
   const [filteredFichas, setFilteredFichas] = useState([]);
-  const [selectedFichas, setSelectedFichas] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [usuariosFicha, setUsuariosFicha] = useState([]);
+  const [showDialog, setShowDialog] = useState(false);
+  const [fichaSeleccionada, setFichaSeleccionada] = useState(null);
+  const toast = useRef(null);
 
   const cargarFichas = async () => {
     const response = await getFichasDesactivadas();
@@ -32,46 +38,70 @@ export default function TablaFichasDesactivadas() {
   const eliminarFicha = async (id) => {
     try {
       await deleteFicha(id);
-      await cargarFichas(); 
+      await cargarFichas();
+      setShowDialog(false);
+
+      Swal.fire({
+        icon: "success",
+        title: "Ficha eliminada ",
+        text: `La ficha ${fichaSeleccionada.numeroFicha} fue eliminada correctamente.`,
+        confirmButtonText: "Aceptar",
+        timer: 6000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
     } catch (error) {
       console.error("Error al eliminar ficha:", error);
     }
   };
 
-  const eliminarSeleccionadas = async () => {
+  const eliminarTodasLasFichas = async () => {
     try {
-      const ids = selectedFichas.map((f) => f.id);
-      const result = await deleteFichasMasivo(ids);
-      await cargarFichas(); 
-      setSelectedFichas([]);
-      console.log("Eliminadas:", result.eliminadas);
-      console.log("No eliminadas:", result.noEliminadas);
+      const ids = fichas.map((f) => f.id);
+      await deleteFichasMasivo(ids);
+      await cargarFichas();
+      Swal.fire({
+        icon: "success",
+        title: "Fichas eliminadas ",
+        text: "Fichas eliminadas correctamente",
+        confirmButtonText: "Aceptar",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
     } catch (error) {
-      console.error("Error al eliminar fichas seleccionadas:", error);
+      console.error("Error al eliminar todas las fichas:", error);
     }
   };
 
-  const confirmarEliminarFicha = (id) => {
-    confirmDialog({
-      message: "¿Estás seguro de que deseas eliminar esta ficha?",
-      header: "Confirmar eliminación",
-      icon: "pi pi-exclamation-triangle",
-      acceptClassName: "p-button-danger",
-      acceptLabel: "Sí, eliminar",
-      rejectLabel: "Cancelar",
-      accept: () => eliminarFicha(id),
-    });
+  const confirmarEliminarFicha = async (id) => {
+    try {
+      const ficha = fichas.find((f) => f.id === id);
+      const usuarios = await getUsuariosDeFicha(id);
+      setUsuariosFicha(usuarios);
+      setFichaSeleccionada(ficha);
+      setShowDialog(true);
+    } catch (error) {
+      console.error("Error al obtener usuarios de la ficha:", error);
+    }
   };
 
-  const confirmarEliminarSeleccionadas = () => {
+  const confirmarEliminarTodas = () => {
     confirmDialog({
-      message: `¿Eliminar ${selectedFichas.length} fichas seleccionadas?`,
-      header: "Confirmar eliminación múltiple",
+      message: `¿Estás seguro de eliminar todas las fichas desactivadas?, al hacer esto no podrás revertir esta acción.`,
+      header: "Confirmar eliminación masiva",
       icon: "pi pi-exclamation-triangle",
       acceptClassName: "p-button-danger",
       acceptLabel: "Sí, eliminar todas",
       rejectLabel: "Cancelar",
-      accept: () => eliminarSeleccionadas(),
+      style: { width: "550px" },
+      accept: () => eliminarTodasLasFichas(),
     });
   };
 
@@ -100,48 +130,94 @@ export default function TablaFichasDesactivadas() {
     setFilteredFichas(filtered);
   };
 
+  const footerDialog = (
+    <div className="d-flex justify-content-end gap-2">
+      <Button
+        label="Cancelar"
+        icon="pi pi-times"
+        className="btnCancelar"
+        onClick={() => setShowDialog(false)}
+      />
+      <Button
+        label="Eliminar ficha"
+        icon="pi pi-trash"
+        className="p-button-danger"
+        onClick={() => eliminarFicha(fichaSeleccionada.id)}
+      />
+    </div>
+  );
+
   return (
-    <div className="card">
+    <div className="card p-4">
+      <Toast ref={toast} />
       <ConfirmDialog />
 
-      <div className="d-flex justify-content-between align-items-center px-3 pt-3 mb-3">
-    <div>
-          <InputText
-          value={globalFilter}
-          onChange={onGlobalFilterChange}
-          placeholder="Buscar ficha..."
-          className="p-inputtext-sm"
-        />
-    </div>
+      <Dialog
+        header={
+          fichaSeleccionada
+            ? `¿Estás seguro de eliminar la ficha ${fichaSeleccionada.numeroFicha} - ${fichaSeleccionada.nombrePrograma} con los siguientes usuarios?`
+            : "¿Estás seguro de eliminar esta ficha?"
+        }
+        visible={showDialog}
+        style={{ width: "800px" }}
+        onHide={() => setShowDialog(false)}
+        footer={footerDialog}
+        className="p-fluid"
+      >
+        <DataTable
+          value={usuariosFicha}
+          paginator
+          rows={5}
+          rowsPerPageOptions={[5, 10, 20]}
+          emptyMessage="No hay aprendices asociados."
+          className="p-datatable-sm"
+        >
+          <Column field="nombre" header="Nombre" />
+          <Column field="apellido" header="Apellido" />
+          <Column field="tipoDocumento" header="Tipo de Documento" />
+          <Column field="numeroDocumento" header="Número de Documento" />
+        </DataTable>
+      </Dialog>
 
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <div className="flex-grow-1 me-3">
+          <InputText
+            value={globalFilter}
+            onChange={onGlobalFilterChange}
+            placeholder="Buscar..."
+            className="p-inputtext-sm "
+            style={{ width: "250px" }}
+          />
+        </div>
         <Button
-          label="Eliminar seleccionadas"
+          label="Eliminar todas"
           icon="pi pi-trash"
-          className="DeleteAll"
-          disabled={selectedFichas.length === 0}
-          onClick={confirmarEliminarSeleccionadas}
+          className="p-button-danger"
+          onClick={confirmarEliminarTodas}
+          disabled={fichas.length === 0}
         />
       </div>
 
       <DataTable
         value={filteredFichas}
-        selection={selectedFichas}
-        onSelectionChange={(e) => setSelectedFichas(e.value)}
         dataKey="id"
         paginator
-        rows={5}
-        rowsPerPageOptions={[5, 10, 20]}
+        rows={10}
+        scrollHeight="320px"
+        rowsPerPageOptions={[5, 10, 20, 50]}
+        stripedRows
+        showGridlines
         emptyMessage="No hay fichas desactivadas."
+        className="p-datatable-sm"
       >
-        <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
-        <Column field="numeroFicha" header="Código" />
-        <Column field="nombrePrograma" header="Programa" />
-        <Column field="jornada" header="Jornada" />
-        <Column field="estado" header="Estado" body={estadoTemplate} />
+        <Column field="numeroFicha" header="Código" sortable />
+        <Column field="nombrePrograma" header="Programa" sortable />
+        <Column field="jornada" header="Jornada" sortable />
+        <Column field="estado" header="Estado" body={estadoTemplate} sortable />
         <Column
           header="Acciones"
           body={accionesTemplate}
-          style={{ width: "6rem" }}
+          style={{ width: "6rem", textAlign: "center" }}
         />
       </DataTable>
     </div>

@@ -7,14 +7,20 @@ import { Column } from "primereact/column";
 import { Dialog } from "primereact/dialog";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Tooltip } from "primereact/tooltip";
+import { Tag } from "primereact/tag";
+
 import SplitButtonComp from "../Ui/SplitButton";
 import FormInstructor from "../Form/FormInstructor";
+import FormAdministrativo from "../Form/FormAdministrativo";
 import TablaActivarUsuarios from "../Form/TableActivarInstructor";
-import { deleteInstructor } from "../Services/FetchServices";
+
+import { deleteInstructor, deleteUsuario } from "../Services/FetchServices";
+
 import useTipoPerfilFetch from "../Hooks/UseTipoPerfil";
 import "../../styles/ActivarInstructor.css";
 
 export default function Table({
+  tipoEntidad = "Instructor",
   tableTitle,
   nameValue = [],
   dataTable = [],
@@ -34,7 +40,7 @@ export default function Table({
   const toast = useRef(null);
 
   const globalFilterFields = nameValue.map(({ field }) => field);
-  const { perfiles } = useTipoPerfilFetch("Instructor");
+  const { perfiles } = useTipoPerfilFetch(tipoEntidad);
 
   const opcionesPerfil = perfiles.map((p) => ({
     label: p.nombre,
@@ -57,7 +63,12 @@ export default function Table({
       style: { borderRadius: "10px" },
       accept: async () => {
         try {
-          await deleteInstructor(rowData.id);
+          if (tipoEntidad === "Instructor") {
+            await deleteInstructor(rowData.id);
+          } else if (tipoEntidad === "Administrativo") {
+            await deleteUsuario(rowData.id);
+          }
+
           confirmDialog({
             message: (
               <div
@@ -99,13 +110,14 @@ export default function Table({
               </div>
             ),
           });
+
           if (reloadTable) reloadTable();
         } catch (error) {
           console.error("Error al eliminar:", error);
           toast.current.show({
             severity: "error",
             summary: "Error",
-            detail: "No se pudo eliminar el usuario",
+            detail: `No se pudo eliminar el ${tipoEntidad.toLowerCase()}`,
           });
         }
       },
@@ -202,10 +214,7 @@ export default function Table({
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
               placeholder="Buscar ficha..."
-              style={{
-                paddingLeft: "2rem",
-                width: "250px",
-              }}
+              style={{ paddingLeft: "2rem", width: "250px" }}
             />
           </div>
 
@@ -222,8 +231,8 @@ export default function Table({
 
         <>
           <Tooltip
-            target=".btn-crear-instructor"
-            content="Crear instructor"
+            target=".btn-crear-entidad"
+            content={`Crear ${tipoEntidad.toLowerCase()}`}
             position="top"
           />
           <Tooltip
@@ -237,9 +246,9 @@ export default function Table({
             position="top"
           />
 
-          <div className="d-flex gap-2 containerButtonActions shadow-sm">
+          <div className="d-flex containerButtonActions shadow-sm">
             <button
-              className="btnActions btn-crear-instructor d-flex align-items-center gap-2"
+              className="btnActions btn-crear-entidad d-flex align-items-center gap-2"
               onClick={functionModal}
             >
               <i
@@ -254,7 +263,7 @@ export default function Table({
             >
               <i
                 className="pi pi-id-card"
-                style={{ color: "#28a745", fontSize: "1.4rem" }}
+                style={{ color: "#17a2b8", fontSize: "1.4rem" }}
               />
             </button>
 
@@ -263,8 +272,8 @@ export default function Table({
               className="btn-ver-inactivos btnActions d-flex align-items-center gap-2"
             >
               <i
-                className="pi pi-id-card"
-                style={{ color: "#28a745", fontSize: "1.4rem" }}
+                className="pi pi-users"
+                style={{ color: "#ffc107", fontSize: "1.4rem" }}
               />
             </button>
           </div>
@@ -272,22 +281,26 @@ export default function Table({
       </div>
     </div>
   );
-
   return (
     <div className="mx-auto mt-4 shadow tableContainer">
       <Toast ref={toast} />
-
       <DataTable
         value={dataTable.filter((item) => {
+          const texto = globalFilter.trim().toLowerCase();
+
+          const coincideGlobal = globalFilterFields.some((field) => {
+            const valor = item[field];
+            return typeof valor === "string"
+              ? valor.toLowerCase().includes(texto)
+              : valor?.toString().toLowerCase().includes(texto);
+          });
+
           const coincidePerfil = perfilSeleccionado
-            ? item.tipoPerfil?.id === perfilSeleccionado
+            ? item.perfil?.id === perfilSeleccionado ||
+              item.idperfil === perfilSeleccionado
             : true;
 
-          const coincideGlobal = globalFilterFields.some((field) =>
-            item[field]?.toLowerCase?.().includes(globalFilter.toLowerCase())
-          );
-
-          return coincidePerfil && coincideGlobal;
+          return coincideGlobal && coincidePerfil;
         })}
         paginator
         rows={10}
@@ -316,6 +329,44 @@ export default function Table({
         ))}
 
         <Column
+          header="Foto"
+          body={(rowData) => {
+            const ruta = rowData.foto;
+            const url = ruta?.startsWith("storage/")
+              ? `http://localhost:8000/${ruta}`
+              : ruta?.startsWith("http")
+              ? ruta
+              : null;
+
+            return url ? (
+              <img
+                src={url}
+                alt="Foto"
+                className="img-thumbnail"
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
+              />
+            ) : (
+              <span className="text-muted">—</span>
+            );
+          }}
+        />
+
+        <Column
+          header="Estado"
+          body={(rowData) => (
+            <Tag
+              value={rowData.estado === "activo" ? "Activo" : "Inactivo"}
+              severity={rowData.estado === "activo" ? "success" : "danger"}
+            />
+          )}
+        />
+
+        <Column
           header="Acciones"
           className="fw-bold"
           body={actionBodyTemplate}
@@ -323,16 +374,25 @@ export default function Table({
       </DataTable>
 
       <Dialog
-        header="Actualizar Usuario"
+        header={
+          selectedUser ? `Actualizar ${tipoEntidad}` : `Nuevo ${tipoEntidad}`
+        }
         visible={openUpdateModal}
         style={{ width: "750px" }}
         onHide={handleCloseUpdateModal}
         modal
       >
-        <FormInstructor
-          usuarioSeleccionado={selectedUser}
-          closeModal={handleCloseUpdateModal}
-        />
+        {tipoEntidad === "Instructor" ? (
+          <FormInstructor
+            usuarioSeleccionado={selectedUser}
+            closeModal={handleCloseUpdateModal}
+          />
+        ) : tipoEntidad === "Administrativo" ? (
+          <FormAdministrativo
+            usuarioSeleccionado={selectedUser}
+            closeModal={handleCloseUpdateModal}
+          />
+        ) : null}
       </Dialog>
 
       <Dialog
