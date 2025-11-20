@@ -126,10 +126,11 @@ export default function TablaFicha() {
   const confirmarActualizacion = async (datosActualizados) => {
     try {
       await updateFicha(fichaParaEditar.id, datosActualizados);
+
       Swal.fire({
         icon: "success",
-        title: "Ficha actualizada ",
-        text: `La ficha ${fichaParaAccion.nombrePrograma} fué actualizada correctamente.`,
+        title: "Ficha actualizada",
+        text: `La ficha ${fichaParaEditar.nombrePrograma} fue actualizada correctamente.`,
         confirmButtonText: "Aceptar",
         timer: 6000,
         timerProgressBar: true,
@@ -138,10 +139,17 @@ export default function TablaFicha() {
           confirmButton: "buttonConfirmSwal",
         },
       });
+
       setEditarModalVisible(false);
       cargarFichas();
     } catch (error) {
       console.error("Error al actualizar ficha:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error al actualizar",
+        text: "No se pudo actualizar la ficha. Intenta nuevamente.",
+        confirmButtonText: "Cerrar",
+      });
     }
   };
 

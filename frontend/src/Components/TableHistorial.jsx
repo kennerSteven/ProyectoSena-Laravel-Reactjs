@@ -5,10 +5,14 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { Tag } from "primereact/tag";
-import { getAllRegisters } from "./Services/FetchServices";
+
 import "../styles/TablaHistorial.css";
 
-export default function TablaHistorial() {
+export default function TablaHistorial({
+  getRegisters,
+  showColumnaIngreso = true,
+  showPlaca = true,
+}) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [usuarios, setUsuarios] = useState([]);
   const [filters, setFilters] = useState({
@@ -20,11 +24,11 @@ export default function TablaHistorial() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getAllRegisters();
+      const data = await getRegisters();
       setUsuarios(data);
     };
     fetchData();
-  }, []);
+  }, [getRegisters]);
 
   const perfiles = [
     ...new Set(usuarios.map((u) => u.usuarios?.perfile?.nombre)),
@@ -99,6 +103,16 @@ export default function TablaHistorial() {
     return <Tag value={tipo} severity={getColor(tipo)} />;
   };
 
+  const ingresoBodyTemplate = (rowData) => {
+    const tipoVehiculo = rowData.vehiculo?.tipoVehiculo;
+    return <span>{tipoVehiculo ? tipoVehiculo : "Sin vehículo"}</span>;
+  };
+
+  const placaBodyTemplate = (rowData) => {
+    const placa = rowData.vehiculo?.placa;
+    return <span>{placa ? placa : "No aplica"}</span>;
+  };
+
   return (
     <div className="tableHistorialContent">
       <div className="row">
@@ -122,7 +136,7 @@ export default function TablaHistorial() {
               value={usuarios}
               paginator
               rows={5}
-              rowsPerPageOptions={[5, 10, 20]}
+              rowsPerPageOptions={[5, 10, 20, 50]}
               filters={filters}
               filterDisplay="row"
               globalFilterFields={[
@@ -144,6 +158,12 @@ export default function TablaHistorial() {
                 filterPlaceholder="Buscar nombre"
               />
               <Column
+                field="usuarios.apellido"
+                header="Apellido"
+                filter
+                filterPlaceholder="Buscar Apellido"
+              />
+              <Column
                 field="usuarios.telefono"
                 header="Teléfono"
                 filter
@@ -155,6 +175,24 @@ export default function TablaHistorial() {
                 filter
                 filterPlaceholder="Buscar documento"
               />
+
+              {showColumnaIngreso && (
+                <Column
+                  field="vehiculo.tipoVehiculo"
+                  header="Ingreso"
+                  body={ingresoBodyTemplate}
+                  filter={false}
+                />
+              )}
+              {showPlaca && (
+                <Column
+                  field="vehiculo.placa"
+                  header="Placa"
+                  body={placaBodyTemplate}
+                  filter={false}
+                />
+              )}
+
               <Column
                 field="usuarios.perfile.nombre"
                 header="Tipo de perfil"
@@ -162,6 +200,7 @@ export default function TablaHistorial() {
                 filterElement={perfilFilterTemplate}
                 body={perfilBodyTemplate}
               />
+
               <Column
                 field="tipo"
                 header="Tipo"

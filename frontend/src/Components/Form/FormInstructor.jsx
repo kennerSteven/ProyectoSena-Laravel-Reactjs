@@ -119,8 +119,8 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
           </div>
 
           <div className="row">
-            <div className="col-lg-6 mt-3">
-              <div className="d-flex gap-4">
+            <div className="col-lg-6 ">
+              <div className=" gap-4">
                 <InputField
                   typeInput="number"
                   name="telefono"
@@ -128,22 +128,24 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                   error={errors.telefono}
                   labelName="Teléfono"
                 />
-                <SelectOptions
-                  register={register}
-                  name="tipoSangre"
-                  nameSelect="Tipo de sangre"
-                  error={errors.tipoSangre}
-                  values={[
-                    { value: "A+", label: "A positivo" },
-                    { value: "A-", label: "A negativo" },
-                    { value: "B+", label: "B positivo" },
-                    { value: "B-", label: "B negativo" },
-                    { value: "AB+", label: "AB positivo" },
-                    { value: "AB-", label: "AB negativo" },
-                    { value: "O+", label: "O positivo" },
-                    { value: "O-", label: "O negativo" },
-                  ]}
-                />
+                <div className="my-2">
+                  <SelectOptions
+                    register={register}
+                    name="tipoSangre"
+                    nameSelect="Tipo de sangre"
+                    error={errors.tipoSangre}
+                    values={[
+                      { value: "A+", label: "A positivo" },
+                      { value: "A-", label: "A negativo" },
+                      { value: "B+", label: "B positivo" },
+                      { value: "B-", label: "B negativo" },
+                      { value: "AB+", label: "AB positivo" },
+                      { value: "AB-", label: "AB negativo" },
+                      { value: "O+", label: "O positivo" },
+                      { value: "O-", label: "O negativo" },
+                    ]}
+                  />
+                </div>
               </div>
 
               <div className="my-2">

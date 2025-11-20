@@ -25,7 +25,7 @@ export default function Login({ entitiePlace, imgEntitiePlace }) {
         <div className="d-flex align-items-center containerLogin shadow">
           <form
             onSubmit={handleSubmit(onSubmit, onError)}
-            className="d-flex flex-column formContainer bg-light p-3 rounded shadow-sm"
+            className="d-flex flex-column formContainer  p-5 rounded "
           >
             <div className="mx-auto my-2">
               <img src={logoSena} alt="Logo SENA" style={{ width: "120px" }} />

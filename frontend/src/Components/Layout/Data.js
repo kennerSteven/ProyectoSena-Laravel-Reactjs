@@ -29,7 +29,7 @@ export const ItemsConfigGranja = [
   { type: "divider" },
   {
     iconClass: "pi pi-question-circle",
-    label: "Vigilantes",
+    label: "Información",
     link: "/dashboardgranja/vigilantes",
   },
   { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
@@ -65,7 +65,7 @@ export const ItemsConfigCata = [
   { type: "divider" },
   {
     iconClass: "pi pi-question-circle",
-    label: "Vigilantes",
+    label: "Información",
     link: "/dashboardcata/vigilantes",
   },
   { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
@@ -101,7 +101,7 @@ export const ItemsConfigCasaApoyo = [
   { type: "divider" },
   {
     iconClass: "pi pi-question-circle",
-    label: "Vigilantes",
+    label: "Información",
     link: "/dashboardcasa/vigilantes",
   },
   { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
@@ -138,7 +138,7 @@ export const getItemsConfigByDashboard = (dashboard) => {
     { type: "divider" },
     {
       iconClass: "pi pi-question-circle",
-      label: "Vigilantes",
+      label: "Información ",
       link: `${prefix}/vigilantes`,
     },
     { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
@@ -177,11 +177,7 @@ export const getItemsConfig = (dashboardPrefix) => [
     link: `${dashboardPrefix}/listaradministrativo`,
   },
   { type: "divider" },
-  {
-    iconClass: "pi pi-question-circle",
-    label: "Vigilantes",
-    link: `${dashboardPrefix}/vigilantes`,
-  },
+ 
   { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
 ];
 

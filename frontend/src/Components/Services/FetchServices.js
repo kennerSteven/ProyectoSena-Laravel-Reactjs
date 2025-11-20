@@ -495,3 +495,178 @@ export async function deleteUsuario(id) {
     throw error;
   }
 }
+
+export function getRegisters(url) {
+  return async function () {
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (!response.ok) {
+        console.error("Error en respuesta GET:", data);
+        throw new Error(data.message || `Error ${response.status}`);
+      }
+
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error("Error en getRegisters:", error);
+      return [];
+    }
+  };
+}
+
+export function createRegister(url) {
+  return async function (params) {
+    try {
+      if (!params?.numeroDocumento) {
+        throw new Error("Número de documento no proporcionado");
+      }
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ numeroDocumento: params.numeroDocumento }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Respuesta del backend:", data);
+        throw new Error(data.message || `Error ${response.status}`);
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error en createRegister:", error);
+      throw error;
+    }
+  };
+}
+
+export function createSalida(url) {
+  return async function (params) {
+    try {
+      if (!params?.numeroDocumento) {
+        throw new Error("Número de documento no proporcionado");
+      }
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ numeroDocumento: params.numeroDocumento }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Respuesta del backend:", data);
+        throw new Error(data.message || `Error ${response.status}`);
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error en createRegister:", error);
+      throw error;
+    }
+  };
+}
+
+export function createRegisterGranja(url) {
+  return async function (params) {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(params),
+    });
+
+    const text = await response.text();
+
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      console.error("Respuesta vacía o malformada:", error);
+      throw new Error("Respuesta del backend no es JSON válido");
+    }
+  };
+}
+
+export const createRegisterSalidaGranja = async (params) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8000/api/entradaysalidagranja/salidagranja",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(params),
+      }
+    );
+
+    const text = await response.text();
+
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      console.error("Respuesta vacía o malformada:", error);
+      throw new Error("Respuesta del backend no es JSON válido");
+    }
+  } catch (error) {
+    console.error("Error en la solicitud de salida granja:", error);
+    throw error;
+  }
+};
+
+export async function getRegistersGranja() {
+  try {
+    const response = await fetch(
+      "http://localhost:8000/api/entradaysalidagranja/index",
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Respuesta no OK:", errorText);
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const text = await response.text();
+
+    try {
+      const data = JSON.parse(text);
+      if (!Array.isArray(data)) {
+        throw new Error("La respuesta no es una lista de registros");
+      }
+      console.log("Historial granja", data);
+      return data;
+    } catch (error) {
+      console.error("Error al parsear JSON:", text);
+      throw new Error("La respuesta del backend no es JSON válido", error);
+    }
+  } catch (error) {
+    console.error("Error en getRegistersGranja:", error);
+    return [];
+  }
+}

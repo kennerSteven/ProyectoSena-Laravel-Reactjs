@@ -1,80 +1,81 @@
+import { useState } from "react";
+import { getIdForCarnet } from "../../../Services/FetchServices";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 export default function HandleValidationSalida({
   reset,
   setVisible,
+  createSalida,
   onSuccess,
 }) {
-  const onSubmit = async (formValues) => {
-    let loadingToast;
+  const [usuarioSalida, setUsuarioSalida] = useState(null);
 
+  const onSubmit = async (payload) => {
     try {
-      loadingToast = toast.loading("Buscando usuario...");
-      const buscarResponse = await fetch(
-        `http://127.0.0.1:8000/api/usuario/buscar/${formValues.numeroDocumento}`
-      );
-
-      const data = await buscarResponse.json();
-
-      if (!buscarResponse.ok || !data.usuario) {
-        toast.dismiss(loadingToast);
-        toast.error("Usuario no encontrado");
-        console.error("Error al buscar usuario:", data);
+      if (!payload?.numeroDocumento || payload.numeroDocumento.length < 6) {
+        toast.error("Documento inválido");
         return;
       }
 
-      const usuario = data.usuario;
-      console.log("ID del usuario:", usuario.id);
+      toast.dismiss();
 
-      toast.dismiss(loadingToast);
-      loadingToast = toast.loading("Registrando salida...");
+      console.log("Payload enviado:", payload);
 
-      const payload = {
-        numeroDocumento: usuario.numeroDocumento,
-        idusuario: usuario.id,
-        tipo: "salida",
-      };
+      const result = await createSalida(payload);
+      toast.dismiss();
 
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/entradaysalidagym/salidagym",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const result = await response.json();
-      toast.dismiss(loadingToast);
-
-      if (!response.ok || result.error) {
+      if (!result || result.error) {
         toast.error(result.error || "Error al registrar salida");
         console.error("Error del servidor:", result);
         return;
       }
 
+      const idUserCarnet = result?.salida?.idusuario;
+      if (!idUserCarnet) {
+        Swal.fire({
+          icon: "error",
+          title: "Usuario no registrado",
+          text: "No se encontró el ID del usuario en la respuesta.",
+          customClass: {
+            confirmButton: "buttonConfirmSwal",
+          },
+        });
+        return;
+      }
 
+      const datosCarnet = await getIdForCarnet(idUserCarnet);
+      const fotoRuta = datosCarnet?.foto;
+      const fotoUrl = fotoRuta ? `http://localhost:8000/${fotoRuta}` : null;
 
-      reset();
-      setVisible(false);
+      setUsuarioSalida({
+        ...datosCarnet,
+        foto: fotoUrl,
+      });
 
-      // ✅ Activar modal con datos del usuario
-      if (onSuccess && typeof onSuccess === "function") {
-        onSuccess(usuario);
+      reset?.();
+      setVisible?.(false);
+      if (typeof onSuccess === "function") {
+        onSuccess(datosCarnet);
       }
     } catch (error) {
       console.error("Error en onSubmit:", error);
-      toast.dismiss(loadingToast);
-      toast.error("Error inesperado al registrar salida");
+      toast.dismiss();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error al registrar la salida.",
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
     }
   };
 
   const onError = (errors) => {
     console.warn("Errores de validación:", errors);
+    toast.error("Completa los campos requeridos");
   };
 
-  return { onSubmit, onError };
+  return { onSubmit, onError, usuarioSalida };
 }

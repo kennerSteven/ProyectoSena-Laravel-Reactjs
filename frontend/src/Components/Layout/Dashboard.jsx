@@ -5,13 +5,22 @@ import { Outlet, useLocation } from "react-router-dom";
 import "../../styles/SidebarItems.css";
 import { getItemsConfig } from "./Data";
 
-export default function Dashboard({ nameTopBar, nameAdmin, showEntrada }) {
+export default function Dashboard({
+  nameTopBar,
+  nameAdmin,
+  showEntrada,
+  getRegisters,
+  createRegister,
+  createSalida,
+  showColumnaIngreso,
+  showConVehiculoSalida,
+  showPlaca,
+}) {
   const location = useLocation();
 
-  // Detecta el dashboard activo desde la URL
   const dashboardPrefix = location.pathname.split("/")[1]
     ? `/${location.pathname.split("/")[1]}`
-    : "/dashboardcata"; // fallback por defecto
+    : "/dashboardcata";
 
   const items = getItemsConfig(dashboardPrefix.toLowerCase());
 
@@ -33,6 +42,12 @@ export default function Dashboard({ nameTopBar, nameAdmin, showEntrada }) {
             nameTopBar={nameTopBar}
             nameAdmin={nameAdmin}
             showEntrada={showEntrada}
+            getRegisters={getRegisters}
+            createRegister={createRegister}
+            createSalida={createSalida}
+            showColumnaIngreso={showColumnaIngreso}
+            showConVehiculoSalida={showConVehiculoSalida}
+            showPlaca={showPlaca}
           />
           <Outlet />
         </main>

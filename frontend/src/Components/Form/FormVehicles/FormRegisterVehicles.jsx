@@ -5,7 +5,6 @@ import SelectOptions from "../../Ui/SelectOptions";
 import SchemaValidationRegisterVehicle from "../Validation/SchemaValidation/SchemaValidationRegisterVehicle";
 import useFormWithYup from "../Validation/connectYupRhf";
 import "../../../styles/FormRegisterVehicles.css";
-import useHandleValidationVehicle from "../Validation/HandleValidation/HandleValidationRegisterVehicle";
 
 export default function FormRegisterVehicles({ closeModal, onSuccess }) {
   const {
@@ -14,15 +13,22 @@ export default function FormRegisterVehicles({ closeModal, onSuccess }) {
     formState: { errors, isSubmitting, isValid },
   } = useFormWithYup(SchemaValidationRegisterVehicle, { mode: "onChange" });
 
-  const { onSubmit: handleVehicleSubmit, onError } =
-    useHandleValidationVehicle();
-
   const onSubmit = async (data) => {
-    const vehiculo = await handleVehicleSubmit(data); // ✅ recibe el objeto validado
-    if (vehiculo) {
-      onSuccess(vehiculo); // ✅ pasa el objeto al padre
-      closeModal();
+    const vehiculo = {
+      placa: data.placa?.trim(),
+      tipoVehiculo: data.tipoVehiculo,
+    };
+
+    if (!vehiculo.placa || !vehiculo.tipoVehiculo) {
+      return;
     }
+
+    onSuccess(vehiculo);
+    closeModal();
+  };
+
+  const onError = (errors) => {
+    console.warn("Errores de validación vehículo:", errors);
   };
 
   return (
@@ -31,8 +37,8 @@ export default function FormRegisterVehicles({ closeModal, onSuccess }) {
         onSubmit={handleSubmit(onSubmit, onError)}
         className="formRegisterVehicles d-flex flex-column"
       >
-        <div className="row flex-column">
-          <div className="col-lg-12 mb-4">
+        <div className="row ">
+          <div className="col-lg-12 mb-4 w-100">
             <InputField
               typeIntput="text"
               name="placa"
@@ -42,7 +48,7 @@ export default function FormRegisterVehicles({ closeModal, onSuccess }) {
             />
           </div>
 
-          <div className="col-lg-12 mb-4">
+          <div className="col-lg-12 mb-4 ">
             <SelectOptions
               defaultValue=""
               register={register}

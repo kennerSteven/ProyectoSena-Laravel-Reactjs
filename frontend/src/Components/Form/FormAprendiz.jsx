@@ -105,7 +105,7 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
             />
           </div>
 
-          <div className="d-flex gap-3 mt-3">
+          <div className="d-flex gap-3 mt-1">
             <SelectOptions
               register={register}
               name="tipoDocumento"
@@ -125,7 +125,7 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
             />
           </div>
 
-          <div className="row mt-3">
+          <div className="row mt-2">
             <div className="col-lg-6">
               <InputField
                 typeInput="number"
@@ -162,7 +162,7 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
                 name="tipoPerfil"
                 register={register}
                 error={errors.tipoPerfil}
-                labelName="Tipo perfil"
+                nameSelect="Perfil"
                 values={
                   perfil ? [{ value: perfil.id, label: perfil.nombre }] : []
                 }
