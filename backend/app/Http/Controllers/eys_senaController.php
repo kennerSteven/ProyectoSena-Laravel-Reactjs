@@ -10,11 +10,14 @@ use Illuminate\Http\Request;
 
 class eys_senaController extends Controller
 {
-    public function index()
-    {
-        $registros = eyssena::with(['usuarios.perfile'])->get();
-        return response()->json($registros);
-    }
+   public function index()
+{
+    $registros = eyssena::with(['usuarios.perfile'])
+        ->orderBy('fechaRegistro', 'desc') // Más recientes primero
+        ->get();
+
+    return response()->json($registros);
+}
 
 
     public function entradasena(Request $request)
@@ -93,38 +96,37 @@ class eys_senaController extends Controller
     }
 
 
-    public function salidaMasivaSena()
-    {
+  public function salidaMasivaSena()
+{
+    // Trae TODOS los usuarios activos
+    $usuariosActivos = usuarios::where('estado', 'activo')->get();
 
-        $visitantesActivos = usuarios::where('estado', 'activo')
-            ->whereHas('perfile', function ($q) {
-                $q->where('nombre', 'Visitante');
-            })
-            ->get();
-
-        if ($visitantesActivos->isEmpty()) {
-            return response()->json(['message' => 'No hay visitantes activos para registrar salida.']);
-        }
-
-        foreach ($visitantesActivos as $visitante) {
-
-            eyssena::create([
-                'numeroDocumento' => $visitante->numeroDocumento,
-                'tipo' => 'salida',
-                'idusuario' => $visitante->id,
-                'fechaRegistro' => now(),
-            ]);
-
-
-            $visitante->fechaExpiracion = now()->addHours(12);
-            $visitante->save();
-        }
-
-        return response()->json([
-            'message' => 'Salidas registradas correctamente para todos los visitantes activos del SENA.',
-            'total' => $visitantesActivos->count()
-        ]);
+    if ($usuariosActivos->isEmpty()) {
+        return response()->json(['message' => 'No hay usuarios activos para registrar salida.']);
     }
+
+    foreach ($usuariosActivos as $usuario) {
+
+        // Registrar salida masiva para todos
+        eyssena::create([
+            'numeroDocumento' => $usuario->numeroDocumento,
+            'tipo' => 'salida',
+            'idusuario' => $usuario->id,
+            'fechaRegistro' => now(),
+        ]);
+
+        // Solo los visitantes se inactivan en 12 horas
+        if ($usuario->perfile->nombre === 'Visitante') {
+            $usuario->fechaExpiracion = now()->addHours(12);
+            $usuario->save();
+        }
+    }
+
+    return response()->json([
+        'message' => 'Salidas registradas correctamente para todos los usuarios activos.',
+        'total' => $usuariosActivos->count()
+    ]);
+}
 
 
 
