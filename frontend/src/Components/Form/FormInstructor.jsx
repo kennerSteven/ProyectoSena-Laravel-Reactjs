@@ -13,6 +13,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
   const {
     register,
     reset,
+    setValue,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidationInstructor);
@@ -48,6 +49,8 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
 
   useEffect(() => {
     if (usuarioSeleccionado && perfiles.length > 0) {
+      const fotoUrl = getFotoUrl(usuarioSeleccionado.foto);
+      setCapturedImage(fotoUrl);
       reset({
         nombre: usuarioSeleccionado.nombre || "",
         apellido: usuarioSeleccionado.apellido || "",
@@ -56,11 +59,8 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
         telefono: usuarioSeleccionado.telefono || "",
         tipoSangre: usuarioSeleccionado.tipoSangre || "",
         tipoPerfil: usuarioSeleccionado.perfile?.id || perfiles[0]?.id || "",
+        foto: fotoUrl || "",
       });
-
-      if (usuarioSeleccionado.foto) {
-        setCapturedImage(getFotoUrl(usuarioSeleccionado.foto));
-      }
     }
   }, [usuarioSeleccionado, reset, perfiles]);
 
@@ -119,33 +119,31 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
           </div>
 
           <div className="row">
-            <div className="col-lg-6 ">
-              <div className=" gap-4">
-                <InputField
-                  typeInput="number"
-                  name="telefono"
+            <div className="col-lg-6">
+              <InputField
+                typeInput="number"
+                name="telefono"
+                register={register}
+                error={errors.telefono}
+                labelName="Teléfono"
+              />
+              <div className="my-2">
+                <SelectOptions
                   register={register}
-                  error={errors.telefono}
-                  labelName="Teléfono"
+                  name="tipoSangre"
+                  nameSelect="Tipo de sangre"
+                  error={errors.tipoSangre}
+                  values={[
+                    { value: "A+", label: "A positivo" },
+                    { value: "A-", label: "A negativo" },
+                    { value: "B+", label: "B positivo" },
+                    { value: "B-", label: "B negativo" },
+                    { value: "AB+", label: "AB positivo" },
+                    { value: "AB-", label: "AB negativo" },
+                    { value: "O+", label: "O positivo" },
+                    { value: "O-", label: "O negativo" },
+                  ]}
                 />
-                <div className="my-2">
-                  <SelectOptions
-                    register={register}
-                    name="tipoSangre"
-                    nameSelect="Tipo de sangre"
-                    error={errors.tipoSangre}
-                    values={[
-                      { value: "A+", label: "A positivo" },
-                      { value: "A-", label: "A negativo" },
-                      { value: "B+", label: "B positivo" },
-                      { value: "B-", label: "B negativo" },
-                      { value: "AB+", label: "AB positivo" },
-                      { value: "AB-", label: "AB negativo" },
-                      { value: "O+", label: "O positivo" },
-                      { value: "O-", label: "O negativo" },
-                    ]}
-                  />
-                </div>
               </div>
 
               <div className="my-2">
@@ -207,6 +205,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                         const imageData =
                           canvasRef.current.toDataURL("image/png");
                         setCapturedImage(imageData);
+                        setValue("foto", imageData); // ✅ sincroniza con RHF
                         setShowCamera(false);
                       }}
                     >
@@ -230,10 +229,23 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                     </button>
                   </div>
                 )}
+                {/* ✅ Error de foto */}
+                {errors.foto && (
+                  <p className="text-danger text-center mt-2">
+                    {errors.foto.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </div>
+
+        {/* ✅ Campo oculto para sincronizar foto */}
+        <input
+          type="hidden"
+          {...register("foto")}
+          value={capturedImage || ""}
+        />
 
         <Toaster
           position="top-center"

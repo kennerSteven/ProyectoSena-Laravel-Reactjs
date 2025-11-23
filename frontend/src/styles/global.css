@@ -134,3 +134,10 @@ hr {
   font-size: 1.2rem;
   color: #2e7d32;
 }
+.btnSalidaMasiva {
+  background-color: #dc3545;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+}

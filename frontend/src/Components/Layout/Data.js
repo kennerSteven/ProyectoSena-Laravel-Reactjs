@@ -20,7 +20,6 @@ export const ItemsConfigGranja = [
     label: "Visitante",
     link: "/dashboardgranja/listarvisitante",
   },
-
   {
     iconClass: "pi pi-briefcase",
     label: "Administrativo",
@@ -32,7 +31,6 @@ export const ItemsConfigGranja = [
     label: "Información",
     link: "/dashboardgranja/vigilantes",
   },
-  { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
 ];
 export const ItemsConfigCata = [
   { iconClass: "pi pi-home", link: "/dashboardcata/inicio", label: "Inicio" },
@@ -42,7 +40,7 @@ export const ItemsConfigCata = [
     link: "/dashboardcata/listaraprendiz",
   },
   {
-    iconClass: "pi pi-bookt",
+    iconClass: "pi pi-book",
     label: "Formaciones",
     link: "/dashboardcata/formaciones",
   },
@@ -61,14 +59,12 @@ export const ItemsConfigCata = [
     label: "Visitante",
     link: "/dashboardcata/listarvisitante",
   },
-
   { type: "divider" },
   {
     iconClass: "pi pi-question-circle",
     label: "Información",
     link: "/dashboardcata/vigilantes",
   },
-  { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
 ];
 export const ItemsConfigCasaApoyo = [
   { iconClass: "pi pi-home", link: "/dashboardcasa/inicio", label: "Inicio" },
@@ -97,14 +93,12 @@ export const ItemsConfigCasaApoyo = [
     label: "Visitante",
     link: "/dashboardcasa/listarvisitante",
   },
-
   { type: "divider" },
   {
     iconClass: "pi pi-question-circle",
     label: "Información",
     link: "/dashboardcasa/vigilantes",
   },
-  { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
 ];
 export const getItemsConfigByDashboard = (dashboard) => {
   const prefix = `/dashboard${dashboard.toLowerCase()}`;
@@ -141,7 +135,6 @@ export const getItemsConfigByDashboard = (dashboard) => {
       label: "Información ",
       link: `${prefix}/vigilantes`,
     },
-    { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
   ];
 };
 
@@ -177,8 +170,6 @@ export const getItemsConfig = (dashboardPrefix) => [
     link: `${dashboardPrefix}/listaradministrativo`,
   },
   { type: "divider" },
- 
-  { iconClass: "pi pi-sign-out", label: "Cerrar sesión", link: "/logout" },
 ];
 
 export const TipoPerfil = [

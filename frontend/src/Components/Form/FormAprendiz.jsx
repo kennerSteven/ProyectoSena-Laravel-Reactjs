@@ -16,6 +16,7 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
     register,
     control,
     reset,
+    setValue,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidationUser);
@@ -51,6 +52,8 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
         (f) => f.id === usuarioSeleccionado.idficha
       );
 
+      const fotoUrl = getFotoUrl(usuarioSeleccionado.foto);
+      setCapturedImage(fotoUrl);
       reset({
         nombre: usuarioSeleccionado.nombre || "",
         apellido: usuarioSeleccionado.apellido || "",
@@ -60,11 +63,8 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
         tipoSangre: usuarioSeleccionado.tipoSangre || "",
         ficha_id: fichaSeleccionada || null,
         tipoPerfil: perfil.id,
+        foto: fotoUrl || "",
       });
-
-      if (usuarioSeleccionado.foto) {
-        setCapturedImage(getFotoUrl(usuarioSeleccionado.foto));
-      }
     }
   }, [usuarioSeleccionado, perfil, fichas, reset]);
 
@@ -203,6 +203,7 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
                         const imageData =
                           canvasRef.current.toDataURL("image/png");
                         setCapturedImage(imageData);
+                        setValue("foto", imageData); // ✅ sincroniza con RHF
                         setShowCamera(false);
                       }}
                     >
@@ -226,9 +227,22 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
                     </button>
                   </div>
                 )}
+                {/* ✅ Error de foto */}
+                {errors.foto && (
+                  <p className="text-danger text-center mt-2">
+                    {errors.foto.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
+
+          {/* ✅ Campo oculto para sincronizar foto */}
+          <input
+            type="hidden"
+            {...register("foto")}
+            value={capturedImage || ""}
+          />
 
           <div className="d-flex justify-content-start mt-4">
             <ButtonSubmit

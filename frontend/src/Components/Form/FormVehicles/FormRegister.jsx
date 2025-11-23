@@ -1,15 +1,17 @@
+import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { Dialog } from "primereact/dialog";
+
 import SchemaValidationRegister from "../Validation/SchemaValidation/SchemaValidationRegister";
 import ButtonSubmit from "../../Ui/ButtonSubmit";
 import SelectOptions from "../../Ui/SelectOptions";
 import InputField from "../../Ui/InputField";
-import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 import useFormWithYup from "../Validation/connectYupRhf";
-import { Dialog } from "primereact/dialog";
-import "../../../styles/FormRegisterVehicles.css";
 import useHandleValidationRegister from "../Validation/HandleValidation/HandleValidationRegister";
 import FormRegisterVehicles from "./FormRegisterVehicles";
 import Carnet from "../../Carnet";
+
+import "../../../styles/FormRegisterVehicles.css";
 
 export default function FormRegister({ showEntrada = true, createRegister }) {
   const [visible, setVisible] = useState(false);
@@ -30,7 +32,7 @@ export default function FormRegister({ showEntrada = true, createRegister }) {
     },
   });
 
-  const documento = watch("documento");
+  const documento = watch("documento")?.trim();
   const tipoIngreso = showEntrada ? watch("tipoIngreso") : "sinVehiculo";
 
   const { onSubmit, onError, dataCarnet } = useHandleValidationRegister({
@@ -44,7 +46,7 @@ export default function FormRegister({ showEntrada = true, createRegister }) {
 
     if (tipoIngreso === "conVehiculo") {
       trigger(["documento"]).then((valid) => {
-        if (!valid || documento.length < 6) {
+        if (!valid || !documento || documento.length < 6) {
           toast.error("Completa el documento antes de continuar");
         } else {
           setVisible(true);
@@ -62,7 +64,7 @@ export default function FormRegister({ showEntrada = true, createRegister }) {
   }, [dataCarnet]);
 
   const handleVehiculoSuccess = (dataVehiculo) => {
-    setVehiculoData(dataVehiculo); // { placa, tipoVehiculo }
+    setVehiculoData(dataVehiculo);
     setVisible(false);
   };
 
@@ -70,26 +72,35 @@ export default function FormRegister({ showEntrada = true, createRegister }) {
     setModalCarnet(false);
   };
 
-  const handleFinalSubmit = (formData) => {
+  const handleFinalSubmit = async (formData) => {
     const tipo = showEntrada ? formData.tipoIngreso : "sinVehiculo";
+    const documentoLimpio = formData.documento?.trim();
 
-    const payload =
-      tipo === "conVehiculo"
-        ? {
-            numeroDocumento: formData.documento?.trim(),
-            tipo: "entrada",
-            tieneVehiculo: true,
-            placa: vehiculoData?.placa,
-            tipoVehiculo: vehiculoData?.tipoVehiculo,
-          }
-        : {
-            numeroDocumento: formData.documento?.trim(),
-            tipo: "entrada",
-            tieneVehiculo: false,
-          };
+    if (!documentoLimpio || documentoLimpio.length < 6) {
+      toast.error("Documento inválido");
+      return;
+    }
+
+    if (
+      tipo === "conVehiculo" &&
+      (!vehiculoData?.placa || !vehiculoData?.tipoVehiculo)
+    ) {
+      return;
+    }
+
+    const payload = {
+      numeroDocumento: documentoLimpio,
+      tipoMovimiento: "entrada",
+      tieneVehiculo: tipo === "conVehiculo",
+      ...(tipo === "conVehiculo" &&
+        vehiculoData && {
+          placa: vehiculoData.placa,
+          tipoVehiculo: vehiculoData.tipoVehiculo,
+        }),
+    };
 
     console.log("Payload enviado:", payload);
-    onSubmit(payload);
+    await onSubmit(payload);
   };
 
   const isBlocked =
@@ -178,8 +189,7 @@ export default function FormRegister({ showEntrada = true, createRegister }) {
             telefono={dataCarnet.telefono}
             sangre={dataCarnet.tipoSangre}
             tipoPerfil={dataCarnet.perfile?.nombre}
-            Formacion={dataCarnet.perfile?.nombre}
-            ficha={
+            formacion={
               dataCarnet.perfile?.nombre?.toLowerCase() === "aprendiz"
                 ? dataCarnet.fichas?.nombrePrograma
                 : null

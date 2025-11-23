@@ -15,6 +15,8 @@ export default function Dashboard({
   showColumnaIngreso,
   showConVehiculoSalida,
   showPlaca,
+  salidaMasiva,
+  btnSalidaMasiva,
 }) {
   const location = useLocation();
 
@@ -48,6 +50,8 @@ export default function Dashboard({
             showColumnaIngreso={showColumnaIngreso}
             showConVehiculoSalida={showConVehiculoSalida}
             showPlaca={showPlaca}
+            salidaMasiva={salidaMasiva}
+            btnSalidaMasiva={btnSalidaMasiva}
           />
           <Outlet />
         </main>

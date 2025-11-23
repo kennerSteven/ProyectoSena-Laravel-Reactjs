@@ -14,6 +14,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
   const {
     register,
     reset,
+    setValue,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useFormWithYup(SchemaValidationVisitante);
@@ -47,9 +48,12 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
         tipoDocumento: usuarioSeleccionado.tipoDocumento || "",
         numeroDocumento: usuarioSeleccionado.numeroDocumento || "",
         telefono: usuarioSeleccionado.telefono || "",
-
         tipoPerfil: usuarioSeleccionado.perfile?.id || perfiles[0]?.id || "",
+        foto: usuarioSeleccionado.foto || "",
       });
+      if (usuarioSeleccionado.foto) {
+        setCapturedImage(usuarioSeleccionado.foto);
+      }
     }
   }, [usuarioSeleccionado, reset, perfiles]);
 
@@ -70,7 +74,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
     <div>
       <form className="row" onSubmit={handleSubmit(onSubmit, onError)}>
         <div className="mt-2">
-          <div className="d-flex gap-4  mb-3">
+          <div className="d-flex gap-4 mb-3">
             <InputField
               typeInput="text"
               name="nombre"
@@ -95,6 +99,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
               error={errors.tipoDocumento}
               values={[
                 { value: "cc", label: "Cédula de ciudadanía" },
+                { value: "ti", label: "Tarjeta de identidad" },
                 { value: "otro", label: "Otro..." },
               ]}
             />
@@ -108,14 +113,30 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
           </div>
 
           <div className="row">
-            <div className="col-lg-6 ">
-              <div className="d-flex gap-4">
-                <InputField
-                  typeInput="number"
-                  name="telefono"
+            <div className="col-lg-6">
+              <InputField
+                typeInput="number"
+                name="telefono"
+                register={register}
+                error={errors.telefono}
+                labelName="Teléfono"
+              />
+              <div className="my-2">
+                <SelectOptions
                   register={register}
-                  error={errors.telefono}
-                  labelName="Teléfono"
+                  name="tipoSangre"
+                  nameSelect="Tipo de sangre"
+                  error={errors.tipoSangre}
+                  values={[
+                    { value: "A+", label: "A positivo" },
+                    { value: "A-", label: "A negativo" },
+                    { value: "B+", label: "B positivo" },
+                    { value: "B-", label: "B negativo" },
+                    { value: "AB+", label: "AB positivo" },
+                    { value: "AB-", label: "AB negativo" },
+                    { value: "O+", label: "O positivo" },
+                    { value: "O-", label: "O negativo" },
+                  ]}
                 />
               </div>
 
@@ -128,13 +149,18 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                   values={opcionesPerfil}
                 />
               </div>
+
               <div className="d-flex justify-content-start mt-4">
                 <ButtonSubmit
                   textSend={usuarioSeleccionado ? "Actualizar" : "Guardar"}
-                  textSending="Guardando..."
+                  textSending={
+                    usuarioSeleccionado ? "Actualizando..." : "Guardando..."
+                  }
                   isSubmitting={isSubmitting}
                   maxWidth={false}
-                  iconButton="bi bi-save"
+                  iconButton={
+                    usuarioSeleccionado ? "bi bi-pencil-square" : "bi bi-save"
+                  }
                 />
               </div>
             </div>
@@ -145,20 +171,16 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                   <div className="text-center">
                     <img
                       src={capturedImage}
-                      alt="Foto del visitante"
+                      alt="Foto del instructor"
                       className="img-fluid rounded"
                       style={{ maxHeight: "200px", objectFit: "cover" }}
+                      onError={() =>
+                        console.warn(
+                          "No se pudo cargar la imagen:",
+                          capturedImage
+                        )
+                      }
                     />
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger mt-2"
-                      onClick={() => {
-                        setCapturedImage(null);
-                        setShowCamera(true);
-                      }}
-                    >
-                      Retomar foto
-                    </button>
                   </div>
                 ) : showCamera ? (
                   <div className="text-center">
@@ -177,6 +199,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                         const imageData =
                           canvasRef.current.toDataURL("image/png");
                         setCapturedImage(imageData);
+                        setValue("foto", imageData); // ✅ sincroniza con RHF
                         setShowCamera(false);
                       }}
                     >
@@ -200,10 +223,23 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                     </button>
                   </div>
                 )}
+                {/* ✅ Error de foto */}
+                {errors.foto && (
+                  <p className="text-danger text-center mt-2">
+                    {errors.foto.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </div>
+
+        {/* ✅ Campo oculto para sincronizar foto */}
+        <input
+          type="hidden"
+          {...register("foto")}
+          value={capturedImage || ""}
+        />
 
         <Toaster
           position="top-center"

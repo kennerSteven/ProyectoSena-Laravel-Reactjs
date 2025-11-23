@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../../assets/img/logoSena.png";
+// import logo from "../../assets/img/logoSena.png";
 import "../../styles/TopBar.css";
 import "primeicons/primeicons.css";
 import { Dialog } from "primereact/dialog";
@@ -11,7 +11,7 @@ import FormSalida from "../Form/FormSalida";
 
 export default function TopBar({
   nameTopBar,
-  nameAdmin,
+  // nameAdmin,
   showEntrada,
   getRegisters,
   createRegister,
@@ -19,6 +19,8 @@ export default function TopBar({
   showColumnaIngreso,
   showConVehiculoSalida,
   showPlaca,
+  salidaMasiva,
+  btnSalidaMasiva,
 }) {
   const [visibleEntrada, setVisibleEntrada] = useState(false);
   const [visibleSalida, setVisibleSalida] = useState(false);
@@ -41,7 +43,7 @@ export default function TopBar({
           </div>
 
           <div className="d-flex align-items-center gap-3 bg-light px-2 rounded">
-            <div>
+            {/* <div>
               <h6 className="mb-0 fw-bold nameAdmin">{nameAdmin}</h6>
               <small className="text-muted">Administrador</small>
             </div>
@@ -52,7 +54,7 @@ export default function TopBar({
                 width="35"
                 height="35"
               />
-            </div>
+            </div> */}
 
             <div className="d-flex gap-2">
               <Tooltip
@@ -118,6 +120,8 @@ export default function TopBar({
               <FormSalida
                 createSalida={createSalida}
                 showTipoIngreso={showConVehiculoSalida}
+                salidaMasiva={salidaMasiva}
+                btnSalidaMasiva={btnSalidaMasiva}
               />
             </Dialog>
 

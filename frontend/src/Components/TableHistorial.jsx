@@ -17,9 +17,13 @@ export default function TablaHistorial({
   const [usuarios, setUsuarios] = useState([]);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: "contains" },
-    "usuarios.perfile.nombre": { value: null, matchMode: "equals" },
-    tipo: { value: null, matchMode: "equals" },
-    fechaRegistro: { value: null, matchMode: "dateIs" },
+    "usuarios.nombre": { value: null, matchMode: "contains" },
+    "usuarios.apellido": { value: null, matchMode: "contains" },
+    "usuarios.telefono": { value: null, matchMode: "contains" },
+    "usuarios.numeroDocumento": { value: null, matchMode: "contains" },
+    "usuarios.perfile.nombre": { value: null, matchMode: "contains" },
+    tipo: { value: null, matchMode: "contains" },
+    fechaRegistro: { value: null, matchMode: "equals" },
   });
 
   useEffect(() => {
@@ -59,8 +63,12 @@ export default function TablaHistorial({
 
   const fechaFilterTemplate = (options) => (
     <Calendar
-      value={options.value}
-      onChange={(e) => options.filterApplyCallback(e.value)}
+      value={options.value ? new Date(options.value) : null}
+      onChange={(e) => {
+        const date = e.value;
+        const isoDate = date ? date.toISOString().split("T")[0] : null;
+        options.filterApplyCallback(isoDate);
+      }}
       dateFormat="yy-mm-dd"
       placeholder="Filtrar fecha"
       className="p-column-filter"
@@ -71,16 +79,11 @@ export default function TablaHistorial({
     const perfil = rowData.usuarios?.perfile?.nombre;
 
     const getColor = (perfil) => {
-      switch (perfil?.toLowerCase()) {
-        case "instructor":
-          return "info";
-        case "aprendiz":
-          return "success";
-        case "administrativo":
-          return "warning";
-        default:
-          return null;
-      }
+      const lower = perfil?.toLowerCase();
+      if (lower?.includes("instructor")) return "info";
+      if (lower?.includes("aprendiz")) return "success";
+      if (lower?.includes("administrativo")) return "warning";
+      return null;
     };
 
     return <Tag value={perfil} severity={getColor(perfil)} />;
@@ -128,6 +131,7 @@ export default function TablaHistorial({
                     global: { ...prev.global, value: e.target.value },
                   }));
                 }}
+                style={{ width: "150px" }}
                 placeholder="Buscar..."
               />
             </div>
@@ -141,6 +145,7 @@ export default function TablaHistorial({
               filterDisplay="row"
               globalFilterFields={[
                 "usuarios.nombre",
+                "usuarios.apellido",
                 "usuarios.telefono",
                 "usuarios.numeroDocumento",
                 "usuarios.perfile.nombre",
@@ -155,25 +160,27 @@ export default function TablaHistorial({
                 field="usuarios.nombre"
                 header="Nombre"
                 filter
-                filterPlaceholder="Buscar nombre"
+                filterPlaceholder="Nombre"
+                style={{ width: "140px" }}
               />
               <Column
                 field="usuarios.apellido"
                 header="Apellido"
                 filter
-                filterPlaceholder="Buscar Apellido"
+                filterPlaceholder="Apellido"
               />
               <Column
                 field="usuarios.telefono"
                 header="Teléfono"
                 filter
-                filterPlaceholder="Buscar teléfono"
+                filterPlaceholder="Teléfono"
+                style={{ width: "140px" }}
               />
               <Column
                 field="usuarios.numeroDocumento"
                 header="Documento"
                 filter
-                filterPlaceholder="Buscar documento"
+                filterPlaceholder="Documento"
               />
 
               {showColumnaIngreso && (
@@ -182,6 +189,7 @@ export default function TablaHistorial({
                   header="Ingreso"
                   body={ingresoBodyTemplate}
                   filter={false}
+                  style={{ width: "110px" }}
                 />
               )}
               {showPlaca && (
@@ -190,6 +198,7 @@ export default function TablaHistorial({
                   header="Placa"
                   body={placaBodyTemplate}
                   filter={false}
+                  style={{ width: "110px" }}
                 />
               )}
 

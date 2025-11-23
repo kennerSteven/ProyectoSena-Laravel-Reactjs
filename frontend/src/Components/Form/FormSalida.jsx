@@ -14,11 +14,16 @@ import useHandleValidationSalida from "../Form/Validation/HandleValidation/Handl
 
 import "../../styles/FormRegisterVehicles.css";
 
-export default function FormSalida({ createSalida, showTipoIngreso = true }) {
+export default function FormSalida({
+  createSalida,
+  showTipoIngreso = true,
+  salidaMasiva,
+}) {
   const [visible, setVisible] = useState(false);
   const [vehiculoData, setVehiculoData] = useState(null);
   const [modalSalida, setModalSalida] = useState(false);
   const [modalMasivo, setModalMasivo] = useState(false);
+  const [loadingMasivo, setLoadingMasivo] = useState(false);
 
   const {
     register,
@@ -67,12 +72,19 @@ export default function FormSalida({ createSalida, showTipoIngreso = true }) {
     setModalSalida(false);
   };
 
-  const handleFinalSubmit = (formData) => {
+  const handleFinalSubmit = async (formData) => {
     const tipo = showTipoIngreso ? formData.tipoIngreso : "sinVehiculo";
+
+    if (
+      tipo === "conVehiculo" &&
+      (!vehiculoData?.placa || !vehiculoData?.tipoVehiculo)
+    ) {
+      return;
+    }
 
     const payload = {
       numeroDocumento: formData.documento?.trim(),
-      tipo: "salida",
+      tipoMovimiento: "salida",
       tieneVehiculo: tipo === "conVehiculo",
       ...(tipo === "conVehiculo" &&
         vehiculoData && {
@@ -82,32 +94,37 @@ export default function FormSalida({ createSalida, showTipoIngreso = true }) {
     };
 
     console.log("Payload enviado:", payload);
-    onSubmit(payload);
+    await onSubmit(payload);
   };
 
   const isBlocked =
     tipoIngreso === "conVehiculo" &&
     (!vehiculoData?.placa || !vehiculoData?.tipoVehiculo);
 
-  // ✅ Salida masiva
   const handleSalidaMasiva = async () => {
     try {
       toast.dismiss();
+      setLoadingMasivo(true);
 
-      const response = await fetch(
-        "http://localhost:8000/api/gym/salidamasiva",
-        {
-          method: "POST",
-        }
-      );
+      const result = await salidaMasiva();
 
-      toast.dismiss();
-
-      if (!response.ok) {
-        throw new Error("Error al procesar salida masiva");
+      if (!result.success) {
+        throw new Error(result.message || "Error al procesar salida masiva");
       }
 
-      toast.success("Salida masiva registrada correctamente");
+      Swal.fire({
+        icon: "success",
+        title: "Salida masiva",
+        text: "La salida masiva fue ejecutada correctamente",
+        confirmButtonText: "Aceptar",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
+
       setModalMasivo(false);
     } catch (error) {
       console.error("Error en salida masiva:", error);
@@ -116,6 +133,8 @@ export default function FormSalida({ createSalida, showTipoIngreso = true }) {
         title: "Error en salida masiva",
         text: error.message || "No se pudo completar la operación.",
       });
+    } finally {
+      setLoadingMasivo(false);
     }
   };
 
@@ -123,7 +142,7 @@ export default function FormSalida({ createSalida, showTipoIngreso = true }) {
     <div>
       <form
         onSubmit={handleSubmit(handleFinalSubmit, onError)}
-        className="p-5 d-flex flex-column rounded"
+        className="p-1 d-flex flex-column rounded"
       >
         <div className="row">
           <div className="col-lg-12 mb-3">
@@ -162,7 +181,7 @@ export default function FormSalida({ createSalida, showTipoIngreso = true }) {
           />
           <button
             type="button"
-            className="btn btn-danger rounded"
+            className="btnSalidaMasiva"
             onClick={() => setModalMasivo(true)}
           >
             Salida masiva
@@ -200,8 +219,7 @@ export default function FormSalida({ createSalida, showTipoIngreso = true }) {
             telefono={usuarioSalida.telefono}
             sangre={usuarioSalida.tipoSangre}
             tipoPerfil={usuarioSalida.perfile?.nombre}
-            Formacion={usuarioSalida.perfile?.nombre}
-            ficha={
+            formacion={
               usuarioSalida.perfile?.nombre?.toLowerCase() === "aprendiz"
                 ? usuarioSalida.fichas?.nombrePrograma
                 : null
@@ -223,11 +241,26 @@ export default function FormSalida({ createSalida, showTipoIngreso = true }) {
             <button
               className="btn btn-secondary"
               onClick={() => setModalMasivo(false)}
+              disabled={loadingMasivo}
             >
               Cancelar
             </button>
-            <button className="btn btn-danger" onClick={handleSalidaMasiva}>
-              Aceptar salida masiva
+            <button
+              className="btn btn-danger d-flex align-items-center gap-2"
+              onClick={handleSalidaMasiva}
+              disabled={loadingMasivo}
+            >
+              {loadingMasivo ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  />
+                  Procesando...
+                </>
+              ) : (
+                "Aceptar salida masiva"
+              )}
             </button>
           </div>
         }

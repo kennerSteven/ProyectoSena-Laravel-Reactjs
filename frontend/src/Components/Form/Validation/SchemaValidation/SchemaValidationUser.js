@@ -5,27 +5,22 @@ const SchemaValidationUser = yup.object({
     .string()
     .required("El nombre es obligatorio")
     .min(2, "Mínimo 2 caracteres"),
-
   apellido: yup
     .string()
     .required("El apellido es obligatorio")
     .min(2, "Mínimo 2 caracteres"),
-
   telefono: yup
     .string()
-    .matches(/^\d{10}$/, "Debe tener 10 dígitos")
+    .matches(/^\d{10}$/, "Debe tener exactamente 10 dígitos")
     .required("El teléfono es obligatorio"),
-
   numeroDocumento: yup
     .string()
-    .matches(/^\d{6,10}$/, "Documento inválido")
+    .matches(/^\d{6,10}$/, "El documento debe tener entre 6 y 10 dígitos")
     .required("El documento es obligatorio"),
-
   tipoDocumento: yup
     .string()
-    .oneOf(["cc", "tihan"], "Tipo de documento inválido")
+    .oneOf(["cc", "ti"], "Tipo de documento inválido")
     .required("Selecciona el tipo de documento"),
-
   tipoSangre: yup
     .string()
     .oneOf(
@@ -33,6 +28,15 @@ const SchemaValidationUser = yup.object({
       "Tipo de sangre inválido"
     )
     .required("Selecciona el tipo de sangre"),
+  ficha_id: yup
+    .object()
+    .nullable()
+    .required("Selecciona una ficha de formación"),
+  tipoPerfil: yup
+    .number()
+    .typeError("Selecciona un perfil válido")
+    .required("El perfil es obligatorio"),
+  foto: yup.string().required("La foto es obligatoria"), // ✅ nuevo campo
 });
 
 export default SchemaValidationUser;

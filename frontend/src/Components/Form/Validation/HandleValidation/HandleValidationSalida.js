@@ -26,7 +26,18 @@ export default function HandleValidationSalida({
       toast.dismiss();
 
       if (!result || result.error) {
-        toast.error(result.error || "Error al registrar salida");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: `${result.error}`,
+          confirmButtonText: "Aceptar",
+          timer: 3000,
+          timerProgressBar: true,
+          showConfirmButton: true,
+          customClass: {
+            confirmButton: "buttonConfirmSwal",
+          },
+        });
         console.error("Error del servidor:", result);
         return;
       }

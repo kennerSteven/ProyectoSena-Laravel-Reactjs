@@ -1,5 +1,5 @@
 import Dashboard from "../../Layout/Dashboard";
-
+import { registrarSalidaMasiva } from "../../Services/FetchServices";
 import {
   getRegisters,
   createRegister,
@@ -9,9 +9,19 @@ import {
   createRegisterSalidaGranja,
 } from "../../Services/FetchServices";
 
+
 export function DashboardCata() {
+  const urlEntrada = "http://localhost:8000/api/entradaysalidaSENA/entradasena";
+  const urlSalida = "http://localhost:8000/api/entradaysalidaSENA/salidasena";
+
   return (
     <Dashboard
+      urlEntrada={urlEntrada}
+      urlSalida={urlSalida}
+      salidaMasiva={() =>
+        registrarSalidaMasiva("http://localhost:8000/api/sena/salidamasiva")
+      }
+      btnSalidaMasiva={true}
       showConVehiculoSalida={false}
       nameTopBar="CATA"
       showColumnaIngreso={false}
@@ -21,19 +31,25 @@ export function DashboardCata() {
       getRegisters={getRegisters(
         "http://localhost:8000/api/entradaysalidaSENA/index"
       )}
-      createRegister={createRegister(
-        "http://localhost:8000/api/entradaysalidaSENA/entradasena"
-      )}
-      createSalida={createSalida(
-        "http://localhost:8000/api/entradaysalidaSENA/salidasena"
-      )}
+      createRegister={createRegister(urlEntrada)}
+      createSalida={createSalida(urlSalida)}
     />
   );
 }
 
+// 🟢 GYM
 export function DashboardGym() {
+  const urlEntrada = "http://localhost:8000/api/entradaysalidagym/entradagym";
+  const urlSalida = "http://localhost:8000/api/entradaysalidagym/salidagym";
+
   return (
     <Dashboard
+      urlEntrada={urlEntrada}
+      urlSalida={urlSalida}
+      salidaMasiva={() =>
+        registrarSalidaMasiva("http://localhost:8000/api/gym/salidamasiva")
+      }
+      btnSalidaMasiva={true}
       showConVehiculoSalida={false}
       nameTopBar="Gym"
       nameAdmin="unknown Admin"
@@ -43,19 +59,29 @@ export function DashboardGym() {
       getRegisters={getRegisters(
         "http://localhost:8000/api/entradaysalidagym/index"
       )}
-      createRegister={createRegister(
-        "http://localhost:8000/api/entradaysalidagym/entradagym"
-      )}
-      createSalida={createSalida(
-        "http://localhost:8000/api/entradaysalidagym/salidagym"
-      )}
+      createRegister={createRegister(urlEntrada)}
+      createSalida={createSalida(urlSalida)}
     />
   );
 }
 
+// 🟢 CASA DE APOYO
 export function DashboardCasaApoyo() {
+  const urlEntrada =
+    "http://localhost:8000/api/entradaysalidacasa/entradacasadeapoyo";
+  const urlSalida =
+    "http://localhost:8000/api/entradaysalidacasa/salidacasadeapoyo";
+
   return (
     <Dashboard
+      urlEntrada={urlEntrada}
+      urlSalida={urlSalida}
+      salidaMasiva={() =>
+        registrarSalidaMasiva(
+          "http://localhost:8000/api/casadeapoyo/salidamasiva"
+        )
+      }
+      btnSalidaMasiva={true}
       showConVehiculoSalida={false}
       nameTopBar="Casa de apoyo"
       nameAdmin="unknown Admin"
@@ -65,30 +91,37 @@ export function DashboardCasaApoyo() {
       getRegisters={getRegisters(
         "http://localhost:8000/api/entradaysalidacasa/index"
       )}
-      createRegister={createRegister(
-        "http://localhost:8000/api/entradaysalidacasa/entradacasadeapoyo"
-      )}
-      createSalida={createSalida(
-        "http://localhost:8000/api/entradaysalidacasa/salidacasadeapoyo"
-      )}
+      createRegister={createRegister(urlEntrada)}
+      createSalida={createSalida(urlSalida)}
     />
   );
 }
 
+// 🟢 GRANJA
 export function DashboardGranja() {
+  const urlEntrada =
+    "http://localhost:8000/api/entradaysalidagranja/entradagranja";
+  const urlSalida =
+    "http://localhost:8000/api/entradaysalidagranja/salidagranja";
+
   return (
     <Dashboard
+      urlEntrada={urlEntrada}
+      urlSalida={urlSalida}
+      salidaMasiva={() =>
+        registrarSalidaMasiva("http://localhost:8000/api/granja/salidamasiva")
+      }
+      btnSalidaMasiva={true}
       showConVehiculoSalida={true}
       showPlaca={true}
       nameTopBar="Granja"
-      showColumnaIngreso={true}
       nameAdmin="unknown Admin"
+      showColumnaIngreso={true}
       showEntrada={true}
       getRegisters={getRegistersGranja}
-      createRegister={createRegisterGranja(
-        "http://localhost:8000/api/entradaysalidagranja/entradagranja"
-      )}
+      createRegister={createRegisterGranja(urlEntrada)}
       createSalida={createRegisterSalidaGranja}
     />
   );
 }
+

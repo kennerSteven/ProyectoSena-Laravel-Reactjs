@@ -41,3 +41,22 @@ hr {
   background-color: #c8e6c9;
   color: #1b5e20;
 }
+
+.buttonLogout {
+  background-color: transparent;
+  background-color: #e6f4ea;
+  padding: 11px;
+  border-radius: 10px;
+  color: #2e7d32;
+  font-size: 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+.buttonLogout:hover {
+  background-color: #c8e6c9;
+  color: #1b5e20;
+}
+
+.buttonCancelLogout {
+  background-color: transparent;
+  color: rgb(38, 38, 38);
+}
