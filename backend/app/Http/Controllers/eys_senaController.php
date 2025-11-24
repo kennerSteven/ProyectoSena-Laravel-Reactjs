@@ -10,14 +10,14 @@ use Illuminate\Http\Request;
 
 class eys_senaController extends Controller
 {
-   public function index()
-{
-    $registros = eyssena::with(['usuarios.perfile'])
-        ->orderBy('fechaRegistro', 'desc') // Más recientes primero
-        ->get();
+    public function index()
+    {
+        $registros = eyssena::with(['usuarios.perfile'])
+            ->orderBy('fechaRegistro', 'desc') // Más recientes primero
+            ->get();
 
-    return response()->json($registros);
-}
+        return response()->json($registros);
+    }
 
 
     public function entradasena(Request $request)
@@ -96,37 +96,37 @@ class eys_senaController extends Controller
     }
 
 
-  public function salidaMasivaSena()
-{
-    // Trae TODOS los usuarios activos
-    $usuariosActivos = usuarios::where('estado', 'activo')->get();
+    public function salidaMasivaSena()
+    {
+        // Trae TODOS los usuarios activos
+        $usuariosActivos = usuarios::where('estado', 'activo')->get();
 
-    if ($usuariosActivos->isEmpty()) {
-        return response()->json(['message' => 'No hay usuarios activos para registrar salida.']);
-    }
-
-    foreach ($usuariosActivos as $usuario) {
-
-        // Registrar salida masiva para todos
-        eyssena::create([
-            'numeroDocumento' => $usuario->numeroDocumento,
-            'tipo' => 'salida',
-            'idusuario' => $usuario->id,
-            'fechaRegistro' => now(),
-        ]);
-
-        // Solo los visitantes se inactivan en 12 horas
-        if ($usuario->perfile->nombre === 'Visitante') {
-            $usuario->fechaExpiracion = now()->addHours(12);
-            $usuario->save();
+        if ($usuariosActivos->isEmpty()) {
+            return response()->json(['message' => 'No hay usuarios activos para registrar salida.']);
         }
-    }
 
-    return response()->json([
-        'message' => 'Salidas registradas correctamente para todos los usuarios activos.',
-        'total' => $usuariosActivos->count()
-    ]);
-}
+        foreach ($usuariosActivos as $usuario) {
+
+            // Registrar salida masiva para todos
+            eyssena::create([
+                'numeroDocumento' => $usuario->numeroDocumento,
+                'tipo' => 'salida',
+                'idusuario' => $usuario->id,
+                'fechaRegistro' => now(),
+            ]);
+
+            // Solo los visitantes se inactivan en 12 horas
+            if ($usuario->perfile->nombre === 'Visitante') {
+                $usuario->fechaExpiracion = now()->addHours(12);
+                $usuario->save();
+            }
+        }
+
+        return response()->json([
+            'message' => 'Salidas registradas correctamente para todos los usuarios activos.',
+            'total' => $usuariosActivos->count()
+        ]);
+    }
 
 
 
