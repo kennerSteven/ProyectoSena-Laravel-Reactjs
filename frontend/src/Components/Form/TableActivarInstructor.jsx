@@ -76,7 +76,7 @@ export default function TablaActivarUsuarios({
         visible={confirmVisible}
         onHide={() => setConfirmVisible(false)}
         message={`¿Activar ${
-          confirmTargetId ? "este usuario" : "los usuarios seleccionados"
+          confirmTargetId ? "este usuario" : "Los usuarios seleccionados"
         }?`}
         header="Confirmar activación"
         icon="pi pi-exclamation-triangle"
