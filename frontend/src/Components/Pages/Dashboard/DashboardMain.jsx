@@ -9,7 +9,6 @@ import {
   createRegisterSalidaGranja,
 } from "../../Services/FetchServices";
 
-
 export function DashboardCata() {
   const urlEntrada = "http://localhost:8000/api/entradaysalidaSENA/entradasena";
   const urlSalida = "http://localhost:8000/api/entradaysalidaSENA/salidasena";
@@ -46,9 +45,7 @@ export function DashboardGym() {
     <Dashboard
       urlEntrada={urlEntrada}
       urlSalida={urlSalida}
-      salidaMasiva={() =>
-        registrarSalidaMasiva("http://localhost:8000/api/gym/salidamasiva")
-      }
+      salidaMasiva={"http://localhost:8000/api/gym/salidamasiva"}
       btnSalidaMasiva={true}
       showConVehiculoSalida={false}
       nameTopBar="Gym"
@@ -76,11 +73,7 @@ export function DashboardCasaApoyo() {
     <Dashboard
       urlEntrada={urlEntrada}
       urlSalida={urlSalida}
-      salidaMasiva={() =>
-        registrarSalidaMasiva(
-          "http://localhost:8000/api/casadeapoyo/salidamasiva"
-        )
-      }
+      salidaMasiva={"http://localhost:8000/api/casadeapoyo/salidamasiva"}
       btnSalidaMasiva={true}
       showConVehiculoSalida={false}
       nameTopBar="Casa de apoyo"
@@ -108,9 +101,7 @@ export function DashboardGranja() {
     <Dashboard
       urlEntrada={urlEntrada}
       urlSalida={urlSalida}
-      salidaMasiva={() =>
-        registrarSalidaMasiva("http://localhost:8000/api/granja/salidamasiva")
-      }
+      salidaMasiva={"http://localhost:8000/api/granja/salidamasiva"}
       btnSalidaMasiva={true}
       showConVehiculoSalida={true}
       showPlaca={true}
@@ -124,4 +115,3 @@ export function DashboardGranja() {
     />
   );
 }
-

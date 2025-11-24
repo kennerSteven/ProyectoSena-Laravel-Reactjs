@@ -6,13 +6,12 @@ import FormAdministrativo from "../../Form/FormAdministrativo";
 import FormPerfil from "../../Form/FomPerfiles/FormPerfil";
 import Table from "../../Layout/Tablet";
 import TableAprendiz from "../../Layout/TableAprendiz";
-
+import { activarInstructoresPorLote } from "../../Services/FetchServices";
 import {
   GetDataInstructor,
   GetDataAprendiz,
   GetDataAdministrativo,
   getAdministrativosContratoDesactivados,
-  activarUsuariosPorTipo,
   getInstructoresContratoDesactivados,
 } from "../../Services/FetchServices";
 
@@ -64,6 +63,9 @@ export function TableInstructor() {
         openCreatePerfil={() => setModalCreatePerfil(true)}
         reloadTable={LoadInstructor}
         onEdit={handleEditInstructor}
+        activarUsuariosPorLote={(ids) =>
+          activarInstructoresPorLote("Instructor contrato", ids)
+        }
       />
 
       <Dialog
@@ -76,6 +78,90 @@ export function TableInstructor() {
         <FormInstructor
           closeModal={() => setModalOpen(false)}
           initialData={selectedInstructor}
+        />
+      </Dialog>
+
+      <Dialog
+        header="Nuevo Perfil"
+        visible={openModalCreatePerfil}
+        style={{ width: "450px" }}
+        onHide={() => setModalCreatePerfil(false)}
+        modal
+      >
+        <FormPerfil closeModal={() => setModalCreatePerfil(false)} />
+      </Dialog>
+    </div>
+  );
+}
+
+export function TableAdministrativo() {
+  const [openModal, setModalOpen] = useState(false);
+  const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
+  const [administrativos, setAdministrativos] = useState([]);
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
+
+  useEffect(() => {
+    async function LoadAdministrativos() {
+      const data = await GetDataAdministrativo();
+      const administrativosFiltrados = data.filter((item) =>
+        item.perfile?.nombre?.toLowerCase().includes("administrativo")
+      );
+      const flattened = administrativosFiltrados.map((item) => ({
+        ...item,
+        tipoPerfil: item.perfile?.nombre || "Sin perfil",
+      }));
+      setAdministrativos(flattened);
+    }
+
+    LoadAdministrativos();
+  }, []);
+
+  return (
+    <div>
+      <Table
+        tipoEntidad="Administrativo"
+        activarUsuariosPorLote={(ids) =>
+          activarInstructoresPorLote("Administrativo contrato", ids)
+        }
+        tableTitle="Listar Administrativos"
+        labelUserDisabled="Administrativos desactivados"
+        nameValue={nameValueAdministrativo}
+        dataTable={administrativos}
+        functionModal={() => {
+          setUsuarioSeleccionado(null);
+          setModalOpen(true);
+        }}
+        openCreatePerfil={() => setModalCreatePerfil(true)}
+        reloadTable={() => {
+          // Puedes pasar LoadAdministrativos si deseas recargar
+        }}
+        fetchUsuariosDesactivados={getAdministrativosContratoDesactivados}
+        onEditUser={(usuario) => {
+          setUsuarioSeleccionado(usuario);
+          setModalOpen(true);
+        }}
+      />
+
+      <Dialog
+        header={
+          usuarioSeleccionado
+            ? "Actualizar Administrativo"
+            : "Nuevo Administrativo"
+        }
+        visible={openModal}
+        style={{ width: "850px" }}
+        onHide={() => {
+          setModalOpen(false);
+          setUsuarioSeleccionado(null);
+        }}
+        modal
+      >
+        <FormAdministrativo
+          closeModal={() => {
+            setModalOpen(false);
+            setUsuarioSeleccionado(null);
+          }}
+          usuarioSeleccionado={usuarioSeleccionado}
         />
       </Dialog>
 
@@ -181,90 +267,6 @@ export function TableAprendizs() {
         modal
       >
         <FormAprendiz closeModal={() => setModalOpen(false)} />
-      </Dialog>
-
-      <Dialog
-        header="Nuevo Perfil"
-        visible={openModalCreatePerfil}
-        style={{ width: "450px" }}
-        onHide={() => setModalCreatePerfil(false)}
-        modal
-      >
-        <FormPerfil closeModal={() => setModalCreatePerfil(false)} />
-      </Dialog>
-    </div>
-  );
-}
-
-export function TableAdministrativo() {
-  const [openModal, setModalOpen] = useState(false);
-  const [openModalCreatePerfil, setModalCreatePerfil] = useState(false);
-  const [administrativos, setAdministrativos] = useState([]);
-  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
-
-  useEffect(() => {
-    async function LoadAdministrativos() {
-      const data = await GetDataAdministrativo();
-      const administrativosFiltrados = data.filter((item) =>
-        item.perfile?.nombre?.toLowerCase().includes("administrativo")
-      );
-      const flattened = administrativosFiltrados.map((item) => ({
-        ...item,
-        tipoPerfil: item.perfile?.nombre || "Sin perfil",
-      }));
-      setAdministrativos(flattened);
-    }
-
-    LoadAdministrativos();
-  }, []);
-
-  return (
-    <div>
-      <Table
-        tipoEntidad="Administrativo" // ✅ clave para parametrización
-        tableTitle="Listar Administrativos"
-        labelUserDisabled="Administrativos desactivados"
-        nameValue={nameValueAdministrativo}
-        dataTable={administrativos}
-        functionModal={() => {
-          setUsuarioSeleccionado(null);
-          setModalOpen(true);
-        }}
-        openCreatePerfil={() => setModalCreatePerfil(true)}
-        reloadTable={() => {
-          // Puedes pasar LoadAdministrativos si deseas recargar
-        }}
-        fetchUsuariosDesactivados={getAdministrativosContratoDesactivados}
-        activarUsuariosPorLote={() =>
-          activarUsuariosPorTipo("Administrativo contrato")
-        }
-        onEditUser={(usuario) => {
-          setUsuarioSeleccionado(usuario);
-          setModalOpen(true);
-        }}
-      />
-
-      <Dialog
-        header={
-          usuarioSeleccionado
-            ? "Actualizar Administrativo"
-            : "Nuevo Administrativo"
-        }
-        visible={openModal}
-        style={{ width: "850px" }}
-        onHide={() => {
-          setModalOpen(false);
-          setUsuarioSeleccionado(null);
-        }}
-        modal
-      >
-        <FormAdministrativo
-          closeModal={() => {
-            setModalOpen(false);
-            setUsuarioSeleccionado(null);
-          }}
-          usuarioSeleccionado={usuarioSeleccionado}
-        />
       </Dialog>
 
       <Dialog

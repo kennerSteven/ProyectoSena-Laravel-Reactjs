@@ -18,7 +18,7 @@ export default function SideBar({ valueSidebarOptions = [] }) {
   };
 
   const handleLogoutClick = () => {
-    setShowLogoutModal(true); // ✅ abre el modal
+    setShowLogoutModal(true); //  abre el modal
   };
 
   return (

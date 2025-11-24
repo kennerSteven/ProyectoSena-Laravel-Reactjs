@@ -168,6 +168,7 @@ export default function TablaHistorial({
                 header="Apellido"
                 filter
                 filterPlaceholder="Apellido"
+                style={{ width: "160px" }}
               />
               <Column
                 field="usuarios.telefono"
@@ -181,6 +182,7 @@ export default function TablaHistorial({
                 header="Documento"
                 filter
                 filterPlaceholder="Documento"
+                style={{ width: "160px" }}
               />
 
               {showColumnaIngreso && (
@@ -223,6 +225,7 @@ export default function TablaHistorial({
                 dataType="date"
                 filter
                 filterElement={fechaFilterTemplate}
+                style={{ width: "170px" }}
               />
             </DataTable>
           </div>

@@ -4,8 +4,8 @@ import KpiCards from "./MainDashboard";
 export function KpiGym() {
   return (
     <KpiCards
-      urlEntrada={"http://localhost:8000/api/entradaysalidagym/entradagym"}
-      urlSalida={"http://localhost:8000/api/entradaysalidagym/salidagym"}
+      urlEntrada={"http://localhost:8000/api/entradaysalidagym/index"}
+      urlSalida={"http://localhost:8000/api/entradaysalidagym/index"}
     />
   );
 }
@@ -24,8 +24,8 @@ export function KpiGRANJA() {
 export function KpiCATA() {
   return (
     <KpiCards
-      urlEntrada={"http://localhost:8000/api/entradaysalidaSENA/entradasena"}
-      urlSalida={"http://localhost:8000/api/entradaysalidaSENA/salidasena"}
+      urlEntrada={"http://localhost:8000/api/entradaysalidaSENA/index"}
+      urlSalida={"http://localhost:8000/api/entradaysalidaSENA/index"}
     />
   );
 }
@@ -34,12 +34,8 @@ export function KpiCATA() {
 export function KpiCASA() {
   return (
     <KpiCards
-      urlEntrada={
-        "http://localhost:8000/api/entradaysalidacasa/entradacasadeapoyo"
-      }
-      urlSalida={
-        "http://localhost:8000/api/entradaysalidacasa/salidacasadeapoyo"
-      }
+      urlEntrada={"http://localhost:8000/api/entradaysalidacasa/index"}
+      urlSalida={"http://localhost:8000/api/entradaysalidacasa/index"}
     />
   );
 }

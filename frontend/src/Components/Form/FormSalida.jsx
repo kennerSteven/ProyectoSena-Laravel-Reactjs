@@ -14,11 +14,7 @@ import useHandleValidationSalida from "../Form/Validation/HandleValidation/Handl
 
 import "../../styles/FormRegisterVehicles.css";
 
-export default function FormSalida({
-  createSalida,
-  showTipoIngreso = true,
-  salidaMasiva,
-}) {
+export default function FormSalida({ createSalida, showTipoIngreso = true,salidaMasiva }) {
   const [visible, setVisible] = useState(false);
   const [vehiculoData, setVehiculoData] = useState(null);
   const [modalSalida, setModalSalida] = useState(false);
@@ -106,16 +102,26 @@ export default function FormSalida({
       toast.dismiss();
       setLoadingMasivo(true);
 
-      const result = await salidaMasiva();
+      const response = await fetch(
+        salidaMasiva,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (!result.success) {
+      const result = await response.json();
+
+      if (!response.ok) {
         throw new Error(result.message || "Error al procesar salida masiva");
       }
 
       Swal.fire({
         icon: "success",
         title: "Salida masiva",
-        text: "La salida masiva fue ejecutada correctamente",
+        text: result.message || "La salida masiva fue ejecutada correctamente",
         confirmButtonText: "Aceptar",
         timer: 2000,
         timerProgressBar: true,
@@ -137,7 +143,6 @@ export default function FormSalida({
       setLoadingMasivo(false);
     }
   };
-
   return (
     <div>
       <form

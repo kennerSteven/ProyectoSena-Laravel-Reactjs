@@ -409,12 +409,32 @@ export async function activarInstructorPorId(id) {
   return await fetch(`/api/instructores/${id}/activar`, { method: "POST" });
 }
 
-export async function activarInstructoresPorLote(ids) {
-  return await fetch(`/api/instructores/activar-lote`, {
-    method: "POST",
-    body: JSON.stringify({ ids }),
-    headers: { "Content-Type": "application/json" },
-  });
+export async function activarInstructoresPorLote(tipo, ids) {
+  try {
+    const response = await fetch(
+      "http://localhost:8000/api/usuarios/activar-masivo",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ tipo, ids }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Respuesta del backend:", data);
+      throw new Error(data.message || "Error en la activación masiva");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error al activar instructores:", error);
+    throw error;
+  }
 }
 
 export async function fetchVisitantes() {
@@ -670,7 +690,6 @@ export async function getRegistersGranja() {
     return [];
   }
 }
-
 
 export async function registrarSalidaMasiva(url) {
   try {
