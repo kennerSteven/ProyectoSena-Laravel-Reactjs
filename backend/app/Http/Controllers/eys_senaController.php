@@ -97,36 +97,53 @@ class eys_senaController extends Controller
 
 
     public function salidaMasivaSena()
-    {
-        // Trae TODOS los usuarios activos
-        $usuariosActivos = usuarios::where('estado', 'activo')->get();
+{
+    // 1. Traer SOLO las ENTRADAS sin una SALIDA posterior
+    $usuariosConEntradaPendiente = eyssena::where('tipo', 'entrada')
+        ->whereNotIn('id', function ($query) {
+            $query->select('entrada.id')
+                  ->from('eys_sena as entrada')
+                  ->join('eys_sena as salida', function ($join) {
+                      $join->on('entrada.numeroDocumento', '=', 'salida.numeroDocumento')
+                           ->where('salida.tipo', '=', 'salida')
+                           ->whereColumn('salida.fechaRegistro', '>', 'entrada.fechaRegistro');
+                  });
+        })
+        ->get();
 
-        if ($usuariosActivos->isEmpty()) {
-            return response()->json(['message' => 'No hay usuarios activos para registrar salida.']);
-        }
-
-        foreach ($usuariosActivos as $usuario) {
-
-            // Registrar salida masiva para todos
-            eyssena::create([
-                'numeroDocumento' => $usuario->numeroDocumento,
-                'tipo' => 'salida',
-                'idusuario' => $usuario->id,
-                'fechaRegistro' => now(),
-            ]);
-
-            // Solo los visitantes se inactivan en 12 horas
-            if ($usuario->perfile->nombre === 'Visitante') {
-                $usuario->fechaExpiracion = now()->addHours(12);
-                $usuario->save();
-            }
-        }
-
+    if ($usuariosConEntradaPendiente->isEmpty()) {
         return response()->json([
-            'message' => 'Salidas registradas correctamente para todos los usuarios activos.',
-            'total' => $usuariosActivos->count()
+            'message' => 'No hay usuarios dentro del SENA para registrar salida masiva.'
         ]);
     }
+
+    // 2. Registrar salida para cada uno
+    foreach ($usuariosConEntradaPendiente as $entrada) {
+
+        eyssena::create([
+            'numeroDocumento' => $entrada->numeroDocumento,
+            'tipo' => 'salida',
+            'idusuario' => $entrada->idusuario,
+            'fechaRegistro' => now(),
+        ]);
+
+        // Inactivar solo visitantes
+        $usuario = $entrada->usuarios;
+        if ($usuario && $usuario->perfile->nombre === 'Visitante') {
+            $usuario->fechaExpiracion = now()->addHours(12);
+            $usuario->save();
+        }
+    }
+
+    return response()->json([
+        'message' => 'Salida masiva registrada correctamente.',
+        'total' => $usuariosConEntradaPendiente->count()
+    ]);
+}
+
+
+    
+   
 
 
 

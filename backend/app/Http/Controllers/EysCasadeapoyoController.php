@@ -97,39 +97,54 @@ class EysCasadeapoyoController extends Controller
         ]);
     }
 
-   
     public function salidaMasivaCasaDeApoyo()
 {
-    // Trae TODOS los usuarios activos
-    $usuariosActivos = usuarios::where('estado', 'activo')->get();
+    // 1. Traer SOLO las ENTRADAS sin una SALIDA posterior
+    $usuariosConEntradaPendiente = eyscasadeapoyo::where('tipo', 'entrada')
+        ->whereNotIn('id', function ($query) {
+            $query->select('entrada.id')
+                  ->from('eys_casadeapoyo as entrada')
+                  ->join('eys_casadeapoyo as salida', function ($join) {
+                      $join->on('entrada.numeroDocumento', '=', 'salida.numeroDocumento')
+                           ->where('salida.tipo', '=', 'salida')
+                           ->whereColumn('salida.fechaRegistro', '>', 'entrada.fechaRegistro');
+                  });
+        })
+        ->get();
 
-    if ($usuariosActivos->isEmpty()) {
-        return response()->json(['message' => 'No hay usuarios activos para registrar salida.']);
+    if ($usuariosConEntradaPendiente->isEmpty()) {
+        return response()->json([
+            'message' => 'No hay usuarios dentro de la casa de apoyo para registrar salida masiva.'
+        ]);
     }
 
-    foreach ($usuariosActivos as $usuario) {
+    // 2. Registrar salida para cada uno
+    foreach ($usuariosConEntradaPendiente as $entrada) {
 
-        // Registrar salida masiva para todos
         eyscasadeapoyo::create([
-            'numeroDocumento' => $usuario->numeroDocumento,
+            'numeroDocumento' => $entrada->numeroDocumento,
             'tipo' => 'salida',
-            'idusuario' => $usuario->id,
+            'idusuario' => $entrada->idusuario,
             'fechaRegistro' => now(),
         ]);
 
-        // Solo los visitantes se inactivan en 12 horas
-        if ($usuario->perfile->nombre === 'Visitante') {
+        // Inactivar solo visitantes
+        $usuario = $entrada->usuarios;
+        if ($usuario && $usuario->perfile->nombre === 'Visitante') {
             $usuario->fechaExpiracion = now()->addHours(12);
             $usuario->save();
         }
     }
 
     return response()->json([
-        'message' => 'Salidas registradas correctamente para todos los usuarios activos.',
-        'total' => $usuariosActivos->count()
+        'message' => 'Salida masiva registrada correctamente.',
+        'total' => $usuariosConEntradaPendiente->count()
     ]);
 }
 
+   
+
+  
     
 
 

@@ -190,55 +190,57 @@ class eys_granjaController extends Controller
 
     public function salidaMasivaGranja()
 {
-    // 1️⃣ Traer TODOS los usuarios que estén activos
-    $usuariosActivos = usuarios::where('estado', 'activo')->get();
+    //  Buscar SOLO las ENTRADAS sin SALIDA posterior
+    $entradasPendientes = eysgranja::where('tipo', 'entrada')
+        ->whereNotIn('id', function ($query) {
+            $query->select('entrada.id')
+                  ->from('eys_granja as entrada')
+                  ->join('eys_granja as salida', function ($join) {
+                      $join->on('entrada.numeroDocumento', '=', 'salida.numeroDocumento')
+                           ->where('salida.tipo', '=', 'salida')
+                           ->whereColumn('salida.fechaRegistro', '>', 'entrada.fechaRegistro');
+                  });
+        })
+        ->get();
 
-    if ($usuariosActivos->isEmpty()) {
-        return response()->json(['message' => 'No hay usuarios activos para registrar salida masiva.']);
+    if ($entradasPendientes->isEmpty()) {
+        return response()->json([
+            'message' => 'No hay usuarios dentro de la granja para registrar salida masiva.'
+        ]);
     }
 
     $contador = 0;
 
-    foreach ($usuariosActivos as $usuario) {
+    foreach ($entradasPendientes as $entrada) {
 
-        // 2️⃣ Traer el último registro del usuario en la granja
-        $ultimoRegistro = eysgranja::where('idusuario', $usuario->id)
-            ->latest()
-            ->first();
-
-        // Si no tiene entrada previa o su último registro ya fue salida → saltar
-        if (!$ultimoRegistro || $ultimoRegistro->tipo === 'salida') {
-            continue;
-        }
-
-        // 3️⃣ Si su última entrada fue con vehículo, sacarlo también
+        $usuario = $entrada->usuarios;
         $vehiculoId = null;
 
-        if ($ultimoRegistro->idvehiculo !== null) {
-            $vehiculoId = $ultimoRegistro->idvehiculo;
+        //  Si entró con vehículo → sacarlo también
+        if ($entrada->idvehiculo !== null && $entrada->vehiculo) {
 
-            // Crear salida DE VEHÍCULO (nuevo registro vehículo del día)
-            $vehiculo = vehiculo::create([
-                'placa' => $ultimoRegistro->vehiculo->placa,
-                'tipoVehiculo' => $ultimoRegistro->vehiculo->tipoVehiculo,
+            // Crear un nuevo registro de salida de vehículo
+            $vehiculoSalida = vehiculo::create([
+                'placa' => $entrada->vehiculo->placa,
+                'tipoVehiculo' => $entrada->vehiculo->tipoVehiculo,
                 'idusuario' => $usuario->id,
                 'fechaRegistro' => now(),
             ]);
 
-            $vehiculoId = $vehiculo->id;
+            $vehiculoId = $vehiculoSalida->id;
         }
 
-        // 4️⃣ Crear registro de salida masiva (usuario + vehículo si aplica)
+        //  Crear la salida masiva en granja
         eysgranja::create([
-            'numeroDocumento' => $usuario->numeroDocumento,
+            'numeroDocumento' => $entrada->numeroDocumento,
             'tipo' => 'salida',
-            'idusuario' => $usuario->id,
-            'idvehiculo' => $vehiculoId,
+            'idusuario' => $entrada->idusuario,
+            'idvehiculo' => $vehiculoId, // si tuvo vehículo, se asocia aquí
             'fechaRegistro' => now(),
         ]);
 
-        // 5️⃣ Si es visitante → darle expiración de 12 horas
-        if ($usuario->perfile->nombre === 'Visitante') {
+        //  Visitantes → expiración 12h
+        if ($usuario && $usuario->perfile->nombre === 'Visitante') {
             $usuario->fechaExpiracion = now()->addHours(12);
             $usuario->save();
         }
@@ -247,10 +249,12 @@ class eys_granjaController extends Controller
     }
 
     return response()->json([
-        'message' => 'Salida masiva realizada correctamente en la granja.',
+        'message' => 'Salida masiva en la granja realizada correctamente.',
         'total_salidas' => $contador,
     ]);
 }
+
+  
 
 
 
