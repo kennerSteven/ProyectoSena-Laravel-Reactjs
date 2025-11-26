@@ -248,6 +248,37 @@ public function EstadisticasSalidasKPI()
     ]);
 }
 
+ public function entradasPorMescasaapoyo()
+{
+    try {
+
+        $data = eyscasadeapoyo::selectRaw('strftime("%m", fechaRegistro) as mes, COUNT(*) as total')
+            ->where('tipo', 'entrada')
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get();
+
+        $mesesNombre = [
+            "01" => 'Ene', "02" => 'Feb', "03" => 'Mar', "04" => 'Abr',
+            "05" => 'May', "06" => 'Jun', "07" => 'Jul', "08" => 'Ago',
+            "09" => 'Sep', "10" => 'Oct', "11" => 'Nov', "12" => 'Dic'
+        ];
+
+        return response()->json([
+            'labels' => $data->pluck('mes')->map(fn($m) => $mesesNombre[$m]),
+            'totales' => $data->pluck('total'),
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'error' => $e->getMessage(),
+            'linea' => $e->getLine(),
+            'archivo' => $e->getFile(),
+        ], 500);
+    }
+}
+
 
 
 
