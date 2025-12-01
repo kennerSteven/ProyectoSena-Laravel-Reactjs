@@ -1,5 +1,3 @@
-// KpiCards.jsx
-
 import { useEffect, useState } from "react";
 import KPI from "./Kpi";
 import "../../../styles/KPI.css";
@@ -18,6 +16,7 @@ export default function KpiCards({
     aprendices: 0,
     instructores: 0,
     administrativos: 0,
+    visitantes: 0, // Nuevo: Visitantes
   });
 
   const [fichas, setFichas] = useState({
@@ -32,6 +31,7 @@ export default function KpiCards({
     aprendices: 0,
     instructores: 0,
     administrativos: 0,
+    visitantes: 0, // Nuevo: Visitantes
   });
 
   const [salida, setSalida] = useState({
@@ -39,6 +39,7 @@ export default function KpiCards({
     aprendices: 0,
     instructores: 0,
     administrativos: 0,
+    visitantes: 0, // Nuevo: Visitantes
   });
 
   useEffect(() => {
@@ -53,13 +54,19 @@ export default function KpiCards({
         let aprendices = 0;
         let instructores = 0;
         let administrativos = 0;
+        let visitantes = 0; // Inicializamos visitantes
 
         (dataUsuarios.porperfil || []).forEach((p) => {
           const perfil = p.perfil?.toLowerCase() || "";
-          if (perfil.includes("aprendiz")) aprendices += p.cantidad;
-          else if (perfil.includes("instructor")) instructores += p.cantidad;
-          else if (perfil.includes("administrativo"))
+          if (perfil.includes("aprendiz")) {
+            aprendices += p.cantidad;
+          } else if (perfil.includes("instructor")) {
+            instructores += p.cantidad;
+          } else if (perfil.includes("administrativo")) {
             administrativos += p.cantidad;
+          } else {
+            visitantes += p.cantidad; // Asume que cualquier otro perfil es 'Visitante'
+          }
         });
 
         setUsuarios({
@@ -67,6 +74,7 @@ export default function KpiCards({
           aprendices,
           instructores,
           administrativos,
+          visitantes, // Incluimos visitantes en el estado
         });
 
         // --- Fichas ---
@@ -93,6 +101,7 @@ export default function KpiCards({
             aprendices: 0,
             instructores: 0,
             administrativos: 0,
+            visitantes: 0, // Nuevo: Visitantes
           };
 
           (dataEntrada || []).forEach((item) => {
@@ -103,9 +112,15 @@ export default function KpiCards({
 
             if (item.tipo === "entrada" || item.tipo === "Entrada") {
               entradaContador.total += 1;
-              if (esAprendiz) entradaContador.aprendices += 1;
-              else if (esInstructor) entradaContador.instructores += 1;
-              else if (esAdministrativo) entradaContador.administrativos += 1;
+              if (esAprendiz) {
+                entradaContador.aprendices += 1;
+              } else if (esInstructor) {
+                entradaContador.instructores += 1;
+              } else if (esAdministrativo) {
+                entradaContador.administrativos += 1;
+              } else {
+                entradaContador.visitantes += 1; // Contabiliza visitantes
+              }
             }
           });
           setEntrada(entradaContador);
@@ -121,6 +136,7 @@ export default function KpiCards({
             aprendices: 0,
             instructores: 0,
             administrativos: 0,
+            visitantes: 0, // Nuevo: Visitantes
           };
 
           (dataSalida || []).forEach((item) => {
@@ -131,9 +147,15 @@ export default function KpiCards({
 
             if (item.tipo === "salida" || item.tipo === "Salida") {
               salidaContador.total += 1;
-              if (esAprendiz) salidaContador.aprendices += 1;
-              else if (esInstructor) salidaContador.instructores += 1;
-              else if (esAdministrativo) salidaContador.administrativos += 1;
+              if (esAprendiz) {
+                salidaContador.aprendices += 1;
+              } else if (esInstructor) {
+                salidaContador.instructores += 1;
+              } else if (esAdministrativo) {
+                salidaContador.administrativos += 1;
+              } else {
+                salidaContador.visitantes += 1; // Contabiliza visitantes
+              }
             }
           });
           setSalida(salidaContador);
@@ -150,6 +172,7 @@ export default function KpiCards({
     <div className="container px-4 py-2 mt-1 mt-md-2 mt-lg-4 mt-xl-5">
       <div>
         <div className="row justify-content-center gap-2">
+          {/* Tarjeta de Usuarios */}
           <div
             className="col-12 col-md-6 mb-3 mb-xl-0"
             style={{ width: "350px" }}
@@ -163,12 +186,52 @@ export default function KpiCards({
               valueSecond={usuarios.instructores}
               labelSubNameThird="Administrativos"
               valueThird={usuarios.administrativos}
+              labelSubNameFourth="Visitantes" // Nuevo label
+              valueFourth={usuarios.visitantes} // Nuevo valor
               icon={<i className="bi bi-people iconStyle"></i>}
             />
           </div>
 
           <div
-            className="col-12 col-md-6 mb-3 mb-xl-0"
+            className="col-12 col-md-6 mb-2 mb-xl-0"
+            style={{ width: "250px" }}
+          >
+            <KPI
+              nameKpi="Entrada"
+              bigValue={entrada.total}
+              labelSubNameFirst="Aprendices"
+              valueFirst={entrada.aprendices}
+              labelSubNameSecond="Instructores"
+              valueSecond={entrada.instructores}
+              labelSubNameThird="Administrativos"
+              valueThird={entrada.administrativos}
+              labelSubNameFourth="Visitantes" // Nuevo label
+              valueFourth={entrada.visitantes} // Nuevo valor
+              icon={<i className="bi bi-box-arrow-in-left iconStyle"></i>}
+            />
+          </div>
+
+          {/* Tarjeta de Salida */}
+          <div
+            className="col-12 col-md- mb-2 mb-xl-0"
+            style={{ width: "250px" }}
+          >
+            <KPI
+              nameKpi="Salida"
+              bigValue={salida.total}
+              labelSubNameFirst="Aprendices"
+              valueFirst={salida.aprendices}
+              labelSubNameSecond="Instructores"
+              valueSecond={salida.instructores}
+              labelSubNameThird="Administrativos"
+              valueThird={salida.administrativos}
+              labelSubNameFourth="Visitantes" // Nuevo label
+              valueFourth={salida.visitantes} // Nuevo valor
+              icon={<i className="bi bi-box-arrow-right iconStyle"></i>}
+            />
+          </div>
+          <div
+            className="col-12 col-md-6 mb-4 mb-xl-0"
             style={{ width: "220px" }}
           >
             <KPI
@@ -181,40 +244,6 @@ export default function KpiCards({
               labelSubNameThird="Noche"
               valueThird={fichas.noche}
               icon={<i className="bi bi-journal-text iconStyle"></i>}
-            />
-          </div>
-
-          <div
-            className="col-12 col-md-6 mb-2 mb-xl-0"
-            style={{ width: "250px" }}
-          >
-            <KPI
-              nameKpi="Entrada"
-              bigValue={entrada.total}
-              labelSubNameFirst="Instructores"
-              valueFirst={entrada.instructores}
-              labelSubNameSecond="Aprendices"
-              valueSecond={entrada.aprendices}
-              labelSubNameThird="Administrativos"
-              valueThird={entrada.administrativos}
-              icon={<i className="bi bi-box-arrow-in-left iconStyle"></i>}
-            />
-          </div>
-
-          <div
-            className="col-12 col-md- mb-2 mb-xl-0"
-            style={{ width: "250px" }}
-          >
-            <KPI
-              nameKpi="Salida"
-              bigValue={salida.total}
-              labelSubNameFirst="Instructores"
-              valueFirst={salida.instructores}
-              labelSubNameSecond="Aprendices"
-              valueSecond={salida.aprendices}
-              labelSubNameThird="Administrativos"
-              valueThird={salida.administrativos}
-              icon={<i className="bi bi-box-arrow-right iconStyle"></i>}
             />
           </div>
         </div>

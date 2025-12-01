@@ -8,6 +8,7 @@ import { Dialog } from "primereact/dialog";
 
 import TablaVisitantesDesactivados from "./TableVisitantantesDesactivados";
 import FormVisitante from "./Form/FormVisitante";
+import FormPerfil from "./Form/FomPerfiles/FormPerfil";
 import "../styles/Table.css";
 
 const fetchVisitantes = async () => {
@@ -41,6 +42,7 @@ export default function TablaVisitantes() {
   const [filtroGlobal, setFiltroGlobal] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalAgregar, setMostrarModalAgregar] = useState(false);
+  const [mostrarModalPerfil, setMostrarModalPerfil] = useState(false); //  Nuevo estado para el modal de perfil
 
   useEffect(() => {
     cargarVisitantes();
@@ -70,7 +72,7 @@ export default function TablaVisitantes() {
                   className="pi pi-search"
                   style={{
                     position: "absolute",
-                    top: "50%",
+                    top: "45%",
                     left: "10px",
                     transform: "translateY(-50%)",
                     color: "#6c757d",
@@ -106,6 +108,15 @@ export default function TablaVisitantes() {
                     style={{ fontSize: "1.2rem", color: "#e1a626ff" }}
                   />
                 </button>
+                <button
+                  className="btnActions btn-crear-perfil d-flex align-items-center gap-2"
+                  onClick={() => setMostrarModalPerfil(true)} //  Handler para mostrar el modal de perfil
+                >
+                  <i
+                    className="pi pi-id-card"
+                    style={{ color: "#17a2b8", fontSize: "1.4rem" }}
+                  />
+                </button>
                 <Tooltip
                   target=".btnAgregarVisitante"
                   content="Agregar visitante"
@@ -114,6 +125,11 @@ export default function TablaVisitantes() {
                 <Tooltip
                   target=".btnVerInactivos"
                   content="Ver visitantes inactivos"
+                  position="top"
+                />
+                <Tooltip
+                  target=".btn-crear-perfil"
+                  content="Crear perfil"
                   position="top"
                 />
               </div>
@@ -162,6 +178,7 @@ export default function TablaVisitantes() {
       className="card mx-auto shadow mt-4 tableContainer"
       style={{ width: "1000px" }}
     >
+      {/* 🛑 Modal de Visitantes Desactivados */}
       <Dialog
         header="Visitantes desactivados"
         visible={mostrarModal}
@@ -172,6 +189,7 @@ export default function TablaVisitantes() {
         <TablaVisitantesDesactivados onClose={() => setMostrarModal(false)} />
       </Dialog>
 
+      {/* ➕ Modal de Agregar Visitante */}
       <Dialog
         header="Agregar visitante"
         visible={mostrarModalAgregar}
@@ -180,6 +198,18 @@ export default function TablaVisitantes() {
         modal
       >
         <FormVisitante closeModal={() => setMostrarModalAgregar(false)} />
+      </Dialog>
+
+      {/* 💳 Nuevo Modal de Crear Perfil */}
+      <Dialog
+        header="Crear Perfil"
+        visible={mostrarModalPerfil}
+        style={{ width: "430px" }}
+        onHide={() => setMostrarModalPerfil(false)}
+        modal
+      >
+        {/* Usamos el componente FormPerfil dentro del Dialog */}
+        <FormPerfil closeModal={() => setMostrarModalPerfil(false)} />
       </Dialog>
 
       {/* 📋 Tabla principal */}

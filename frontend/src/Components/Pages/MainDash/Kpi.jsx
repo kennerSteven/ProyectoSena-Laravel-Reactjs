@@ -10,12 +10,14 @@ export default function KPI({
   labelSubNameThird,
   valueThird,
   icon,
+  valueFourth, // Renombrado a valueFourth para consistencia
+  labelSubNameFourth,
 }) {
   return (
     <div className="kpiContainer shadow px-4 pt-2">
       <small>{nameKpi}</small>
 
-      <div className="d-flex justify-content-between   align-items-center">
+      <div className="d-flex justify-content-between align-items-center">
         <h3 className="fw-bold bigValue py-2">{bigValue}</h3>
         <div>{icon}</div>
       </div>
@@ -34,6 +36,12 @@ export default function KPI({
         <div className="d-flex justify-content-between">
           <span className="labelKpi">{labelSubNameThird}</span>
           <strong>{valueThird}</strong>
+        </div>
+        {/* Renderizado condicional del cuarto valor */}
+
+        <div className="d-flex justify-content-between">
+          <span className="labelKpi">{labelSubNameFourth}</span>
+          <strong>{valueFourth}</strong>
         </div>
       </div>
     </div>

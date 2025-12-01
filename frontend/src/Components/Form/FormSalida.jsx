@@ -14,7 +14,11 @@ import useHandleValidationSalida from "../Form/Validation/HandleValidation/Handl
 
 import "../../styles/FormRegisterVehicles.css";
 
-export default function FormSalida({ createSalida, showTipoIngreso = true,salidaMasiva }) {
+export default function FormSalida({
+  createSalida,
+  showTipoIngreso = true,
+  salidaMasiva,
+}) {
   const [visible, setVisible] = useState(false);
   const [vehiculoData, setVehiculoData] = useState(null);
   const [modalSalida, setModalSalida] = useState(false);
@@ -102,15 +106,12 @@ export default function FormSalida({ createSalida, showTipoIngreso = true,salida
       toast.dismiss();
       setLoadingMasivo(true);
 
-      const response = await fetch(
-        salidaMasiva,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(salidaMasiva, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const result = await response.json();
 
@@ -182,13 +183,16 @@ export default function FormSalida({ createSalida, showTipoIngreso = true,salida
             textSend="Salida"
             textSending="Registrando salida..."
             isSubmitting={isSubmitting}
+            iconButton="pi pi-sign-in"
             disabled={isBlocked || isSubmitting || !isValid}
           />
+
           <button
             type="button"
-            className="btnSalidaMasiva"
+            className="btnSalidaMasiva d-flex gap-2 align-items-center"
             onClick={() => setModalMasivo(true)}
           >
+            <i className="pi pi-sign-out"></i>
             Salida masiva
           </button>
         </div>

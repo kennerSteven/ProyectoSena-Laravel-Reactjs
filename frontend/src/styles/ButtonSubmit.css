@@ -23,15 +23,16 @@
   margin-bottom: 15px;
   margin-top: 10px;
   border: none;
-  padding: 11px 40px;
+  padding: 11px 20px;
   border-radius: 14px;
-  background-color: #02923ea1;
-  color: rgb(240, 240, 240);
+  background: #dcf1e2;
+  color: #2e7d32;
   transition: transform 0.2s ease-in;
 }
 .btn-container .btnDisabled:hover {
   transform: scale(1.01);
-  background-color: #02923e98;
+  background: #c8e5d0;
+  color: #2e7d32;
 }
 
 .btnMaxWidth {
