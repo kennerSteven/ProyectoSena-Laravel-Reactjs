@@ -261,6 +261,35 @@ public function estadisticasFichasKPI()
 }
 
 
+public function activarFicha($id)
+{
+    // Buscar ficha por ID con sus usuarios
+    $ficha = fichas::with('usuarios')->find($id);
+
+    if (!$ficha) {
+        return response()->json(['error' => 'Ficha no encontrada'], 404);
+    }
+
+    // Verificar si ya está activa
+    if ($ficha->estado === 'activo') {
+        return response()->json(['message' => 'La ficha ya está activa.'], 400);
+    }
+
+    // Cambiar estado de la ficha a activo
+    $ficha->estado = 'activo';
+    $ficha->save();
+
+    // Cambiar estado de todos los usuarios asociados a activo
+    // Esto revierte la desactivación masiva hecha por desactivarFicha
+    $ficha->usuarios()->update(['estado' => 'activo']);
+
+    return response()->json([
+        'message' => 'Ficha y usuarios asociados activados correctamente.',
+        'ficha' => $ficha
+    ]);
+}
+
+
 
 
 
