@@ -47,6 +47,7 @@ Route::get("/ficha/listarusuariosDeFichadesactivada/{id}", [FichasController::cl
 Route::get('/ficha/listarusuariosdelaFicha/{id}', [FichasController::class, 'listarusuariosdelaFicha']);
 Route::get('/fichas/fichasConMasAprendices', [FichasController::class, 'fichasConMasAprendices']);
 Route::get('/fichas/listarFichasPorEstado', [FichasController::class, 'listarFichasPorEstado']);
+Route::put('/fichas/{id}/activar', [FichasController::class, 'activarFicha']);
 
 
 /*usuario*/
