@@ -146,6 +146,7 @@ export default function TablaFichasDesactivadas() {
       icon: "pi pi-exclamation-triangle",
       acceptClassName: "p-button-danger",
       acceptLabel: "Sí, eliminar todas",
+
       rejectLabel: "Cancelar",
       style: { width: "550px" },
       accept: () => eliminarTodasLasFichas(),
@@ -159,7 +160,7 @@ export default function TablaFichasDesactivadas() {
   const accionesTemplate = (rowData) => (
     <Button
       icon="pi pi-trash"
-      className="ButtonDelete"
+      className="confirmarEliminarFicha"
       onClick={() => confirmarEliminarFicha(rowData.id)}
       tooltip="Eliminar Ficha"
       tooltipOptions={{ position: "top" }}
@@ -190,7 +191,7 @@ export default function TablaFichasDesactivadas() {
       <Button
         label="Eliminar ficha"
         icon="pi pi-trash"
-        className="p-button-danger"
+        className="confirmarEliminarFicha"
         onClick={() => eliminarFicha(fichaSeleccionada.id)}
       />
     </div>
@@ -209,7 +210,7 @@ export default function TablaFichasDesactivadas() {
             : "¿Estás seguro de eliminar esta ficha?"
         }
         visible={showDialog}
-        style={{ width: "800px" }}
+        style={{ width: "1200px" }}
         onHide={() => setShowDialog(false)}
         footer={footerDialog}
         className="p-fluid"
@@ -224,8 +225,16 @@ export default function TablaFichasDesactivadas() {
         >
           <Column field="nombre" header="Nombre" />
           <Column field="apellido" header="Apellido" />
-          <Column field="tipoDocumento" header="Tipo de Documento" />
-          <Column field="numeroDocumento" header="Número de Documento" />
+          <Column
+            field="tipoDocumento"
+            header="Tipo de Documento"
+            style={{ width: "200px" }}
+          />
+          <Column
+            field="numeroDocumento"
+            header="Número de Documento"
+            style={{ width: "200px" }}
+          />
         </DataTable>
       </Dialog>
 
@@ -233,7 +242,7 @@ export default function TablaFichasDesactivadas() {
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div className="flex-grow-1 me-3">
           <span className="p-input-icon-left">
-          t  <InputText
+            <InputText
               value={globalFilter}
               onChange={onGlobalFilterChange}
               placeholder="Buscar por código, programa o jornada..."
@@ -245,7 +254,7 @@ export default function TablaFichasDesactivadas() {
         <Button
           label={`Eliminar todas (${fichas.length})`}
           icon="pi pi-trash"
-          className="p-button-danger"
+          className="confirmarEliminarFicha"
           onClick={confirmarEliminarTodas}
           disabled={fichas.length === 0}
           tooltip="Eliminar todas las fichas permanentemente"
@@ -258,7 +267,7 @@ export default function TablaFichasDesactivadas() {
         dataKey="id"
         paginator
         rows={10}
-        scrollHeight="320px"
+        scrollHeight="500px"
         rowsPerPageOptions={[5, 10, 20, 50]}
         stripedRows
         showGridlines

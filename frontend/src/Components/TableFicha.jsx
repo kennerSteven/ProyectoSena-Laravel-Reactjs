@@ -280,6 +280,7 @@ export default function TablaFicha() {
                 header="Código de Ficha"
                 filter
                 filterPlaceholder="Buscar código"
+                style={{ width: "180px" }}
               />
 
               <Column
@@ -288,6 +289,7 @@ export default function TablaFicha() {
                 filter
                 filterElement={jornadaFilterTemplate}
                 body={jornadaBodyTemplate}
+                style={{ width: "120px" }}
               />
               <Column
                 header="Estado"
@@ -447,7 +449,7 @@ export default function TablaFicha() {
       <Dialog
         header="Fichas desactivadas"
         visible={showModalFichasDesactivadas}
-        style={{ width: "900px" }}
+        style={{ width: "1100px" }}
         modal
         onHide={() => setShowModalFichasDesactivadas(false)}
       >

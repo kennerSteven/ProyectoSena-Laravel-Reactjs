@@ -1,6 +1,6 @@
 .ButtonDelete {
-  color: red;
-  background-color: white;
+  background-color: #ffffff;
+  color: #e11818;
   border: 1px solid rgb(236, 236, 236);
   border-radius: 10px;
   padding: 8px 12px;
@@ -8,23 +8,36 @@
 }
 
 .ButtonDelete:hover {
-  background-color: #d62828;
-  color: white;
+  color: #e11818;
   transform: scale(1.05) rotate(-2deg);
   cursor: pointer;
 }
 
 .DeleteAll {
-  background-color: red;
-  color: white;
-
+  background-color: #ffffff;
+  color: #e11818;
   border-radius: 5px;
   padding: 8px 16px;
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
+.confirmarEliminarFicha {
+  background-color: #f8d7da;
+  color: #e11818;
+  border: 1px solid rgb(236, 236, 236);
+  border-radius: 10px;
+  padding: 8px 12px;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+.confirmarEliminarFicha:hover {
+  color: #e11818;
+  transform: scale(1.05) rotate(-2deg);
+  cursor: pointer;
+}
+
 .DeleteAll:hover {
-  background-color: #d62828;
+  background-color: #ffffff;
+  color: #e11818;
   transform: scale(1.05) rotate(-2deg);
   cursor: pointer;
 }

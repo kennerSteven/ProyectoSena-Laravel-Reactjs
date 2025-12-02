@@ -152,7 +152,7 @@ export default function TablaHistorial({
                 "tipo",
                 "fechaRegistro",
               ]}
-              scrollHeight="350px"
+              scrollHeight="500px"
               className="custom-table"
               emptyMessage="No se encontraron registros."
             >
