@@ -27,80 +27,71 @@ class eys_granjaController extends Controller
 
 
     public function entradagranja(Request $request)
-    {
-        try {
-            Log::info('Payload recibido:', $request->all());
+{
+    $documento = $request->numeroDocumento; // Definimos la variable al inicio para usarla en el control de flujo
 
+    try {
+        Log::info('Payload recibido:', $request->all());
+
+        $request->validate([
+            'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
+            'tieneVehiculo' => ['required', 'boolean'],
+            'placa' => ['nullable', 'string', 'max:10'],
+            'tipoVehiculo' => ['nullable', 'in:moto,carro,bus,otro'],
+        ]);
+
+        $usuario = usuarios::where('numeroDocumento', $documento) // Usamos $documento
+            ->with('perfile')
+            ->first();
+
+        if (!$usuario) {
+            return response()->json(['error' => 'Usuario no encontrado.'], 404);
+        }
+
+        // 🛑 CONTROL DE FLUJO: Verificar el último registro
+        $ultimoRegistro = eysgranja::where('numeroDocumento', $documento)
+            ->orderBy('fechaRegistro', 'desc')
+            ->first();
+
+        // Si el último registro es de 'entrada', detenemos la operación
+        if ($ultimoRegistro && $ultimoRegistro->tipo === 'entrada') {
+            return response()->json([
+                'error' => 'El usuario ya tiene una entrada registrada en la Granja y no ha realizado la salida.',
+                'ultimo_registro' => $ultimoRegistro
+            ], 409); // 409 Conflict
+        }
+        // ----------------------------------------------------
+
+        if (
+            $usuario->perfile &&
+            strtolower($usuario->perfile->nombre) === 'visitante' &&
+            $usuario->estado === 'inactivo'
+        ) {
+            $usuario->estado = 'activo';
+            $usuario->fechaExpiracion = null;
+            $usuario->save();
+        }
+
+        $vehiculo = null;
+
+        if ($request->boolean('tieneVehiculo')) {
             $request->validate([
-                'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
-                'tieneVehiculo' => ['required', 'boolean'],
-                'placa' => ['nullable', 'string', 'max:10'],
-                'tipoVehiculo' => ['nullable', 'in:moto,carro,bus,otro'],
+                'placa' => ['required', 'string', 'max:10'],
+                'tipoVehiculo' => ['required', 'in:moto,carro,bus,otro'],
             ]);
 
-            $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)
-                ->with('perfile')
-                ->first();
-
-            if (!$usuario) {
-                return response()->json(['error' => 'Usuario no encontrado.'], 404);
-            }
-
-            if (
-                $usuario->perfile &&
-                strtolower($usuario->perfile->nombre) === 'visitante' &&
-                $usuario->estado === 'inactivo'
-            ) {
-                $usuario->estado = 'activo';
-                $usuario->fechaExpiracion = null;
-                $usuario->save();
-            }
-
-            $vehiculo = null;
-
-            if ($request->boolean('tieneVehiculo')) {
-                $request->validate([
-                    'placa' => ['required', 'string', 'max:10'],
-                    'tipoVehiculo' => ['required', 'in:moto,carro,bus,otro'],
-                ]);
-
-                $vehiculo = vehiculo::create([
-                    'placa' => strtoupper($request->placa),
-                    'tipoVehiculo' => $request->tipoVehiculo,
-                    'idusuario' => $usuario->id,
-                    'fechaRegistro' => now(),
-                ]);
-
-                $entrada = eysgranja::create([
-                    'numeroDocumento' => $usuario->numeroDocumento,
-                    'tipo' => 'entrada',
-                    'idusuario' => $usuario->id,
-                    'idvehiculo' => $vehiculo->id,
-                    'fechaRegistro' => now(),
-                ]);
-
-                // Formatear la hora de registro para la respuesta (se eliminó la recarga con with)
-                $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
-                    ->timezone('America/Bogota')
-                    ->format('Y-m-d H:i:s');
-
-                // Aseguramos que la entrada tenga el vehículo cargado para la respuesta
-                // Aunque no sea estrictamente necesario, es buena práctica para la respuesta.
-                $entrada->setRelation('vehiculo', $vehiculo);
-
-
-                return response()->json([
-                    'message' => 'Entrada y vehículo registrados correctamente',
-                    'usuario' => $usuario,
-                    'vehiculo' => $vehiculo,
-                    'entrada' => $entrada
-                ], 201);
-            }
+            $vehiculo = vehiculo::create([
+                'placa' => strtoupper($request->placa),
+                'tipoVehiculo' => $request->tipoVehiculo,
+                'idusuario' => $usuario->id,
+                'fechaRegistro' => now(),
+            ]);
 
             $entrada = eysgranja::create([
                 'numeroDocumento' => $usuario->numeroDocumento,
                 'tipo' => 'entrada',
                 'idusuario' => $usuario->id,
+                'idvehiculo' => $vehiculo->id,
                 'fechaRegistro' => now(),
             ]);
 
@@ -109,37 +100,60 @@ class eys_granjaController extends Controller
                 ->timezone('America/Bogota')
                 ->format('Y-m-d H:i:s');
 
+            // Aseguramos que la entrada tenga el vehículo cargado para la respuesta
+            $entrada->setRelation('vehiculo', $vehiculo);
+
 
             return response()->json([
-                'message' => 'Entrada registrada correctamente (sin vehículo)',
+                'message' => 'Entrada y vehículo registrados correctamente en Granja',
                 'usuario' => $usuario,
+                'vehiculo' => $vehiculo,
                 'entrada' => $entrada
             ], 201);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Captura errores de validación de Laravel y devuelve 422
-            Log::error('Error de validación en entradagranja:', $e->errors());
-            return response()->json([
-                'error' => 'Error de validación de los datos.',
-                'details' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            // Captura cualquier otro error (500) y lo registra
-            Log::error('Error fatal en entradagranja:', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ]);
-
-            // Devuelve un JSON de error 500 con un mensaje amigable
-            return response()->json([
-                'error' => 'Error interno del servidor. La operación no se pudo completar. Por favor, revisa los logs del servidor.',
-                // Si estás en desarrollo, puedes descomentar la siguiente línea para depuración:
-                // 'debug_message' => $e->getMessage(),
-            ], 500);
         }
+
+        // Si llega aquí, es porque no tiene vehículo O no declaró tenerlo.
+        $entrada = eysgranja::create([
+            'numeroDocumento' => $usuario->numeroDocumento,
+            'tipo' => 'entrada',
+            'idusuario' => $usuario->id,
+            // idvehiculo es nulo por defecto
+            'fechaRegistro' => now(),
+        ]);
+
+        // Formatear la hora de registro para la respuesta (se eliminó la recarga con with)
+        $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
+            ->timezone('America/Bogota')
+            ->format('Y-m-d H:i:s');
+
+
+        return response()->json([
+            'message' => 'Entrada registrada correctamente en Granja (sin vehículo)',
+            'usuario' => $usuario,
+            'entrada' => $entrada
+        ], 201);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        // Captura errores de validación de Laravel y devuelve 422
+        Log::error('Error de validación en entradagranja:', $e->errors());
+        return response()->json([
+            'error' => 'Error de validación de los datos.',
+            'details' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        // Captura cualquier otro error (500) y lo registra
+        Log::error('Error fatal en entradagranja:', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ]);
+
+        // Devuelve un JSON de error 500 con un mensaje amigable
+        return response()->json([
+            'error' => 'Error interno del servidor. La operación no se pudo completar. Por favor, revisa los logs del servidor.',
+        ], 500);
     }
-
-
+}
+    
 
 
     public function salidagranja(Request $request)
