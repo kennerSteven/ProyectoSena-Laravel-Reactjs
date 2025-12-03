@@ -21,57 +21,72 @@ class EysCasadeapoyoController extends Controller
     }
 
 
-    public function entradacasadeapoyo(Request $request)
-    {
-
-        $request->validate([
-            'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
-        ]);
-
-        // 1. Buscar usuario por número de documento
-        $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)
-            ->with('perfile') // Asegúrate de cargar la relación perfile
-            ->first();
-
-        // 2. Aplicar lógica de activación (visitante inactivo)
-        // Usamos strtolower() para asegurar que 'Visitante' o 'visitante' sean tratados igual.
-        if (
-            $usuario &&
-            strtolower($usuario->perfile->nombre) === 'visitante' && // 👈 AJUSTE CLAVE AQUÍ
-            $usuario->estado === 'inactivo'
-        ) {
-            $usuario->estado = 'activo';
-            $usuario->fechaExpiracion = null;
-            $usuario->save();
-        }
-
-        // 3. Verificar si se encontró un usuario (activo/inactivo/otro perfil)
-        if (!$usuario) {
-            return response()->json([
-                'message' => 'Usuario no encontrado.',
-            ], 404);
-        }
-
-        // 4. Registrar la entrada
-        $entrada = eyscasadeapoyo::create([
-            'numeroDocumento' => $usuario->numeroDocumento,
-            'tipo' => 'entrada',
-            'idusuario' => $usuario->id,
-            'fechaRegistro' => now(),
-        ]);
-
-        // 5. Formatear la hora de registro
-        $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
-            ->timezone('America/Bogota')
-            ->format('Y-m-d H:i:s');
 
 
-        // 6. Devolver respuesta
+public function entradacasadeapoyo(Request $request)
+{
+    $request->validate([
+        'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
+    ]);
+
+    $documento = $request->numeroDocumento;
+
+    // 1. Buscar usuario
+    $usuario = usuarios::where('numeroDocumento', $documento)
+        ->with('perfile')
+        ->first();
+
+    if (!$usuario) {
         return response()->json([
-            'message' => 'Entrada registrada correctamente',
-            'entrada' => $entrada
-        ]);
+            'message' => 'Usuario no encontrado.',
+        ], 404);
     }
+
+    // 2.  Verificar el último registro (Control de Flujo)
+    $ultimoRegistro = eyscasadeapoyo::where('numeroDocumento', $documento)
+        ->orderBy('fechaRegistro', 'desc')
+        ->first();
+
+    // Si existe un último registro y es de 'entrada', no permitimos otra entrada.
+    if ($ultimoRegistro && $ultimoRegistro->tipo === 'entrada') {
+        return response()->json([
+            'message' => 'El usuario ya tiene una entrada registrada y no ha realizado la salida.',
+            'ultimo_registro' => $ultimoRegistro
+        ], 409); // 409 Conflict es un buen código para este tipo de error de negocio.
+    }
+
+    // 3. Aplicar lógica de activación (visitante inactivo)
+    // Se mantiene tu lógica original para activar visitantes si es necesario.
+    if (
+        strtolower($usuario->perfile->nombre) === 'visitante' && 
+        $usuario->estado === 'inactivo'
+    ) {
+        $usuario->estado = 'activo';
+        $usuario->fechaExpiracion = null;
+        $usuario->save();
+    }
+
+    // 4. Registrar la nueva entrada
+    $entrada = eyscasadeapoyo::create([
+        'numeroDocumento' => $usuario->numeroDocumento,
+        'tipo' => 'entrada',
+        'idusuario' => $usuario->id,
+        'fechaRegistro' => now(),
+    ]);
+
+    // 5. Formatear la hora de registro (Asegúrate de tener 'use Carbon\Carbon;' arriba)
+    $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
+
+
+    // 6. Devolver respuesta
+    return response()->json([
+        'message' => 'Entrada registrada correctamente',
+        'entrada' => $entrada
+    ]);
+}
+   
 
     public function salidacasadeapoyo(Request $request)
     {

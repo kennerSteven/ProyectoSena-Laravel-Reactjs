@@ -20,57 +20,69 @@ class eys_senaController extends Controller
     }
 
 
-    public function entradasena(Request $request)
-    {
+   public function entradasena(Request $request)
+{
+    $request->validate([
+        'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
+    ]);
 
-        $request->validate([
-            'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
-        ]);
+    $documento = $request->numeroDocumento;
 
-        // 1. Buscar usuario por número de documento
-        $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)
-            ->with('perfile') // Asegúrate de cargar la relación perfile
-            ->first();
+    // 1. Buscar usuario
+    $usuario = usuarios::where('numeroDocumento', $documento)
+        ->with('perfile')
+        ->first();
 
-        // 2. Aplicar lógica de activación (visitante inactivo)
-        // Usamos strtolower() para asegurar que 'Visitante' o 'visitante' sean tratados igual.
-        if (
-            $usuario &&
-            strtolower($usuario->perfile->nombre) === 'visitante' && // 👈 AJUSTE CLAVE AQUÍ
-            $usuario->estado === 'inactivo'
-        ) {
-            $usuario->estado = 'activo';
-            $usuario->fechaExpiracion = null;
-            $usuario->save();
-        }
-
-        // 3. Verificar si se encontró un usuario (activo/inactivo/otro perfil)
-        if (!$usuario) {
-            return response()->json([
-                'message' => 'Usuario no encontrado.',
-            ], 404);
-        }
-
-        // 4. Registrar la entrada
-        $entrada = eyssena::create([
-            'numeroDocumento' => $usuario->numeroDocumento,
-            'tipo' => 'entrada',
-            'idusuario' => $usuario->id,
-            'fechaRegistro' => now(),
-        ]);
-
-        // 5. Formatear la hora de registro
-        $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
-            ->timezone('America/Bogota')
-            ->format('Y-m-d H:i:s');
-
-
-        // 6. Devolver respuesta
+    if (!$usuario) {
         return response()->json([
-            'message' => 'Entrada registrada correctamente',
-            'entrada' => $entrada
-        ]);
+            'message' => 'Usuario no encontrado.',
+        ], 404);
     }
+
+    // 2.  Verificar el último registro (Control de Flujo)
+    $ultimoRegistro = eyssena::where('numeroDocumento', $documento)
+        ->orderBy('fechaRegistro', 'desc')
+        ->first();
+
+    // Si existe un último registro y es de 'entrada', no permitimos otra entrada.
+    if ($ultimoRegistro && $ultimoRegistro->tipo === 'entrada') {
+        return response()->json([
+            'message' => 'El usuario ya tiene una entrada registrada en SENA y no ha realizado la salida.',
+            'ultimo_registro' => $ultimoRegistro
+        ], 409); // 409 Conflict: Indica que la petición no se puede completar debido a un conflicto con el estado actual del recurso.
+    }
+
+    // 3. Aplicar lógica de activación (visitante inactivo)
+    // Se mantiene tu lógica original para activar visitantes si es necesario.
+    if (
+        strtolower($usuario->perfile->nombre) === 'visitante' &&
+        $usuario->estado === 'inactivo'
+    ) {
+        $usuario->estado = 'activo';
+        $usuario->fechaExpiracion = null;
+        $usuario->save();
+    }
+
+    // 4. Registrar la nueva entrada
+    $entrada = eyssena::create([
+        'numeroDocumento' => $usuario->numeroDocumento,
+        'tipo' => 'entrada',
+        'idusuario' => $usuario->id,
+        'fechaRegistro' => now(),
+    ]);
+
+    // 5. Formatear la hora de registro
+    $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
+        ->timezone('America/Bogota')
+        ->format('Y-m-d H:i:s');
+
+
+    // 6. Devolver respuesta
+    return response()->json([
+        'message' => 'Entrada registrada correctamente en SENA',
+        'entrada' => $entrada
+    ]);
+}
 
 
     public function salidasena(Request $request)
