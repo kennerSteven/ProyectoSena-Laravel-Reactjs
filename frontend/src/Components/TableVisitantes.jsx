@@ -21,18 +21,41 @@ const fetchVisitantes = async () => {
       }
     );
 
+    // 1. Verificar si la respuesta es OK (status 200)
+    if (!response.ok) {
+      // Manejo de errores HTTP (ej: 404, 500)
+      console.error(
+        "Error en la respuesta del servidor:",
+        response.status,
+        response.statusText
+      );
+      return []; // Devolvemos array vacío en caso de error HTTP
+    }
+
     const data = await response.json();
     console.log("Respuesta del backend:", data);
 
-    if (!Array.isArray(data.usuarios)) {
-      throw new Error(
-        "Respuesta inesperada del backend: 'usuarios' no es un array"
-      );
+    // 2. Manejo flexible de la respuesta del backend (Optimización/Good Practice)
+
+    // Si 'data' es directamente el array de usuarios (patrón común)
+    if (Array.isArray(data)) {
+      console.log("El backend devolvió directamente un array.");
+      return data;
     }
 
-    return data.usuarios;
+    // Si 'data' es un objeto que contiene la clave 'usuarios' (tu patrón original)
+    if (data && Array.isArray(data.usuarios)) {
+      console.log("El backend devolvió un objeto con la clave 'usuarios'.");
+      return data.usuarios;
+    }
+
+    // Si no es ninguno de los formatos esperados, generamos el error, pero el catch lo manejará
+    throw new Error(
+      "Respuesta inesperada del backend: No se encontró un array de visitantes."
+    );
   } catch (error) {
     console.error("Error al obtener visitantes:", error);
+    // Aseguramos que siempre devolvemos un array vacío para no romper la UI
     return [];
   }
 };
@@ -42,7 +65,7 @@ export default function TablaVisitantes() {
   const [filtroGlobal, setFiltroGlobal] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalAgregar, setMostrarModalAgregar] = useState(false);
-  const [mostrarModalPerfil, setMostrarModalPerfil] = useState(false); //  Nuevo estado para el modal de perfil
+  const [mostrarModalPerfil, setMostrarModalPerfil] = useState(false);
 
   useEffect(() => {
     cargarVisitantes();
@@ -110,7 +133,7 @@ export default function TablaVisitantes() {
                 </button>
                 <button
                   className="btnActions btn-crear-perfil d-flex align-items-center gap-2"
-                  onClick={() => setMostrarModalPerfil(true)} //  Handler para mostrar el modal de perfil
+                  onClick={() => setMostrarModalPerfil(true)}
                 >
                   <i
                     className="pi pi-id-card"

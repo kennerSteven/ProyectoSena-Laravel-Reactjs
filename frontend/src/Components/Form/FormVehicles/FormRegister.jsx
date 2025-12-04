@@ -147,7 +147,7 @@ export default function FormRegister({ showEntrada = true, createRegister }) {
               textSend="Registrar entrada"
               textSending="Registrando entrada..."
               isSubmitting={isSubmitting}
-              iconButton="pi pi-sign-in"
+              iconButton="pi pi-sign-inw"
               disabled={isBlocked || isSubmitting || !isValid}
             />
           </div>
