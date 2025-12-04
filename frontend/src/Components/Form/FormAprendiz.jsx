@@ -27,7 +27,8 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
   const [capturedImage, setCapturedImage] = useState(null);
   const [showCamera, setShowCamera] = useState(false);
   const videoRef = useRef(null);
-  const canvasRef = useRef(null);
+  const canvasRef = useRef(null); // Referencia para el stream de la cámara
+  const streamRef = useRef(null);
 
   const { onSubmit, onError } = HandleValidationAprendiz({
     reset,
@@ -70,22 +71,68 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
 
   useEffect(() => {
     if (showCamera && videoRef.current) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
+      // Función asíncrona para manejar la obtención del stream
+      const startCamera = async () => {
+        try {
+          // Obtiene el MediaStream
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+          streamRef.current = stream; // Guarda el stream en la referencia
           videoRef.current.srcObject = stream;
-        })
-        .catch((err) => {
+        } catch (err) {
           console.error("Error al acceder a la cámara:", err);
-        });
-    }
+        }
+      };
+      startCamera();
+    } // Función de limpieza (Cleanup function)
+
+    return () => {
+      // Si hay un stream guardado, lo detiene.
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null; // Limpia la referencia
+      }
+    };
   }, [showCamera]);
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    setShowCamera(false);
+  };
+
+  const handleCapturePhoto = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (video && canvas) {
+      const context = canvas.getContext("2d"); // Aseguramos que el canvas tenga las dimensiones del video
+      canvas.width = video.videoWidth || 300;
+      canvas.height = video.videoHeight || 200;
+
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL("image/png");
+      setCapturedImage(imageData);
+      setValue("foto", imageData);
+      stopCamera(); // ✅ Detiene y cierra la cámara al tomar la foto
+    }
+  }; // 1. Envolvemos el onSubmit original para detener la cámara
+
+  const handleFormSubmit = async (data, event) => {
+    // Si la cámara está activa, la detenemos
+    if (showCamera) {
+      stopCamera();
+    } // Ejecutamos la lógica de envío
+    onSubmit(data, event);
+  };
 
   return (
     <div className="container">
       <form
-        className="row mt-4 formUsers mx-auto"
-        onSubmit={handleSubmit(onSubmit, onError)}
+        className="row mt-4 formUsers mx-auto" // 2. Usamos el nuevo handler que incluye la lógica para apagar la cámara
+        onSubmit={handleSubmit(handleFormSubmit, onError)}
       >
         <div className="col-12">
           <div className="d-flex gap-4">
@@ -96,6 +143,7 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
               error={errors.nombre}
               labelName="Nombre"
             />
+
             <InputField
               typeInput="text"
               name="apellido"
@@ -116,6 +164,7 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
                 { value: "ti", label: "Tarjeta de identidad" },
               ]}
             />
+
             <InputField
               typeInput="text"
               name="numeroDocumento"
@@ -150,6 +199,7 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
                   { value: "O-", label: "O negativo" },
                 ]}
               />
+
               <div className="my-2">
                 <InputAutoComplete
                   objFormacion={fichas}
@@ -158,6 +208,7 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
                   label="Ficha de formación"
                 />
               </div>
+
               <SelectOptions
                 name="tipoPerfil"
                 register={register}
@@ -194,21 +245,15 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
                       className="rounded"
                       style={{ width: "100%", maxHeight: "200px" }}
                     />
+
                     <button
                       type="button"
                       className="btn btn-success mt-2"
-                      onClick={() => {
-                        const context = canvasRef.current.getContext("2d");
-                        context.drawImage(videoRef.current, 0, 0, 300, 200);
-                        const imageData =
-                          canvasRef.current.toDataURL("image/png");
-                        setCapturedImage(imageData);
-                        setValue("foto", imageData); // ✅ sincroniza con RHF
-                        setShowCamera(false);
-                      }}
+                      onClick={handleCapturePhoto} // ✅ Usamos la función optimizada
                     >
                       Tomar foto
                     </button>
+
                     <canvas
                       ref={canvasRef}
                       width="300"
@@ -227,17 +272,14 @@ export default function FormAprendiz({ closeModal, usuarioSeleccionado }) {
                     </button>
                   </div>
                 )}
-                {/* ✅ Error de foto */}
+
                 {errors.foto && (
-                  <p className="text-danger text-center mt-2">
-                    {errors.foto.message}
-                  </p>
+                  <p className="text-danger text-center mt-2"></p>
                 )}
               </div>
             </div>
           </div>
 
-          {/* ✅ Campo oculto para sincronizar foto */}
           <input
             type="hidden"
             {...register("foto")}

@@ -29,7 +29,7 @@ import {
   KpiGym,
 } from "../Pages/MainDash/KpiEntities";
 import TablaVisitantes from "../TableVisitantes";
-
+import { PerfilesView } from "../Pages/Table/Perfil";
 export default function App() {
   return (
     <Routes>
@@ -53,6 +53,7 @@ export default function App() {
         <Route path="listaradministrativo" element={<TableAdministrativo />} />
         <Route path="listaraprendiz" element={<TableAprendizs />} />
         <Route path="listarvisitante" element={<TablaVisitantes />} />
+        <Route path="perfiles" element={<PerfilesView />} />
       </Route>
 
       {/* Dashboard Gym */}
@@ -67,6 +68,7 @@ export default function App() {
         <Route path="listaradministrativo" element={<TableAdministrativo />} />
         <Route path="listaraprendiz" element={<TableAprendizs />} />
         <Route path="listarvisitante" element={<TablaVisitantes />} />
+        <Route path="perfiles" element={<PerfilesView />} />
       </Route>
 
       {/* Dashboard Casa de Apoyo */}
@@ -81,6 +83,7 @@ export default function App() {
         <Route path="listaradministrativo" element={<TableAdministrativo />} />
         <Route path="listaraprendiz" element={<TableAprendizs />} />
         <Route path="listarvisitante" element={<TablaVisitantes />} />
+        <Route path="perfiles" element={<PerfilesView />} />
       </Route>
 
       {/* Dashboard Granja */}
@@ -95,6 +98,7 @@ export default function App() {
         <Route path="listaradministrativo" element={<TableAdministrativo />} />
         <Route path="listaraprendiz" element={<TableAprendizs />} />
         <Route path="listarvisitante" element={<TablaVisitantes />} />
+        <Route path="perfiles" element={<PerfilesView />} />
       </Route>
 
       {/* Fallback route */}

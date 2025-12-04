@@ -16,6 +16,9 @@ import {
 import "../../styles/TableFichasDesactivadas.css";
 import Swal from "sweetalert2";
 
+// 🔑 URL BASE DE TU API (Asumo que la tienes definida en algún lugar)
+const API_URL = "http://localhost:8000/api"; // ⚠️ Ajusta esto a la URL base real de tu API de Laravel
+
 export default function TablaFichasDesactivadas() {
   const [fichas, setFichas] = useState([]);
   const [filteredFichas, setFilteredFichas] = useState([]);
@@ -36,6 +39,92 @@ export default function TablaFichasDesactivadas() {
     cargarFichas();
   }, []);
 
+  // ----------------------------------------------------------------------
+  // 🔑 FETCH DEFINIDO LOCALMENTE: ACTIVAR FICHA
+  // ----------------------------------------------------------------------
+  const activarFicha = async (id) => {
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/fichas/${id}/activar`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json", 
+        },
+      }
+    );
+
+    if (!response.ok) {
+      // Manejo de errores específicos (ej. 400 ya activa, 404 no encontrada)
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error ||
+          errorData.message ||
+          `Error ${response.status}: Fallo la activación de la ficha.`
+      );
+    }
+
+    return response.json();
+  };
+
+  // ----------------------------------------------------------------------
+  // LÓGICA DE ACTIVACIÓN (Handler)
+  // ----------------------------------------------------------------------
+  const activarFichaHandler = async (id, numeroFicha) => {
+    Swal.fire({
+      title: "Activando Ficha...",
+      text: `Activando ficha ${numeroFicha} y sus usuarios.`,
+      icon: "info",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const response = await activarFicha(id); // Llamada al fetch local
+      await cargarFichas(); // Recarga la tabla
+      Swal.fire({
+        icon: "success",
+        title: "¡Ficha Activada!",
+        text:
+          response.message ||
+          `La ficha ${numeroFicha} ha sido activada correctamente junto a sus usuarios.`,
+        confirmButtonText: "Aceptar",
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: {
+          confirmButton: "buttonConfirmSwal",
+        },
+      });
+    } catch (error) {
+      console.error("Error al activar ficha:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error al Activar",
+        text:
+          error.message || "No se pudo activar la ficha. Intenta nuevamente.",
+        confirmButtonText: "Cerrar",
+      });
+    }
+  };
+
+  const confirmarActivarFicha = (rowData) => {
+    confirmDialog({
+      message: `¿Estás seguro de activar la ficha ${rowData.numeroFicha} (${rowData.nombrePrograma})? Esto reactivará a todos sus aprendices asociados.`,
+      header: "Confirmar Activación",
+
+      acceptClassName: "pBtnAceptar",
+      acceptLabel: "Sí, Activar Ficha",
+      rejectLabel: "Cancelar",
+      style: { width: "550px" },
+      accept: () => activarFichaHandler(rowData.id, rowData.numeroFicha),
+    });
+  };
+
+  // ----------------------------------------------------------------------
+  // LÓGICA DE ELIMINACIÓN (Mantenida)
+  // ----------------------------------------------------------------------
   const eliminarFicha = async (id) => {
     try {
       await deleteFicha(id);
@@ -66,7 +155,6 @@ export default function TablaFichasDesactivadas() {
   };
 
   const eliminarTodasLasFichas = async () => {
-    // 1. Mostrar SweetAlert de carga (eliminando...)
     Swal.fire({
       title: "Eliminando fichas...",
       text: "Por favor, espera. Esta acción puede tardar unos segundos.",
@@ -88,7 +176,6 @@ export default function TablaFichasDesactivadas() {
       await deleteFichasMasivo(ids);
       await cargarFichas();
 
-      // 2. Cerrar el SweetAlert de carga y mostrar el de éxito
       Swal.fire({
         icon: "success",
         title: "Fichas eliminadas",
@@ -104,7 +191,6 @@ export default function TablaFichasDesactivadas() {
     } catch (error) {
       console.error("Error al eliminar todas las fichas:", error);
 
-      // 3. Cerrar el SweetAlert de carga y mostrar el de error
       Swal.fire({
         icon: "error",
         title: "Error de Eliminación",
@@ -124,8 +210,7 @@ export default function TablaFichasDesactivadas() {
       setFichaSeleccionada(ficha);
       setShowDialog(true);
     } catch (error) {
-      console.error("Error al obtener usuarios de la ficha:", error);
-      // Opcional: Mostrar un toast o SweetAlert si falla la carga de usuarios
+      console.error("Error al obtener usuarios de la ficha:", error); // Opcional: Mostrar un toast o SweetAlert si falla la carga de usuarios
     }
   };
 
@@ -146,25 +231,37 @@ export default function TablaFichasDesactivadas() {
       icon: "pi pi-exclamation-triangle",
       acceptClassName: "p-button-danger",
       acceptLabel: "Sí, eliminar todas",
-
       rejectLabel: "Cancelar",
       style: { width: "550px" },
       accept: () => eliminarTodasLasFichas(),
     });
   };
 
+  // ----------------------------------------------------------------------
+  // TEMPLATES
+  // ----------------------------------------------------------------------
   const estadoTemplate = (rowData) => (
     <Tag value={rowData.estado} severity="warning" />
   );
 
   const accionesTemplate = (rowData) => (
-    <Button
-      icon="pi pi-trash"
-      className="confirmarEliminarFicha"
-      onClick={() => confirmarEliminarFicha(rowData.id)}
-      tooltip="Eliminar Ficha"
-      tooltipOptions={{ position: "top" }}
-    />
+    <div className="d-flex gap-3">
+      <Button
+        icon="pi pi-trash"
+        className="confirmarEliminarFicha"
+        onClick={() => confirmarEliminarFicha(rowData.id)}
+        tooltip="Eliminar Ficha"
+        tooltipOptions={{ position: "top" }}
+      />
+
+      <Button
+        icon="pi pi-check-circle"
+        className="ActualizarFicha"
+        onClick={() => confirmarActivarFicha(rowData)}
+        tooltip="Activar ficha"
+        tooltipOptions={{ position: "top" }}
+      />
+    </div>
   );
 
   const onGlobalFilterChange = (e) => {
@@ -185,9 +282,10 @@ export default function TablaFichasDesactivadas() {
       <Button
         label="Cancelar"
         icon="pi pi-times"
-        className="btnCancelar p-button-secondary" // Agregado p-button-secondary para mejor estilo PrimeReact
+        className="btnCancelar p-button-secondary"
         onClick={() => setShowDialog(false)}
       />
+
       <Button
         label="Eliminar ficha"
         icon="pi pi-trash"
@@ -202,7 +300,6 @@ export default function TablaFichasDesactivadas() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      {/* Diálogo de Confirmación de Eliminación Individual con Usuarios */}
       <Dialog
         header={
           fichaSeleccionada
@@ -230,6 +327,7 @@ export default function TablaFichasDesactivadas() {
             header="Tipo de Documento"
             style={{ width: "200px" }}
           />
+
           <Column
             field="numeroDocumento"
             header="Número de Documento"
@@ -237,8 +335,6 @@ export default function TablaFichasDesactivadas() {
           />
         </DataTable>
       </Dialog>
-
-      {/* Controles de la Tabla */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div className="flex-grow-1 me-3">
           <span className="p-input-icon-left">
@@ -247,10 +343,12 @@ export default function TablaFichasDesactivadas() {
               onChange={onGlobalFilterChange}
               placeholder="Buscar por código, programa o jornada..."
               className="p-inputtext-sm "
-              style={{ width: "300px" }} // Ajustado el ancho
+              style={{ width: "300px" }}
             />
           </span>
+          =
         </div>
+
         <Button
           label={`Eliminar todas (${fichas.length})`}
           icon="pi pi-trash"
@@ -261,14 +359,13 @@ export default function TablaFichasDesactivadas() {
           tooltipOptions={{ position: "top" }}
         />
       </div>
-
       <DataTable
         value={filteredFichas}
         dataKey="id"
         paginator
         rows={10}
         scrollHeight="500px"
-        rowsPerPageOptions={[5, 10, 20, 50]}
+        rowsPerPageOptions={[10, 15, 20, 50]}
         stripedRows
         showGridlines
         emptyMessage="No hay fichas desactivadas."
@@ -278,6 +375,7 @@ export default function TablaFichasDesactivadas() {
         <Column field="nombrePrograma" header="Programa" sortable />
         <Column field="jornada" header="Jornada" sortable />
         <Column field="estado" header="Estado" body={estadoTemplate} sortable />
+
         <Column
           header="Acciones"
           body={accionesTemplate}

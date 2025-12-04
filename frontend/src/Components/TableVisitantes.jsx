@@ -21,41 +21,33 @@ const fetchVisitantes = async () => {
       }
     );
 
-    // 1. Verificar si la respuesta es OK (status 200)
     if (!response.ok) {
-      // Manejo de errores HTTP (ej: 404, 500)
       console.error(
         "Error en la respuesta del servidor:",
         response.status,
         response.statusText
       );
-      return []; // Devolvemos array vacío en caso de error HTTP
+      return [];
     }
 
     const data = await response.json();
     console.log("Respuesta del backend:", data);
 
-    // 2. Manejo flexible de la respuesta del backend (Optimización/Good Practice)
-
-    // Si 'data' es directamente el array de usuarios (patrón común)
     if (Array.isArray(data)) {
       console.log("El backend devolvió directamente un array.");
       return data;
     }
 
-    // Si 'data' es un objeto que contiene la clave 'usuarios' (tu patrón original)
     if (data && Array.isArray(data.usuarios)) {
       console.log("El backend devolvió un objeto con la clave 'usuarios'.");
       return data.usuarios;
     }
 
-    // Si no es ninguno de los formatos esperados, generamos el error, pero el catch lo manejará
     throw new Error(
       "Respuesta inesperada del backend: No se encontró un array de visitantes."
     );
   } catch (error) {
     console.error("Error al obtener visitantes:", error);
-    // Aseguramos que siempre devolvemos un array vacío para no romper la UI
     return [];
   }
 };
@@ -73,7 +65,18 @@ export default function TablaVisitantes() {
 
   const cargarVisitantes = async () => {
     const data = await fetchVisitantes();
-    setVisitantes(data);
+    setVisitantes(data.slice().reverse());
+  };
+  const agregarVisitanteAlInicio = (nuevoVisitante) => {
+    // Cierra el modal, incluso si el visitante es undefined (caso de error en el form)
+    setMostrarModalAgregar(false); // Solo actualiza la lista si se recibió un objeto válido
+    if (nuevoVisitante) {
+      // Patrón inmutable: nuevo visitante al inicio del array.
+      setVisitantes((prevVisitantes) => [nuevoVisitante, ...prevVisitantes]);
+    } else {
+      // Si no se recibió el objeto, recarga la lista completa por seguridad
+      cargarVisitantes();
+    }
   };
 
   const estadoTemplate = (rowData) => (
@@ -103,6 +106,7 @@ export default function TablaVisitantes() {
                     pointerEvents: "none",
                   }}
                 />
+
                 <InputText
                   value={filtroGlobal}
                   onChange={(e) => setFiltroGlobal(e.target.value)}
@@ -111,9 +115,10 @@ export default function TablaVisitantes() {
                   style={{ paddingLeft: "2rem", width: "100%" }}
                 />
               </div>
+
               <div className="d-flex align-items-center ms-3 gap-2">
                 <button
-                  className="btnAgregarVisitante btnVisitantesActivos  d-flex align-items-center gap-2"
+                  className="btnAgregarVisitante btnVisitantesActivos d-flex align-items-center gap-2"
                   onClick={() => setMostrarModalAgregar(true)}
                 >
                   <i
@@ -123,7 +128,7 @@ export default function TablaVisitantes() {
                 </button>
 
                 <button
-                  className="btnVerInactivos  btnVisitantesActivos d-flex align-items-center gap-2"
+                  className="btnVerInactivos btnVisitantesActivos d-flex align-items-center gap-2"
                   onClick={() => setMostrarModal(true)}
                 >
                   <i
@@ -131,6 +136,7 @@ export default function TablaVisitantes() {
                     style={{ fontSize: "1.2rem", color: "#e1a626ff" }}
                   />
                 </button>
+
                 <button
                   className="btnActions btn-crear-perfil d-flex align-items-center gap-2"
                   onClick={() => setMostrarModalPerfil(true)}
@@ -140,16 +146,19 @@ export default function TablaVisitantes() {
                     style={{ color: "#17a2b8", fontSize: "1.4rem" }}
                   />
                 </button>
+
                 <Tooltip
                   target=".btnAgregarVisitante"
                   content="Agregar visitante"
                   position="top"
                 />
+
                 <Tooltip
                   target=".btnVerInactivos"
                   content="Ver visitantes inactivos"
                   position="top"
                 />
+
                 <Tooltip
                   target=".btn-crear-perfil"
                   content="Crear perfil"
@@ -201,7 +210,6 @@ export default function TablaVisitantes() {
       className="card mx-auto shadow mt-4 tableContainer"
       style={{ width: "1000px" }}
     >
-      {/* 🛑 Modal de Visitantes Desactivados */}
       <Dialog
         header="Visitantes desactivados"
         visible={mostrarModal}
@@ -212,7 +220,6 @@ export default function TablaVisitantes() {
         <TablaVisitantesDesactivados onClose={() => setMostrarModal(false)} />
       </Dialog>
 
-      {/* ➕ Modal de Agregar Visitante */}
       <Dialog
         header="Agregar visitante"
         visible={mostrarModalAgregar}
@@ -220,10 +227,10 @@ export default function TablaVisitantes() {
         onHide={() => setMostrarModalAgregar(false)}
         modal
       >
-        <FormVisitante closeModal={() => setMostrarModalAgregar(false)} />
+        {/* **CLAVE:** Le pasamos la función que espera el objeto creado. */}
+        <FormVisitante closeModal={agregarVisitanteAlInicio} />
       </Dialog>
 
-      {/* 💳 Nuevo Modal de Crear Perfil */}
       <Dialog
         header="Crear Perfil"
         visible={mostrarModalPerfil}
@@ -231,11 +238,9 @@ export default function TablaVisitantes() {
         onHide={() => setMostrarModalPerfil(false)}
         modal
       >
-        {/* Usamos el componente FormPerfil dentro del Dialog */}
         <FormPerfil closeModal={() => setMostrarModalPerfil(false)} />
       </Dialog>
 
-      {/* 📋 Tabla principal */}
       <DataTable
         value={visitantesFiltrados}
         paginator

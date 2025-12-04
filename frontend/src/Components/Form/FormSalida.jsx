@@ -163,7 +163,7 @@ export default function FormSalida({
 
           {showTipoIngreso && (
             <div className="col-lg-12">
-              <SelectOptions
+              {/* <SelectOptions
                 register={register}
                 name="tipoIngreso"
                 nameSelect="Tipo de ingreso"
@@ -173,7 +173,7 @@ export default function FormSalida({
                   { value: "sinVehiculo", label: "Sin vehículo" },
                   { value: "conVehiculo", label: "Con vehículo" },
                 ]}
-              />
+              /> */}
             </div>
           )}
         </div>

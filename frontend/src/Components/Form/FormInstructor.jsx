@@ -47,6 +47,15 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
     return `${baseURL}/storage/fotos/${foto}`;
   };
 
+  const stopCamera = () => {
+    setShowCamera(false);
+  };
+
+  const handleSubmitForm = (data) => {
+    stopCamera();
+    onSubmit(data);
+  };
+
   useEffect(() => {
     if (usuarioSeleccionado && perfiles.length > 0) {
       const fotoUrl = getFotoUrl(usuarioSeleccionado.foto);
@@ -65,21 +74,29 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
   }, [usuarioSeleccionado, reset, perfiles]);
 
   useEffect(() => {
+    let stream;
     if (showCamera && videoRef.current) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
-        .then((stream) => {
+        .then((s) => {
+          stream = s;
           videoRef.current.srcObject = stream;
         })
         .catch((err) => {
           console.error("Error al acceder a la cámara:", err);
+          setShowCamera(false);
         });
     }
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
   }, [showCamera]);
 
   return (
     <div>
-      <form className="row" onSubmit={handleSubmit(onSubmit, onError)}>
+      <form className="row" onSubmit={handleSubmit(handleSubmitForm, onError)}>
         <div className="mt-2">
           <div className="d-flex gap-4 mb-3">
             <InputField
@@ -89,6 +106,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
               error={errors.nombre}
               labelName="Nombre"
             />
+
             <InputField
               typeInput="text"
               name="apellido"
@@ -109,6 +127,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                 { value: "otro", label: "Otro..." },
               ]}
             />
+
             <InputField
               typeInput="text"
               name="numeroDocumento"
@@ -127,6 +146,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                 error={errors.telefono}
                 labelName="Teléfono"
               />
+
               <div className="my-2">
                 <SelectOptions
                   register={register}
@@ -196,6 +216,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                       className="rounded"
                       style={{ width: "100%", maxHeight: "200px" }}
                     />
+
                     <button
                       type="button"
                       className="btn btn-success mt-2"
@@ -205,12 +226,13 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                         const imageData =
                           canvasRef.current.toDataURL("image/png");
                         setCapturedImage(imageData);
-                        setValue("foto", imageData); // ✅ sincroniza con RHF
-                        setShowCamera(false);
+                        setValue("foto", imageData);
+                        stopCamera();
                       }}
                     >
                       Tomar foto
                     </button>
+
                     <canvas
                       ref={canvasRef}
                       width="300"
@@ -229,7 +251,7 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
                     </button>
                   </div>
                 )}
-                {/* ✅ Error de foto */}
+
                 {errors.foto && (
                   <p className="text-danger text-center mt-2">
                     {errors.foto.message}
@@ -240,7 +262,6 @@ export default function FormInstructor({ closeModal, usuarioSeleccionado }) {
           </div>
         </div>
 
-        {/* ✅ Campo oculto para sincronizar foto */}
         <input
           type="hidden"
           {...register("foto")}

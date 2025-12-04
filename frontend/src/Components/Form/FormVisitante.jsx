@@ -58,21 +58,41 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
   }, [usuarioSeleccionado, reset, perfiles]);
 
   useEffect(() => {
+    let stream;
     if (showCamera && videoRef.current) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
-        .then((stream) => {
+        .then((s) => {
+          stream = s; // Almacena el stream
           videoRef.current.srcObject = stream;
         })
         .catch((err) => {
           console.error("Error al acceder a la cámara:", err);
+          setShowCamera(false); // Desactiva la cámara si hay error
         });
-    }
-  }, [showCamera]);
+    } // Función de limpieza que detiene el stream.
+
+    return () => {
+      if (stream) {
+        // Detiene todas las pistas de audio/video.
+        stream.getTracks().forEach((track) => track.stop());
+        console.log("Cámara detenida por limpieza del useEffect.");
+      }
+    };
+  }, [showCamera]); // Se ejecuta cuando showCamera cambia (a true o false) // Función para detener la cámara y resetear el estado
+
+  const stopCamera = () => {
+    setShowCamera(false); // La limpieza real del stream se hace en el useEffect cleanup. // Aquí solo cambiamos el estado para que el useEffect se dispare
+  }; // Modificamos el onSubmit para detener la cámara explícitamente si está activa
+
+  const handleSubmitForm = (data) => {
+    stopCamera(); // Llama a la función para apagar la cámara
+    onSubmit(data);
+  };
 
   return (
     <div>
-      <form className="row" onSubmit={handleSubmit(onSubmit, onError)}>
+      <form className="row" onSubmit={handleSubmit(handleSubmitForm, onError)}>
         <div className="mt-2">
           <div className="d-flex gap-4 mb-3">
             <InputField
@@ -82,6 +102,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
               error={errors.nombre}
               labelName="Nombre"
             />
+
             <InputField
               typeInput="text"
               name="apellido"
@@ -103,6 +124,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                 { value: "otro", label: "Otro..." },
               ]}
             />
+
             <InputField
               typeInput="text"
               name="numeroDocumento"
@@ -121,6 +143,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                 error={errors.telefono}
                 labelName="Teléfono"
               />
+
               <div className="my-2">
                 <SelectOptions
                   register={register}
@@ -190,6 +213,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                       className="rounded"
                       style={{ width: "100%", maxHeight: "200px" }}
                     />
+
                     <button
                       type="button"
                       className="btn btn-success mt-2"
@@ -199,12 +223,13 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                         const imageData =
                           canvasRef.current.toDataURL("image/png");
                         setCapturedImage(imageData);
-                        setValue("foto", imageData); // ✅ sincroniza con RHF
-                        setShowCamera(false);
+                        setValue("foto", imageData);
+                        stopCamera(); // ✅ Detenemos la cámara al capturar
                       }}
                     >
                       Tomar foto
                     </button>
+
                     <canvas
                       ref={canvasRef}
                       width="300"
@@ -223,7 +248,7 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
                     </button>
                   </div>
                 )}
-                {/* ✅ Error de foto */}
+
                 {errors.foto && (
                   <p className="text-danger text-center mt-2">
                     {errors.foto.message}
@@ -234,7 +259,6 @@ export default function FormVisitante({ closeModal, usuarioSeleccionado }) {
           </div>
         </div>
 
-        {/* ✅ Campo oculto para sincronizar foto */}
         <input
           type="hidden"
           {...register("foto")}

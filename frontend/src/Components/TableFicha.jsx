@@ -333,7 +333,7 @@ export default function TablaFicha() {
           value={Array.isArray(usuariosFicha) ? usuariosFicha : []}
           paginator
           rows={5}
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[10, 20, 30]}
           globalFilter={globalFilter}
           globalFilterFields={[
             "nombre",
@@ -463,7 +463,6 @@ export default function TablaFicha() {
         modal
         onHide={() => setShowFormacion(false)}
       >
-        {/* 💡 Propiedad correcta para que CrearFicha ejecute el cierre y el refresco */}
         {showFormacion && <CrearFicha onAceptar={handleCrearFichaSuccess} />}
       </Dialog>
     </div>

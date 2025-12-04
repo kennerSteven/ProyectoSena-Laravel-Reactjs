@@ -13,18 +13,7 @@ export default function TablaHistorial({
   showColumnaIngreso = true,
   showPlaca = true,
 }) {
-  const [globalFilter, setGlobalFilter] = useState("");
   const [usuarios, setUsuarios] = useState([]);
-  const [filters, setFilters] = useState({
-    global: { value: null, matchMode: "contains" },
-    "usuarios.nombre": { value: null, matchMode: "contains" },
-    "usuarios.apellido": { value: null, matchMode: "contains" },
-    "usuarios.telefono": { value: null, matchMode: "contains" },
-    "usuarios.numeroDocumento": { value: null, matchMode: "contains" },
-    "usuarios.perfile.nombre": { value: null, matchMode: "contains" },
-    tipo: { value: null, matchMode: "contains" },
-    fechaRegistro: { value: null, matchMode: "equals" },
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,27 +110,13 @@ export default function TablaHistorial({
       <div className="row">
         <div className="">
           <div className="card shadow-sm border-light">
-            <div className="d-flex justify-content-between align-items-center mb-3 px-3 pt-3">
-              <InputText
-                value={globalFilter}
-                onChange={(e) => {
-                  setGlobalFilter(e.target.value);
-                  setFilters((prev) => ({
-                    ...prev,
-                    global: { ...prev.global, value: e.target.value },
-                  }));
-                }}
-                style={{ width: "150px" }}
-                placeholder="Buscar..."
-              />
-            </div>
+            <div className="d-flex justify-content-between align-items-center mb-3 px-3 pt-3"></div>
 
             <DataTable
               value={usuarios}
               paginator
-              rows={5}
-              rowsPerPageOptions={[5, 10, 20, 50]}
-              filters={filters}
+              rows={15}
+              rowsPerPageOptions={[15, 30, 50, 100]}
               filterDisplay="row"
               globalFilterFields={[
                 "usuarios.nombre",
@@ -152,7 +127,7 @@ export default function TablaHistorial({
                 "tipo",
                 "fechaRegistro",
               ]}
-              scrollHeight="500px"
+              scrollHeight="600px"
               className="custom-table"
               emptyMessage="No se encontraron registros."
             >

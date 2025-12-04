@@ -1,4 +1,5 @@
 .containerCard {
+  width: 100%;
   border-radius: 12px;
   background-color: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -87,4 +88,8 @@
 .btnRegistros:hover {
   background-color: #c8e6c9;
   color: #2e7d32;
+}
+
+.topbar {
+  width: 1200px;
 }

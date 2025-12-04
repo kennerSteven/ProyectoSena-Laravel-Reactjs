@@ -49,8 +49,9 @@ export default function useHandleValidationRegister({
       toast.dismiss();
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Ocurrió un error al registrar la entrada.",
+        title: "Error al dar entrada",
+        text: error,
+        confirmButtonText: "Aceptar",
         customClass: {
           confirmButton: "buttonConfirmSwal",
         },
