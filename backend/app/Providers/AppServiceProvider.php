@@ -9,25 +9,17 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        // ❗ Evitar errores cuando la app corre artisan, composer o no tiene DB lista
         if (app()->runningInConsole()) {
             return;
         }
 
-        // ❗ Si la tabla no existe aún (primer clone del proyecto), evitar crasheo
         if (!Schema::hasTable('usuarios')) {
             return;
         }
@@ -37,9 +29,9 @@ class AppServiceProvider extends ServiceProvider
         // 🔸 Regla del 30 de diciembre
         if ($hoy->format('m-d') === '12-30') {
             usuarios::whereHas('perfile', function ($q) {
-                $q->whereIn('nombre', [
-                    'Instructor contrato',
-                    'Administrativo contrato'
+                $q->whereRaw('LOWER(nombre) IN (?, ?)', [
+                    'instructor contrato',
+                    'administrativo contrato'
                 ]);
             })
                 ->where('estado', 'activo')
@@ -48,10 +40,11 @@ class AppServiceProvider extends ServiceProvider
 
         // 🔸 Regla para visitantes (12 horas)
         usuarios::whereHas('perfile', function ($q) {
-            $q->where('nombre', 'Visitante');
+            $q->whereRaw('LOWER(nombre) = ?', ['visitante']);
         })
             ->where('estado', 'activo')
-            ->where('created_at', '<=', Carbon::now('America/Bogota')->subHours(12))
+            // Se usa 'updated_at' para reiniciar el contador de 12 horas en cada 'entrada' o activación manual.
+            ->where('updated_at', '<=', Carbon::now('America/Bogota')->subHours(12))
             ->update(['estado' => 'inactivo']);
     }
 }

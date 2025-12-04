@@ -273,7 +273,7 @@ class UsuariosController extends Controller
     public function listarVisitantes()
     {
         $visitantes = usuarios::whereHas('perfile', function ($q) {
-            $q->where('nombre', 'Visitante');
+            $q->whereRaw('LOWER(nombre) = ?', ['visitante']);
         })->get();
 
         if ($visitantes->isEmpty()) {
