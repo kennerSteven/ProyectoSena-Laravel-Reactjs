@@ -158,11 +158,9 @@ class eys_granjaController extends Controller
 
     public function salidagranja(Request $request)
     {
+        // 1. Validar solo el documento (¡Se eliminaron las validaciones de vehículo innecesarias!)
         $request->validate([
             'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
-            'tieneVehiculo' => ['required', 'boolean'],
-            'placa' => ['nullable', 'string', 'max:10'],
-            'tipoVehiculo' => ['nullable', 'in:moto,carro,bus,otro'],
         ]);
 
         $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
@@ -171,63 +169,59 @@ class eys_granjaController extends Controller
             return response()->json(['error' => 'Usuario no encontrado'], 404);
         }
 
-        $ultimoRegistro = eysgranja::where('idusuario', $usuario->id)->latest()->first();
+        // 2. Buscar el ÚLTIMO REGISTRO DE ENTRADA ACTIVA para esta persona
+        // Se busca el último registro de tipo 'entrada'
+        $ultimoRegistroEntrada = eysgranja::where('idusuario', $usuario->id)
+            ->where('tipo', 'entrada')
+            ->orderBy('fechaRegistro', 'desc')
+            ->first();
 
-        if (!$ultimoRegistro || $ultimoRegistro->tipo === 'salida') {
+        // 3. Verificar si hay una entrada pendiente de salida
+        // Comprueba que exista una entrada y que el último registro de E/S no sea una salida posterior a ella.
+        if (!$ultimoRegistroEntrada || eysgranja::where('idusuario', $usuario->id)->where('tipo', 'salida')
+        ->where('fechaRegistro', '>', $ultimoRegistroEntrada->fechaRegistro)->exists()) {
             return response()->json([
-                'error' => 'No se puede registrar salida sin una entrada previa.'
+                'error' => 'No se puede registrar salida sin una entrada previa activa.'
             ], 400);
         }
-
-        if ($request->tieneVehiculo == true) {
-            $vehiculo = vehiculo::create([
-                'placa' => strtoupper($request->placa),
-                'tipoVehiculo' => $request->tipoVehiculo,
-                'idusuario' => $usuario->id,
-                'fechaRegistro' => now(),
-            ]);
-
-            $salida = eysgranja::create([
-                'numeroDocumento' => $usuario->numeroDocumento,
-                'tipo' => 'salida',
-                'idusuario' => $usuario->id,
-                'idvehiculo' => $vehiculo->id, // ✅ Aquí se asocia el vehículo
-                'fechaRegistro' => now(),
-            ]);
-
-            $salida->load(['usuarios.perfile', 'vehiculo']); // ✅ Relaciones cargadas
-
-            return response()->json([
-                'message' => 'Salida registrada correctamente (usuario y vehículo)',
-                'usuario' => $usuario,
-                'vehiculo' => $vehiculo,
-                'salida' => $salida
-            ], 201);
-        } else {
-            $salida = eysgranja::create([
-                'numeroDocumento' => $usuario->numeroDocumento,
-                'tipo' => 'salida',
-                'idusuario' => $usuario->id,
-                'fechaRegistro' => now(),
-            ]);
-
-            if ($usuario->perfile->nombre === 'Visitante') {
-                $usuario->fechaExpiracion = now()->addHours(12);
-                $usuario->save();
-            }
-
-            $salida->fechaRegistro = Carbon::parse($salida->fechaRegistro)
-                ->timezone('America/Bogota')
-                ->format('Y-m-d H:i:s');
-
-            $salida->load(['usuarios.perfile']); // ✅ Cargar relaciones también aquí
-
-            return response()->json([
-                'message' => 'Salida registrada correctamente (sin vehículo)',
-                'usuario' => $usuario,
-                'salida' => $salida
-            ], 201);
+        
+        // 4. Obtener el ID del vehículo deducido de la entrada anterior
+        // Este ID será null si no ingresó con vehículo.
+        $idVehiculoSalida = $ultimoRegistroEntrada->idvehiculo;
+        $vehiculoSalida = null;
+        $mensajeVehiculo = 'sin vehículo';
+        
+        // Determinar si salió con vehículo para el mensaje de respuesta y cargar sus datos.
+        if ($idVehiculoSalida) {
+            $vehiculoSalida = vehiculo::find($idVehiculoSalida);
+            $mensajeVehiculo = 'con vehículo (' . ($vehiculoSalida->placa ?? 'N/A') . ')';
         }
+
+        // 5. Crear el registro de SALIDA
+        // Se usa el idvehiculo deducido de la entrada.
+        $salida = eysgranja::create([
+            'numeroDocumento' => $usuario->numeroDocumento,
+            'tipo' => 'salida',
+            'idusuario' => $usuario->id,
+            'idvehiculo' => $idVehiculoSalida, 
+            'fechaRegistro' => now(),
+        ]);
+
+        // 6. Lógica adicional (Visitante)
+        if ($usuario->perfile->nombre === 'Visitante') {
+            $usuario->fechaExpiracion = now()->addHours(12); 
+            $usuario->save();
+        }
+
+        // 7. Preparar la respuesta
+        $salida->load(['usuarios.perfile', 'vehiculo']); 
+        
+        return response()->json([
+            'message' => 'Salida registrada correctamente ' . $mensajeVehiculo,
+            'usuario' => $usuario,
+            'vehiculo' => $vehiculoSalida,
+            'salida' => $salida
+        ], 201);
     }
 
 
