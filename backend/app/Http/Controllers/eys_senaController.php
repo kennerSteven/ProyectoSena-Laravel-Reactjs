@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\eys_sena;
+
 use App\Models\eyssena;
 use App\Models\usuarios;
 use Carbon\Carbon;
@@ -23,17 +23,35 @@ class eys_senaController extends Controller
     public function entradasena(Request $request)
     {
 
-        $request->validate(['numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],]);
+        $request->validate([
+            'numeroDocumento' => ['required', 'numeric', 'digits_between:6,15'],
+        ]);
 
-        $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)->first();
+        // 1. Buscar usuario por número de documento
+        $usuario = usuarios::where('numeroDocumento', $request->numeroDocumento)
+            ->with('perfile') // Asegúrate de cargar la relación perfile
+            ->first();
 
-        if ($usuario && $usuario->perfile->nombre === 'Visitante' && $usuario->estado === 'inactivo') {
+        // 2. Aplicar lógica de activación (visitante inactivo)
+        // Usamos strtolower() para asegurar que 'Visitante' o 'visitante' sean tratados igual.
+        if (
+            $usuario &&
+            strtolower($usuario->perfile->nombre) === 'visitante' && // 👈 AJUSTE CLAVE AQUÍ
+            $usuario->estado === 'inactivo'
+        ) {
             $usuario->estado = 'activo';
             $usuario->fechaExpiracion = null;
             $usuario->save();
         }
 
+        // 3. Verificar si se encontró un usuario (activo/inactivo/otro perfil)
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Usuario no encontrado.',
+            ], 404);
+        }
 
+        // 4. Registrar la entrada
         $entrada = eyssena::create([
             'numeroDocumento' => $usuario->numeroDocumento,
             'tipo' => 'entrada',
@@ -41,11 +59,13 @@ class eys_senaController extends Controller
             'fechaRegistro' => now(),
         ]);
 
+        // 5. Formatear la hora de registro
         $entrada->fechaRegistro = Carbon::parse($entrada->fechaRegistro)
             ->timezone('America/Bogota')
             ->format('Y-m-d H:i:s');
 
 
+        // 6. Devolver respuesta
         return response()->json([
             'message' => 'Entrada registrada correctamente',
             'entrada' => $entrada
@@ -97,53 +117,53 @@ class eys_senaController extends Controller
 
 
     public function salidaMasivaSena()
-{
-    // 1. Traer SOLO las ENTRADAS sin una SALIDA posterior
-    $usuariosConEntradaPendiente = eyssena::where('tipo', 'entrada')
-        ->whereNotIn('id', function ($query) {
-            $query->select('entrada.id')
-                  ->from('eys_sena as entrada')
-                  ->join('eys_sena as salida', function ($join) {
-                      $join->on('entrada.numeroDocumento', '=', 'salida.numeroDocumento')
-                           ->where('salida.tipo', '=', 'salida')
-                           ->whereColumn('salida.fechaRegistro', '>', 'entrada.fechaRegistro');
-                  });
-        })
-        ->get();
+    {
+        // 1. Traer SOLO las ENTRADAS sin una SALIDA posterior
+        $usuariosConEntradaPendiente = eyssena::where('tipo', 'entrada')
+            ->whereNotIn('id', function ($query) {
+                $query->select('entrada.id')
+                    ->from('eys_sena as entrada')
+                    ->join('eys_sena as salida', function ($join) {
+                        $join->on('entrada.numeroDocumento', '=', 'salida.numeroDocumento')
+                            ->where('salida.tipo', '=', 'salida')
+                            ->whereColumn('salida.fechaRegistro', '>', 'entrada.fechaRegistro');
+                    });
+            })
+            ->get();
 
-    if ($usuariosConEntradaPendiente->isEmpty()) {
-        return response()->json([
-            'message' => 'No hay usuarios dentro del SENA para registrar salida masiva.'
-        ]);
-    }
-
-    // 2. Registrar salida para cada uno
-    foreach ($usuariosConEntradaPendiente as $entrada) {
-
-        eyssena::create([
-            'numeroDocumento' => $entrada->numeroDocumento,
-            'tipo' => 'salida',
-            'idusuario' => $entrada->idusuario,
-            'fechaRegistro' => now(),
-        ]);
-
-        // Inactivar solo visitantes
-        $usuario = $entrada->usuarios;
-        if ($usuario && $usuario->perfile->nombre === 'Visitante') {
-            $usuario->fechaExpiracion = now()->addHours(12);
-            $usuario->save();
+        if ($usuariosConEntradaPendiente->isEmpty()) {
+            return response()->json([
+                'message' => 'No hay usuarios dentro del SENA para registrar salida masiva.'
+            ]);
         }
+
+        // 2. Registrar salida para cada uno
+        foreach ($usuariosConEntradaPendiente as $entrada) {
+
+            eyssena::create([
+                'numeroDocumento' => $entrada->numeroDocumento,
+                'tipo' => 'salida',
+                'idusuario' => $entrada->idusuario,
+                'fechaRegistro' => now(),
+            ]);
+
+            // Inactivar solo visitantes
+            $usuario = $entrada->usuarios;
+            if ($usuario && $usuario->perfile->nombre === 'Visitante') {
+                $usuario->fechaExpiracion = now()->addHours(12);
+                $usuario->save();
+            }
+        }
+
+        return response()->json([
+            'message' => 'Salida masiva registrada correctamente.',
+            'total' => $usuariosConEntradaPendiente->count()
+        ]);
     }
 
-    return response()->json([
-        'message' => 'Salida masiva registrada correctamente.',
-        'total' => $usuariosConEntradaPendiente->count()
-    ]);
-}
 
 
-    
-   
+
 
 
 
@@ -250,71 +270,80 @@ class eys_senaController extends Controller
 
 
     public function entradasPorMessena()
-{
-    try {
+    {
+        try {
 
-        $data = eyssena::selectRaw('strftime("%m", fechaRegistro) as mes, COUNT(*) as total')
-            ->where('tipo', 'entrada')
-            ->groupBy('mes')
-            ->orderBy('mes')
-            ->get();
+            $data = eyssena::selectRaw('strftime("%m", fechaRegistro) as mes, COUNT(*) as total')
+                ->where('tipo', 'entrada')
+                ->groupBy('mes')
+                ->orderBy('mes')
+                ->get();
 
-        $mesesNombre = [
-            "01" => 'Ene', "02" => 'Feb', "03" => 'Mar', "04" => 'Abr',
-            "05" => 'May', "06" => 'Jun', "07" => 'Jul', "08" => 'Ago',
-            "09" => 'Sep', "10" => 'Oct', "11" => 'Nov', "12" => 'Dic'
-        ];
+            $mesesNombre = [
+                "01" => 'Ene',
+                "02" => 'Feb',
+                "03" => 'Mar',
+                "04" => 'Abr',
+                "05" => 'May',
+                "06" => 'Jun',
+                "07" => 'Jul',
+                "08" => 'Ago',
+                "09" => 'Sep',
+                "10" => 'Oct',
+                "11" => 'Nov',
+                "12" => 'Dic'
+            ];
 
-        return response()->json([
-            'labels' => $data->pluck('mes')->map(fn($m) => $mesesNombre[$m]),
-            'totales' => $data->pluck('total'),
-        ]);
-
-    } catch (\Exception $e) {
-
-        return response()->json([
-            'error' => $e->getMessage(),
-            'linea' => $e->getLine(),
-            'archivo' => $e->getFile(),
-        ], 500);
-    }
-}
-
-
-public function porcentajeEntradasPorPerfilSena()
-{
-    try {
-        // Total de entradas registradas en CASA DE APOYO
-        $totalEntradas = eyssena::where('tipo', 'entrada')->count();
-
-        if ($totalEntradas == 0) {
             return response()->json([
-                'labels' => [],
-                'porcentajes' => [],
+                'labels' => $data->pluck('mes')->map(fn($m) => $mesesNombre[$m]),
+                'totales' => $data->pluck('total'),
             ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' => $e->getMessage(),
+                'linea' => $e->getLine(),
+                'archivo' => $e->getFile(),
+            ], 500);
         }
-
-        // Entradas agrupadas por perfil
-        $data = eyssena::selectRaw('perfiles.nombre as perfil, COUNT(*) as total')
-            ->join('usuarios', 'usuarios.id', '=', 'eys_sena.idusuario')
-            ->join('perfiles', 'perfiles.id', '=', 'usuarios.idperfil')
-            ->where('eys_sena.tipo', 'entrada')
-            ->groupBy('perfiles.nombre')
-            ->get();
-
-        return response()->json([
-            'labels' => $data->pluck('perfil'),
-            'porcentajes' => $data->map(fn($item) => round(($item->total / $totalEntradas) * 100, 2)),
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'linea' => $e->getLine(),
-            'archivo' => $e->getFile(),
-        ], 500);
     }
-}
+
+
+    public function porcentajeEntradasPorPerfilSena()
+    {
+        try {
+            // Total de entradas registradas en CASA DE APOYO
+            $totalEntradas = eyssena::where('tipo', 'entrada')->count();
+
+            if ($totalEntradas == 0) {
+                return response()->json([
+                    'labels' => [],
+                    'porcentajes' => [],
+                ]);
+            }
+
+            // Entradas agrupadas por perfil
+            $data = eyssena::selectRaw('perfiles.nombre as perfil, COUNT(*) as total')
+                ->join('usuarios', 'usuarios.id', '=', 'eys_sena.idusuario')
+                ->join('perfiles', 'perfiles.id', '=', 'usuarios.idperfil')
+                ->where('eys_sena.tipo', 'entrada')
+                ->groupBy('perfiles.nombre')
+                ->get();
+
+            return response()->json([
+                'labels' => $data->pluck('perfil'),
+                'porcentajes' => $data->map(fn($item) => round(($item->total / $totalEntradas) * 100, 2)),
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'linea' => $e->getLine(),
+                'archivo' => $e->getFile(),
+            ], 500);
+        }
+    }
 
 
 

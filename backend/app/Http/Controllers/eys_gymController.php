@@ -23,18 +23,6 @@ class eys_gymController extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     public function entradagym(Request $request)
     {
 
