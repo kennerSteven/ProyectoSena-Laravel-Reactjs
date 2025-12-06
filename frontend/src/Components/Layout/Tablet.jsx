@@ -325,7 +325,7 @@ export default function Table({
         loading={isLoading} // Propiedad para mostrar el spinner de carga
         loadingIcon="pi pi-spin pi-spinner"
         scrollable
-        scrollHeight="280px"
+        scrollHeight="500px"
         rowClassName={() => "my-custom-row"}
       >
         {nameValue.map(({ field, header }) => (

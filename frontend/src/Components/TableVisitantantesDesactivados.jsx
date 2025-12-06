@@ -177,7 +177,7 @@ export default function TableVisitantesDesactivados() {
         <Column field="nombre" header="Nombre" />
         <Column field="apellido" header="Apellido" />
         <Column field="numeroDocumento" header="Número de Documento" />
-        <Column field="fechaIngreso" header="Fecha de ingreso" />
+        <Column field="fechaRegistro" header="Fecha de registro" />
         <Column field="estado" header="Estado" body={estadoTemplate} />
       </DataTable>
     </div>

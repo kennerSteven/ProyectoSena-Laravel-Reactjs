@@ -152,7 +152,7 @@ export default function TableAprendizs({
         globalFilterFields={globalFilterFields}
         emptyMessage="No se encontraron resultados."
         scrollable
-        scrollHeight="290px"
+        scrollHeight="500px"
         rowClassName={() => "my-custom-row"}
       >
         {nameValue.map(({ field, header }, idx) => (

@@ -252,7 +252,7 @@ export default function TablaFicha() {
                 "jornada",
                 "estado",
               ]}
-              scrollHeight="350px"
+              scrollHeight="500px"
               className="custom-table"
               emptyMessage="No se encontraron fichas."
               selectionMode="single"

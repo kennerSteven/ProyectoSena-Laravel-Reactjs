@@ -239,7 +239,7 @@ export default function TablaVisitantes() {
       <DataTable
         value={visitantesFiltrados}
         paginator
-        scrollHeight="260px"
+        scrollHeight="500px"
         rows={5}
         header={header}
         rowsPerPageOptions={[5, 10, 20]}
