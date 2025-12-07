@@ -1,3 +1,4 @@
+// Archivo: ./Form/FormFicha.jsx (o CrearFicha.jsx)
 import ButtonSubmit from "../Ui/ButtonSubmit";
 import SelectOptions from "../Ui/SelectOptions";
 import InputField from "../Ui/InputField";
@@ -7,7 +8,8 @@ import "../../styles/FormUsers.css";
 import SchemaFicha from "./Validation/SchemaValidation/SchemaValidationFormacion";
 import HandleValidationFicha from "./Validation/HandleValidation/HandleValidation.Ficha";
 
-export default function CrearFicha({ closeModal, fichaSeleccionada }) {
+// 💡 CAMBIO CLAVE: Cambiar 'closeModal' por 'onAceptar' para que coincida con el padre
+export default function CrearFicha({ onAceptar, fichaSeleccionada }) {
   const {
     register,
     reset,
@@ -17,7 +19,8 @@ export default function CrearFicha({ closeModal, fichaSeleccionada }) {
 
   const { onSubmit, onError } = HandleValidationFicha({
     reset,
-    closeModal,
+    // 💡 PASAMOS LA FUNCIÓN DE CALLBACK con el nuevo nombre
+    closeModalAndRefresh: onAceptar,
     fichaSeleccionada,
   });
 

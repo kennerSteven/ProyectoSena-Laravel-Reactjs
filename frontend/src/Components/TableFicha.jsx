@@ -18,10 +18,12 @@ import TablaFichasDesactivadas from "./Ui/TableFichasDesactivadas";
 import CrearFicha from "./Form/FormFicha";
 import "../styles/Table.css";
 import Swal from "sweetalert2";
+
 export default function TablaFicha() {
   const [showModalFichasDesactivadas, setShowModalFichasDesactivadas] =
     useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
+  // Estado para controlar la visibilidad del modal de creación/edición de ficha
   const [showFormacion, setShowFormacion] = useState(false);
   const [fichas, setFichas] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -151,6 +153,15 @@ export default function TablaFicha() {
         confirmButtonText: "Cerrar",
       });
     }
+  };
+
+  /**
+   * 💡 Esta función ahora se pasa al hijo (CrearFicha) a través de la prop 'onAceptar'.
+   * Ejecuta el cierre del modal y recarga los datos de la tabla.
+   */
+  const handleCrearFichaSuccess = async () => {
+    setShowFormacion(false); // Cierra el modal de creación
+    await cargarFichas(); // Recarga la lista de fichas para refrescar la tabla
   };
 
   const accionesBodyTemplate = (rowData) => (
@@ -450,14 +461,8 @@ export default function TablaFicha() {
         modal
         onHide={() => setShowFormacion(false)}
       >
-        {showFormacion && (
-          <CrearFicha
-            onAceptar={async () => {
-              setShowFormacion(false);
-              await cargarFichas();
-            }}
-          />
-        )}
+        {/* 💡 Propiedad correcta para que CrearFicha ejecute el cierre y el refresco */}
+        {showFormacion && <CrearFicha onAceptar={handleCrearFichaSuccess} />}
       </Dialog>
     </div>
   );

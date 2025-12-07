@@ -1,3 +1,4 @@
+// Archivo: ./Validation/HandleValidation/HandleValidation.Ficha.jsx
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import { onSubmitFicha, updateFicha } from "../../../Services/FetchServices";
@@ -5,7 +6,8 @@ import "../../../../styles/ButtonSubmit.css";
 
 export default function HandleValidationFicha({
   reset,
-  closeModal,
+  // 💡 Se mantiene este nombre porque es el que se le pasa desde CrearFicha
+  closeModalAndRefresh,
   fichaSeleccionada,
 }) {
   const onSubmit = async (data) => {
@@ -22,6 +24,7 @@ export default function HandleValidationFicha({
 
     try {
       if (fichaSeleccionada?.id) {
+        // --- Lógica de ACTUALIZACIÓN ---
         await updateFicha(fichaSeleccionada.id, payload);
 
         Swal.fire({
@@ -36,8 +39,11 @@ export default function HandleValidationFicha({
             confirmButton: "buttonConfirmSwal",
           },
         });
-        closeModal();
+
+        // 💡 CIERRA MODAL Y REFRESCÓ LA TABLA
+        if (closeModalAndRefresh) closeModalAndRefresh();
       } else {
+        // --- Lógica de CREACIÓN ---
         await onSubmitFicha(payload);
 
         Swal.fire({
@@ -52,6 +58,9 @@ export default function HandleValidationFicha({
             confirmButton: "buttonConfirmSwal",
           },
         });
+
+        // 💡 CIERRA MODAL Y REFRESCÓ LA TABLA
+        if (closeModalAndRefresh) closeModalAndRefresh();
       }
 
       reset();
