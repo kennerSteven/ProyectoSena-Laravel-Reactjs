@@ -268,6 +268,22 @@ public function listarInstructoresContratoActivos()
 }
 
 
+public function listarVisitantes()
+{
+    $visitantes = usuarios::whereHas('perfile', function ($q) {
+        $q->where('nombre', 'Visitante');
+    })->get();
+
+    if ($visitantes->isEmpty()) {
+        return response()->json(['message' => 'No hay visitantes registrados.']);
+    }
+
+    return response()->json([
+        'message' => 'Listado general de visitantes.',
+        'usuarios' => $visitantes
+    ]);
+}
+
 
 
 
