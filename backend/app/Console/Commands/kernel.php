@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
     {
         // Ejecutar el comando cada hora
         $schedule->command('visitantes:expirar')->hourly();
-        $schedule->command('contratos:desactivar')->dailyAt('00:00');
+        $schedule->command('contratos:desactivar')->dailyAt('10:10');
     }
 
     /**
