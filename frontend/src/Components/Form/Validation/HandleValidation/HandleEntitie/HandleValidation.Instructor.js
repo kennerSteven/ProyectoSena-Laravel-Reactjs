@@ -30,7 +30,7 @@ export default function HandleValidationInstructor({
       numeroDocumento: data.numeroDocumento,
       telefono: data.telefono,
       tipoSangre: data.tipoSangre,
-      tipoPerfil: perfilSeleccionado, // 👈 se envía el objeto completo
+      idperfil: perfilSeleccionado.id, 
       foto: capturedImage || null,
     };
 

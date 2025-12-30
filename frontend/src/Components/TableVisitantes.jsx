@@ -6,26 +6,44 @@ import { InputText } from "primereact/inputtext";
 import { Tooltip } from "primereact/tooltip";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-
 import TablaVisitantesDesactivados from "./TableVisitantantesDesactivados";
 
-export default function TablaVisitantes({ fetchVisitantes }) {
+// 🔒 Fetch blindado institucionalizado
+const fetchVisitantes = async () => {
+  try {
+    const response = await fetch("http://localhost:8000/api/usuario/index", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success || !Array.isArray(data.data)) {
+      throw new Error(data.message || "Respuesta inesperada del backend");
+    }
+
+    return data.data;
+  } catch (error) {
+    console.error("Error al obtener visitantes:", error);
+    return []; // Fallback institucional
+  }
+};
+
+export default function TablaVisitantes() {
   const [visitantes, setVisitantes] = useState([]);
   const [filtroGlobal, setFiltroGlobal] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
 
   const cargarVisitantes = async () => {
-    try {
-      const data = await fetchVisitantes();
-      setVisitantes(data);
-    } catch (error) {
-      console.error("Error al cargar visitantes:", error);
-    }
+    const data = await fetchVisitantes();
+    setVisitantes(data);
   };
 
   useEffect(() => {
     cargarVisitantes();
-  }, [fetchVisitantes]);
+  }, []);
 
   const estadoTemplate = (rowData) => (
     <Tag
@@ -78,7 +96,7 @@ export default function TablaVisitantes({ fetchVisitantes }) {
             <div>
               <Button
                 label="Visitantes inactivos"
-                className="p-button-sm rounded  "
+                className="p-button-sm rounded"
                 onClick={() => setMostrarModal(true)}
               />
             </div>
@@ -124,11 +142,7 @@ export default function TablaVisitantes({ fetchVisitantes }) {
       >
         <Column field="nombre" header="Nombre" />
         <Column field="apellido" header="Apellido" />
-        <Column
-          field="fechaIngreso"
-          header="Fecha de ingreso"
-          body={fechaTemplate}
-        />
+        <Column field="fechaIngreso" header="Fecha de ingreso" body={fechaTemplate} />
         <Column field="estado" header="Estado" body={estadoTemplate} />
       </DataTable>
     </div>

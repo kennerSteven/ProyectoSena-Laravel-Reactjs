@@ -13,8 +13,8 @@ import {
   GetDataAdministrativo,
   getAdministrativosContratoDesactivados,
   activarUsuariosPorTipo,
-  activarInstructorPorId,
-  activarUsuarioPorId,
+getInstructoresContratoDesactivados,
+
 } from "../../Services/FetchServices";
 
 import {
@@ -56,6 +56,7 @@ export function TableInstructor() {
         tableTitle="Listar Instructores"
         nameValue={nameValueInstructor}
         labelUserDisabled="Instructores desactivados"
+        fetchUsuariosDesactivados={getInstructoresContratoDesactivados}
         dataTable={instructor}
         functionModal={() => {
           setSelectedInstructor(null);

@@ -117,7 +117,7 @@ export async function getIdForCarnet(id) {
   }
 
   const usuario = await response.json();
-  console.log("Datos del usuario:", usuario); // ✅ verificación visual
+  console.log("Datos del usuario:", usuario);
   return usuario;
 }
 
@@ -149,7 +149,7 @@ export async function onSubmitFicha(payload) {
     }
 
     const data = await response.json();
-    return data; // ✅ puedes devolver la ficha creada
+    return data; 
   } catch (error) {
     console.error("Error en onSubmitFicha:", error);
     throw error;
@@ -175,7 +175,7 @@ export async function updateFicha(id, payload) {
     }
 
     const data = await response.json();
-    return data; // ✅ puedes devolver la ficha actualizada
+    return data;
   } catch (error) {
     console.error("Error en updateFicha:", error);
     throw error;
@@ -198,8 +198,6 @@ export async function getFichas() {
 
     const data = await response.json();
     console.log("Fichas recibidas:", data);
-
-    // ✅ blindaje: extrae el array si viene dentro de un objeto
     return Array.isArray(data) ? data : data.fichas || [];
   } catch (error) {
     console.error("Error al obtener fichas:", error);
@@ -403,12 +401,10 @@ export async function activarInstructoresPorLote(ids) {
   });
 }
 
-
-
-export async function activarUsuarioPorId(id) {
+export async function fetchVisitantes() {
   try {
-    const response = await fetch(`http://localhost:8000/api/usuarios/${id}/activar`, {
-      method: "PUT",
+    const response = await fetch("http://localhost:8000/api/usuario/index", {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
@@ -416,13 +412,13 @@ export async function activarUsuarioPorId(id) {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || "Error al activar el usuario");
+    if (!response.ok || !data.success || !Array.isArray(data.data)) {
+      throw new Error(data.message || "Respuesta inesperada del backend");
     }
 
-    return data; 
+    return data.data;
   } catch (error) {
-    console.error("Error al activar usuario:", error);
-    throw error;
+    console.error("Error al obtener visitantes:", error);
+    return []; // Fallback institucional
   }
 }

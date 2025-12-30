@@ -8,6 +8,7 @@ import { TableAdministrativo } from "../Pages/Table/TableInstructor";
 import MainDashboard from "../Pages/MainDash/MainDashboard";
 import TablaFicha from "../TableFicha";
 import { TableInstructor } from "../Pages/Table/TableInstructor";
+import TablaVisitantes from "../TableVisitantes";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="ListarInstructor" element={<TableInstructor />} />
         <Route path="ListarAdministrativo" element={<TableAdministrativo />} />
         <Route path="ListarAprendiz" element={<TableAprendizs />} />
+               <Route path="ListarVisitante" element={<TablaVisitantes />} />
       </Route>
     </Routes>
   );
